@@ -1,0 +1,147 @@
+/*
+SD card read/write
+
+This example shows how to read and write data to and from an SD card file
+The circuit:
+SD card attached to SPI bus as follows:
+** MOSI - pin 11
+** MISO - pin 12
+** CLK - pin 13
+** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
+
+created   Nov 2010
+by David A. Mellis
+modified 9 Apr 2012
+by Tom Igoe
+
+This example code is in the public domain.
+
+*/
+
+#include <include.h>
+#include <SPI/SPIClass.h>
+#include <Serial/Serial.h>
+#include <SD/SD.h>
+
+File myFile;
+
+int main()
+{
+	SysTick_Init();
+	// Open serial communications and wait for port to open:
+	Serial.begin(115200);
+
+	Serial.print("Initializing SD card...");
+
+	if (!SD.begin(4))
+	{
+		Serial.println("initialization failed!");
+		while (1);
+	}
+	Serial.println("initialization Successfully.");
+
+	// open the file. note that only one file can be open at a time,
+	// so you have to close this one before opening another.
+	myFile = SD.open("test.txt", FILE_WRITE);
+
+	// if the file opened okay, write to it:
+	if (myFile)
+	{
+		Serial.print("Writing to test.txt...");
+		myFile.println("testing 1, 2, 3.");
+		// close the file:
+		myFile.close();
+		Serial.println("done.");
+	}
+	else
+	{
+		// if the file didn't open, print an error:
+		Serial.println("error opening test.txt");
+	}
+
+	// re-open the file for reading:
+	myFile = SD.open("1.txt");
+	if (myFile)
+	{
+		Serial.println("1.txt:");
+
+		// read from the file until there's nothing else in it:
+		while (myFile.available())
+		{
+			Serial.write(myFile.read());
+		}
+		Serial.println("");
+		// close the file:
+		myFile.close();
+	}
+	else
+	{
+		// if the file didn't open, print an error:
+		Serial.println("error opening test.txt");
+	}
+	/*
+	myFile = SD.open("2.hex");
+	if (myFile)
+	{
+		Serial.println("2.hex:");
+
+		// read from the file until there's nothing else in it:
+		while (myFile.available())
+		{
+			Serial.write(myFile.read());
+		}
+		Serial.println("");
+		// close the file:
+		myFile.close();
+	}
+	else
+	{
+		// if the file didn't open, print an error:
+		Serial.println("error opening 2.hex");
+	}*/
+	uint8_t b = 0;
+	uint32_t cnt = 1;
+	myFile = SD.open("3.bin");
+	if (myFile)
+	{
+		Serial.println("3.bin:");
+
+		// read from the file until there's nothing else in it:
+		while (myFile.available())
+		{
+			b = myFile.read();
+			if (b < 16)
+			{
+				Serial.print("0");
+			}
+			Serial.print(b, HEX);
+			if(cnt == 8)
+			{
+				Serial.print("   ");
+			}
+			else if(cnt == 16)
+			{
+				cnt = 0;
+				Serial.println("");
+			}
+			else
+			{
+				Serial.print(" ");
+			}
+			cnt++;
+		}
+		Serial.println("");
+		// close the file:
+		myFile.close();
+	}
+	else
+	{
+		// if the file didn't open, print an error:
+		Serial.println("error opening 3.bin");
+	}
+
+	while(1)
+	{
+	// nothing happens after setup
+	}
+}

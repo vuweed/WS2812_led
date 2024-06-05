@@ -1,0 +1,72 @@
+/*
+ *
+ * Project convert STM32 to Arduino
+ *
+ *	Done: SPI1, USART1, I2C1, ADC1, ADC_DMA, EXTI
+ *	Undone: DMA, Interrupt, ADC, Timer...
+ *
+ *  Created on: Aug 8, 2018
+ *      Author: Van_BasTai
+ */
+
+/* include */
+
+#include <include.h>
+#include <Serial/Serial.h>
+//#include <Wire/Wire.h>
+//#include <SPI/SPIClass.h>
+//#include <RFID/MFRC522.h>
+//#include <Liquid_LCD/LiquidCrystal_SPi.h>
+
+
+/* Private define */
+
+/* Private typedef */
+
+/* Private function prototypes */
+
+/* Private functions */
+
+/* Private variable */
+HardwareSerial Serial2 = HardwareSerial(2);
+HardwareSerial Serial3 = HardwareSerial(3);
+char ttt;
+/************************************************************/
+/*                  MAIN FUNCTION							*/
+/************************************************************/
+
+int main(void)
+{
+	Serial3.begin(115200);
+	Serial.begin(115200);
+	Serial2.begin(115200);
+	pinMode(C13, 1);
+	pinMode(C15, INPUT_PULLUP);
+//	Serial.println("READY!!!!!!");
+	ttt = 111;
+	while (1)
+	{
+		delay(1000);
+		Serial3.println("serial3 print");
+		Serial2.println("serial2 print");
+		Serial.println("serial1 print");
+	}
+}
+
+// Serial1 interrupt handler
+void SerialEvent()
+{
+	Serial.println(" ngat 1");
+}
+
+// Serial2 interrupt handler
+void Serial2Event()
+{
+	Serial2.println(" ngat 2");
+}
+
+// Serial3 interrupt handler
+void Serial3Event()
+{
+	Serial3.println(" ngat 3");
+}

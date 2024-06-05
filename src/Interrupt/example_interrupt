@@ -1,0 +1,110 @@
+/*
+ *
+ * Project convert STM32 to Arduino
+ *
+ *	Done: SPI1, USART1, I2C1, ADC1, ADC_DMA, EXTI
+ *	Undone: DMA, Interrupt, ADC, Timer...
+ *
+ *  Created on: Aug 8, 2018
+ *      Author: Van_BasTai
+ */
+
+/* include */
+
+#include <include.h>
+#include <Serial/Serial.h>
+#include <Interrupt/Interrupt.h>
+//#include <Wire/Wire.h>
+//#include <SPI/SPIClass.h>
+//#include <RFID/MFRC522.h>
+//#include <Liquid_LCD/LiquidCrystal_SPi.h>
+//#include "stm32f1xx_it.h"
+
+
+/* Private define */
+
+/* Private typedef */
+
+/* Private function prototypes */
+
+/* Private function prototypes */
+void IntFunction0(void);
+void IntFunction1(void);
+void IntFunction2(void);
+void IntFunction3(void);
+void IntFunction4(void);
+void IntFunction5(void);
+void IntFunction6(void);
+void IntFunction7(void);
+void IntFunction8(void);
+void IntFunction9(void);
+void IntFunction10(void);
+void IntFunction11(void);
+
+void IntFunctionA0(void)
+{
+	digitalToggle(C13);
+}
+/* Private functions */
+
+/* Private variable */
+int receiveData = 0;
+
+/************************************************************/
+/*                  MAIN FUNCTION							*/
+/************************************************************/
+int main(void)
+{
+	Serial.begin(115200);
+
+	attachInterrupt(A0, RISING, IntFunction0);
+	attachInterrupt(A1, RISING, IntFunction1);
+	attachInterrupt(A2, RISING, IntFunction2);
+	attachInterrupt(A3, RISING, IntFunction3);
+	attachInterrupt(A4, RISING, IntFunction4);
+	attachInterrupt(A5, RISING, IntFunction1);
+	attachInterrupt(A6, RISING, IntFunction1);
+	attachInterrupt(A7, RISING, IntFunction2);
+	attachInterrupt(A8, RISING, IntFunction3);
+	//attachInterrupt(A9, RISING, IntFunction1);// chan serial
+	//attachInterrupt(A10, RISING, IntFunction1);// chan serial
+	attachInterrupt(A11, RISING, IntFunction2);
+	attachInterrupt(A12, RISING, IntFunction3);
+	attachInterrupt(A13, RISING, IntFunction4);
+	attachInterrupt(A14, RISING, IntFunction1);
+	attachInterrupt(A15, RISING, IntFunction2);
+
+	pinMode(C13, OUTPUT);
+	Serial.println("READY!!!!!!");
+	while (1)
+	{
+		//digitalToggle(GC, 13);
+		Serial.println("OKE");
+		delay(1000);
+	}
+}
+
+void IntFunction0()
+{
+	digitalToggle(C13);
+}
+
+void IntFunction1()
+{
+	digitalToggle(C13);
+}
+
+void IntFunction2()
+{
+	digitalToggle(C13);
+}
+
+void IntFunction3()
+{
+	digitalToggle(C13);
+}
+
+void IntFunction4()
+{
+	digitalToggle(C13);
+}

@@ -1,0 +1,59 @@
+/*
+ *
+ * Project convert STM32 to Arduino
+ *
+ *	Done: SPI1, USART1, I2C1, ADC1, ADC_DMA, EXTI
+ *	Undone: DMA, Interrupt, ADC, Timer...
+ *
+ *  Created on: Aug 8, 2018
+ *      Author: Van_BasTai
+ */
+
+/* include */
+
+#include <include.h>
+#include <Serial/Serial.h>
+//#include <Interrupt/Interrupt.h>
+//#include <Wire/Wire.h>
+//#include <SPI/SPIClass.h>
+//#include <RFID/MFRC522.h>
+//#include <Liquid_LCD/LiquidCrystal_SPi.h>
+//#include "stm32f1xx_it.h"
+
+
+/* Private define */
+
+/* Private typedef */
+
+/* Private function prototypes */
+
+/* Private functions */
+
+/* Private variable */
+#define ADC1_DR_Address    ((uint32_t)0x4001244C)
+
+/************************************************************/
+/*                  MAIN FUNCTION							*/
+/************************************************************/
+int main(void)
+{
+	uint16_t ADC_value[10];
+	ADC_DMA_Init(ADC_value, 10);
+	Serial.begin(115200);
+	pinMode(C13, 1);
+	pinMode(C15, INPUT_PULLUP);
+	Serial.println("READY!!!!!!");
+	while (1)
+	{
+		//AnalogWrite(GPIOB, 7, ADC_value);
+		for (int i = 0; i < 10; ++i)
+		{
+			Serial.print(i);
+			Serial.print("] = ");
+			Serial.print(ADC_value[i]);
+			Serial.print("  ");
+		}
+		Serial.println();
+		delay(300);
+	}
+}

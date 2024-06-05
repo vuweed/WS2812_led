@@ -1,0 +1,72 @@
+/*
+ *
+ * Project convert STM32 to Arduino
+ *
+ *	Done: SPI1, USART1, I2C1, ADC1, ADC_DMA, EXTI
+ *	Undone: DMA, Interrupt, ADC, Timer...
+ *
+ *  Created on: Aug 8, 2018
+ *      Author: Van_BasTai
+ */
+
+
+/* include */
+
+#include <include.h>
+#include <Serial/Serial.h>
+//#include <Wire/Wire.h>
+//#include <SPI/SPIClass.h>
+//#include <RFID/MFRC522.h>
+//#include <Liquid_LCD/LiquidCrystal_SPi.h>
+
+
+/* Private define */
+
+/* Private typedef */
+
+/* Private function prototypes */
+
+/* Private functions */
+
+/* Private vraiable */
+int receiveData = 0;
+
+/************************************************************/
+/*                  MAIN FUNCTION							*/
+/************************************************************/
+int main(void)
+{
+	Serial.begin(115200);
+	Serial.println("Serial ready!!");
+	pinMode(A0, OUTPUT);
+	pinMode(A1, OUTPUT);
+	analogEnable(A0);
+	analogEnable(A1);
+	pinMode(C13, 1);
+	while (1)
+	{
+		digitalToggle(C13);
+		Serial.print("ADC[A0] = ");
+		Serial.println(analogRead(A0));
+		Serial.print("ADC[A1] = ");
+		Serial.println(analogRead(A1));
+		Serial.print("ADC[A2] = ");
+		Serial.println(analogRead(A2));
+		Serial.print("ADC[A3] = ");
+		Serial.println(analogRead(A3));
+		Serial.print("ADC[A4] = ");
+		Serial.println(analogRead(A4));
+		Serial.print("ADC[A5] = ");
+		Serial.println(analogRead(A5));
+		Serial.print("ADC[A6] = ");
+		Serial.println(analogRead(A6));
+		Serial.print("ADC[A7] = ");
+		Serial.println(analogRead(A7));
+		Serial.print("ADC[B0] = ");
+		Serial.println(analogRead(B0));
+		Serial.print("ADC[B1] = ");
+		Serial.println(analogRead(B1));
+		delay(1000);
+		analogDisable();
+	}
+}

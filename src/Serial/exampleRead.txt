@@ -1,0 +1,124 @@
+/*
+SD card read/write
+
+This example shows how to read and write data to and from an SD card file
+The circuit:
+SD card attached to SPI bus as follows:
+** MOSI - pin 11
+** MISO - pin 12
+** CLK - pin 13
+** CS - pin 4 (for MKRZero SD: SDCARD_SS_PIN)
+
+created   Nov 2010
+by David A. Mellis
+modified 9 Apr 2012
+by Tom Igoe
+
+This example code is in the public domain.
+
+*/
+
+#include <include.h>
+#include <SPI/SPIClass.h>
+#include <Serial/Serial.h>
+#include <SD/SD.h>
+#include <W2812/W2812.h>
+
+File myFile;
+Ws2812 ports[20];
+union SPIData
+{
+	uint32_t u32;
+    uint8_t bytes[4];
+};
+union SPIData w, h, numOfFrames;
+const uint16_t pins[20] = {B12, B13, B14, B15};
+uint16_t i = 0;
+uint16_t aaa = 0;
+int main()
+{
+	SysTick_Init();
+	// Open serial communications and wait for port to open:
+	Serial.begin(115200);
+	Serial.print("Start...");
+	while(1)
+	{
+		if(aaa==1)
+		{
+			delay(1);
+			Serial.reset();
+			Serial.println(123);
+			delay(120);
+			aaa = 0;
+		}
+	}
+
+	Serial.print("Initializing SD card...");
+	if (!SD.begin(A4))
+	{
+		Serial.println("initialization failed!");
+		while (1)
+		{
+			// TODO: show error to 7seg
+		}
+	}
+	Serial.println("initialization Successfully.");
+
+	// read parameters: w, h, frames
+	myFile = SD.open("para.bin");
+	if (myFile)
+	{
+		// read parameters:
+		myFile.readBytes(w.bytes , 4);
+		myFile.readBytes(h.bytes , 4);
+		myFile.readBytes(numOfFrames.bytes , 4);
+
+		// close the file:
+		myFile.close();
+	}
+//	Serial.println(w.u32);
+//	Serial.println(h.u32);
+//	Serial.println(numOfFrames.u32);
+
+	for (i = 0; i < w.u32; ++i)
+	{
+		ports[i].begin(pins[i], h.u32);
+		delay(10);
+		ports[i].clearAll(300);
+		delay(10);
+	}
+	while(1)
+	{
+
+//		Serial.println("Opening 0.bin...");
+		myFile = SD.open("0.bin");
+		if (myFile)
+		{
+//			Serial.println("0.bin:");
+
+			for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+			{
+				for (i = 0; i < w.u32; ++i)
+				{
+					myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+				}
+				for (i = 0; i < w.u32; ++i)
+				{
+					ports[i].showStrip();
+				}
+				delay(50);
+			}
+			// close the file:
+			myFile.close();
+		}
+	}
+}
+
+// Serial1 interrupt handler
+void SerialEvent()
+{
+	if(Serial.available() >= 6)
+	{
+		aaa = 1;
+	}
+}

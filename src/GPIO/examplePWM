@@ -1,0 +1,87 @@
+/*
+ *
+ * Project convert STM32 to Arduino
+ *
+ *	Done: SPI1, USART1, I2C1, ADC1, ADC_DMA, EXTI
+ *	Undone: DMA, Interrupt, ADC, Timer...
+ *
+ *  Created on: Aug 8, 2018
+ *      Author: Van_BasTai
+ */
+
+/* include */
+
+#include <include.h>
+#include <Serial/Serial.h>
+//#include <Wire/Wire.h>
+//#include <SPI/SPIClass.h>
+//#include <RFID/MFRC522.h>
+//#include <Liquid_LCD/LiquidCrystal_SPi.h>
+
+
+/* Private define */
+
+/* Private typedef */
+
+/* Private function prototypes */
+
+/* Private functions */
+
+/* Private variable */
+/************************************************************/
+/*                  MAIN FUNCTION							*/
+/************************************************************/
+int main(void)
+{
+	Timer2Init();
+	PWMInit(A0);
+	PWMInit(A1);
+	PWMInit(A2);
+	PWMInit(A3);
+	PWMInit(A6);
+	PWMInit(A7);
+	PWMInit(B0);
+	PWMInit(B1);
+	PWMInit(B6);
+	PWMInit(B7);
+	PWMInit(B8);
+	PWMInit(B9);
+
+	Serial.begin(115200);
+	Serial.println("READY!!!!!!");
+	while (1)
+	{
+		for (int i = 0; i < 4000; ++i)
+		{
+			analogWrite(A0, i);
+			analogWrite(A1, i);
+			analogWrite(A2, i);
+			analogWrite(A3, i);
+			analogWrite(A6, i);
+			analogWrite(A7, i);
+			analogWrite(B0, i);
+			analogWrite(B1, i);
+			analogWrite(B6, i);
+			analogWrite(B7, i);
+			analogWrite(B8, i);
+			analogWrite(B9, i);
+			delayMicroseconds(300);
+		}
+		for (int i = 4000; i > 0; --i)
+		{
+			analogWrite(A0, i);
+			analogWrite(A1, i);
+			analogWrite(A2, i);
+			analogWrite(A3, i);
+			analogWrite(A6, i);
+			analogWrite(A7, i);
+			analogWrite(B0, i);
+			analogWrite(B1, i);
+			analogWrite(B6, i);
+			analogWrite(B7, i);
+			analogWrite(B8, i);
+			analogWrite(B9, i);
+			delayMicroseconds(300);
+		}
+	}
+}
