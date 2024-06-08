@@ -260,8 +260,6 @@ int main()
 
 
 				delay2.u32 = analogRead(B0);
-				// Serial.print("1: ");
-				// Serial.println(delay2.u32);
 				delay2.u32 = map2(delay2.u32, 0, 4096, 20, 200);
 //				delay2.u32=40;
 				// update delay value to RS485 data
@@ -290,6 +288,8 @@ int main()
 							myFile.readBytes(w.bytes , 4);
 							myFile.readBytes(h.bytes , 4);
 							myFile.readBytes(numOfFrames.bytes , 4);
+//							numOfFrames.u32 = 300;
+
 							for(k = 0; k < 4; ++k)
 							{
 								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
@@ -303,6 +303,7 @@ int main()
 							}
 
 							// display to every channels
+//							for (uint32_t frame = 0; frame < 75; ++frame)
 							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
 							{
 								for (i = 0; i < w.u32; ++i)
@@ -328,9 +329,7 @@ int main()
 								}
 
 								// delay and check _resetFlag
-								// Serial.print("2: ");
-								// Serial.println(delay2.u32);
-								for (i = 0; i < delay2.u32; ++i)
+								for (i = 0; i < delay2.u32; i++)
 								{
 									if (_resetFlag == 1)
 									{
@@ -338,7 +337,7 @@ int main()
 										root.close();
 										goto RESET;
 									}
-									delay(1);
+									delay(100);
 								}
 							}
 							// close the file:
@@ -389,6 +388,7 @@ int main()
 							myFile.readBytes(w.bytes , 4);
 							myFile.readBytes(h.bytes , 4);
 							myFile.readBytes(numOfFrames.bytes , 4);
+
 							for(k = 0; k < 4; ++k)
 							{
 								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
@@ -427,7 +427,7 @@ int main()
 								}
 
 								// delay and check _resetFlag
-								for (i = 0; i < delay2.u32; ++i)
+								for (i = 0; i < delay2.u32 - 50; ++i)
 								{
 									if (_resetFlag == 1)
 									{
@@ -435,7 +435,7 @@ int main()
 										root.close();
 										goto RESET;
 									}
-									delay(1);
+//									delay(1);
 								}
 							}
 							// close the file:
