@@ -315,6 +315,7 @@ int main()
 								currentMillis = millis();
 								if(currentMillis - startMillis > delay2.u32)
 								{
+									startMillis = currentMillis;
 									for (i = 0; i < w.u32; ++i)
 									{
 										if (_resetFlag == 1)
