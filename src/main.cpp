@@ -313,7 +313,7 @@ int main()
 							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
 							{
 								currentMillis = millis();
-								if(currentMillis - startMillis > delay2.u32)
+								if(currentMillis - startMillis > delay2.u32/2)
 								{
 									startMillis = currentMillis;
 									for (i = 0; i < w.u32; ++i)
