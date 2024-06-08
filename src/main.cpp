@@ -69,6 +69,9 @@ uint8_t
 const code7seg[] = {0xC0, 0XF9, 0XA4, 0XB0, 0X99, 0X92, 0X82, 0XF8, 0X80, 0X90};
 uint8_t isMaster = ID_SLAVE;
 
+unsigned long startMillis;  //some global variables available anywhere in the program
+unsigned long currentMillis;
+
 void delay3(uint16_t ms)
 {
 	uint16_t x, y;
@@ -191,10 +194,13 @@ uint8_t* cryption(uint8_t *data, uint32_t len)
 
 int main()
 {
+	// init
 	SysTick_Init();
 	pinMode(HC595_PIN_LAT, OUTPUT);
 	pinMode(HC595_PIN_CLK, OUTPUT);
 	pinMode(HC595_PIN_SDA, OUTPUT);
+
+	currentMillis = millis();
 
 	for(i = 0; i < 10; ++i)
 	{
@@ -306,18 +312,33 @@ int main()
 //							for (uint32_t frame = 0; frame < 75; ++frame)
 							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
 							{
-								for (i = 0; i < w.u32; ++i)
+								currentMillis = millis();
+								if(currentMillis - startMillis > delay2.u32)
 								{
-									if (_resetFlag == 1)
+									for (i = 0; i < w.u32; ++i)
 									{
-										myFile.close();
-										root.close();
-										goto RESET;
+										if (_resetFlag == 1)
+										{
+											myFile.close();
+											root.close();
+											goto RESET;
+										}
+										myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+										ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
 									}
-									myFile.readBytes(ports[i]._leds ,h.u32 * 3);
-									ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+									for (i = 0; i < w.u32; ++i)
+									{
+										if (_resetFlag == 1)
+										{
+											myFile.close();
+											root.close();
+											goto RESET;
+										}
+										ports[i].showStrip();
+									}
+
 								}
-								for (i = 0; i < w.u32; ++i)
+								else
 								{
 									if (_resetFlag == 1)
 									{
@@ -325,20 +346,19 @@ int main()
 										root.close();
 										goto RESET;
 									}
-									ports[i].showStrip();
 								}
 
-								// delay and check _resetFlag
-								for (i = 0; i < delay2.u32; i++)
-								{
-									if (_resetFlag == 1)
-									{
-										myFile.close();
-										root.close();
-										goto RESET;
-									}
-									delay(100);
-								}
+								// // delay and check _resetFlag
+								// for (i = 0; i < delay2.u32; ++i)
+								// {
+								// 	if (_resetFlag == 1)
+								// 	{
+								// 		myFile.close();
+								// 		root.close();
+								// 		goto RESET;
+								// 	}
+								// 	delay(1);
+								// }
 							}
 							// close the file:
 							myFile.close();
