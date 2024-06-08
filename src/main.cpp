@@ -260,8 +260,8 @@ int main()
 
 
 				delay2.u32 = analogRead(B0);
-				Serial.print("1: ");
-				Serial.println(delay2.u32);
+				// Serial.print("1: ");
+				// Serial.println(delay2.u32);
 				delay2.u32 = map2(delay2.u32, 0, 4096, 20, 200);
 //				delay2.u32=40;
 				// update delay value to RS485 data
@@ -328,8 +328,8 @@ int main()
 								}
 
 								// delay and check _resetFlag
-								Serial.print("2: ");
-								Serial.println(delay2.u32);
+								// Serial.print("2: ");
+								// Serial.println(delay2.u32);
 								for (i = 0; i < delay2.u32; ++i)
 								{
 									if (_resetFlag == 1)
