@@ -251,12 +251,12 @@ int main()
 
 		while(1)
 		{
-//			value = analogRead(SOUND_SENSOR);
-//			delay(400);
-			 for (int i = 0; i < 32; i++) //create a for loop to read
-			  { value += analogRead(SOUND_SENSOR);  } //read the sound sensor
+			value = analogRead(SOUND_SENSOR);
+			delay(1);
+			//  for (int i = 0; i < 32; i++) //create a for loop to read
+			//   { value += analogRead(SOUND_SENSOR);  } //read the sound sensor
 
-			 value >>= 5; //bitshift operation
+			//  value >>= 5; //bitshift operation
 //			 delay(1);
 //			  Serial.println(soundValue); //print the value of sound sensor
 
