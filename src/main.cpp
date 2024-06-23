@@ -278,6 +278,8 @@ int main()
 					root = SD.open("/");
 					while(1)
 					{
+						if (analogRead(SOUND_SENSOR) < 1000)
+					{
 						myFile =  root.openNextFile();
 						if (! myFile)
 						{
@@ -348,6 +350,7 @@ int main()
 							}
 						}
 						myFile.close();
+						}
 					}
 					root.close();
 
@@ -451,7 +454,7 @@ int main()
 					break;
 				default:
 					break;
-			}
+		}
 		}
 	}
 
