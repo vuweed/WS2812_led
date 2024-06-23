@@ -190,6 +190,7 @@ uint8_t* cryption(uint8_t *data, uint32_t len)
 	return data;
 }
 
+int value = 0;
 int main()
 {
 	SysTick_Init();
@@ -278,78 +279,79 @@ int main()
 					root = SD.open("/");
 					while(1)
 					{
-						if (analogRead(SOUND_SENSOR) < 1000)
-					{
-						myFile =  root.openNextFile();
-						if (! myFile)
+						value = analogRead(SOUND_SENSOR);
+						if (value < 1000)
 						{
-							// no more files
-							break;
-						}
-						if (myFile.isDirectory() == false)
-						{
-							if(strstr(myFile.name(), (const char *)_fileName))
+							myFile =  root.openNextFile();
+							if (! myFile)
 							{
-	//							// read parameters:
-								myFile.readBytes(w.bytes , 4);
-								myFile.readBytes(h.bytes , 4);
-								myFile.readBytes(numOfFrames.bytes , 4);
-								for(k = 0; k < 4; ++k)
-								{
-									w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-									h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-									numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-								}
-								// set up W2812 parameter
-								for (i = 0; i < w.u32; ++i)
-								{
-									ports[i].setLED(h.u32);
-								}
-
-								// display to every channels
-								for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-								{
-									for (i = 0; i < w.u32; ++i)
-									{
-										if (_resetFlag == 1)
-										{
-											myFile.close();
-											root.close();
-											goto RESET;
-										}
-										myFile.readBytes(ports[i]._leds ,h.u32 * 3);
-										ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
-									}
-									for (i = 0; i < w.u32; ++i)
-									{
-										if (_resetFlag == 1)
-										{
-											myFile.close();
-											root.close();
-											goto RESET;
-										}
-										ports[i].showStrip();
-									}
-
-									// delay and check _resetFlag
-									// Serial.print("2: ");
-									// Serial.println(delay2.u32);
-									for (i = 0; i < delay2.u32; ++i)
-									{
-										if (_resetFlag == 1)
-										{
-											myFile.close();
-											root.close();
-											goto RESET;
-										}
-										delay(1);
-									}
-								}
-								// close the file:
-								myFile.close();
+								// no more files
+								break;
 							}
-						}
-						myFile.close();
+							if (myFile.isDirectory() == false)
+							{
+								if(strstr(myFile.name(), (const char *)_fileName))
+								{
+		//							// read parameters:
+									myFile.readBytes(w.bytes , 4);
+									myFile.readBytes(h.bytes , 4);
+									myFile.readBytes(numOfFrames.bytes , 4);
+									for(k = 0; k < 4; ++k)
+									{
+										w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+										h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+										numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+									}
+									// set up W2812 parameter
+									for (i = 0; i < w.u32; ++i)
+									{
+										ports[i].setLED(h.u32);
+									}
+
+									// display to every channels
+									for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+									{
+										for (i = 0; i < w.u32; ++i)
+										{
+											if (_resetFlag == 1)
+											{
+												myFile.close();
+												root.close();
+												goto RESET;
+											}
+											myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+											ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+										}
+										for (i = 0; i < w.u32; ++i)
+										{
+											if (_resetFlag == 1)
+											{
+												myFile.close();
+												root.close();
+												goto RESET;
+											}
+											ports[i].showStrip();
+										}
+
+										// delay and check _resetFlag
+										// Serial.print("2: ");
+										// Serial.println(delay2.u32);
+										for (i = 0; i < delay2.u32; ++i)
+										{
+											if (_resetFlag == 1)
+											{
+												myFile.close();
+												root.close();
+												goto RESET;
+											}
+											delay(1);
+										}
+									}
+									// close the file:
+									myFile.close();
+								}
+							}
+							myFile.close();
 						}
 					}
 					root.close();
