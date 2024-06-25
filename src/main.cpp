@@ -203,8 +203,7 @@ int main()
 		HC595_write(code7seg[i]);
 		delay(150);
 	}
-	if (analogRead(SOUND_SENSOR) < 150)
-	{
+
 				// init SD card
 		while (!SD.begin(SPI1_PIN_NSS))
 		{
@@ -280,7 +279,7 @@ int main()
 					while(1)
 					{
 						value = analogRead(SOUND_SENSOR);
-						if (value < 1000)
+						if (value > 1000)
 						{
 							myFile =  root.openNextFile();
 							if (! myFile)
@@ -352,6 +351,10 @@ int main()
 								}
 							}
 							myFile.close();
+						}
+						else
+						{
+							delay(2000);
 						}
 					}
 					root.close();
@@ -458,7 +461,7 @@ int main()
 					break;
 		}
 		}
-	}
+
 
 }
 
