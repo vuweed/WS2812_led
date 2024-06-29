@@ -1,6 +1,6 @@
 /**
   ******************************************************************************
-  * @file    stm32f1xx_it.c 
+  * @file    stm32f1xx_it.c
   * @author  MCD Application Team
   * @version V1.0.0
   * @date    11-February-2014
@@ -38,6 +38,12 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
+uint16_t capture = 0;
+extern __IO uint16_t CCR1_Val;
+extern __IO uint16_t CCR2_Val;
+extern __IO uint16_t CCR3_Val;
+extern __IO uint16_t CCR4_Val;
+
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -102,17 +108,7 @@ void UsageFault_Handler(void)
 {
   /* Go to infinite loop when Usage Fault exception occurs */
   while (1)
-  {
-  }
-}
-
-/**
-  * @brief  This function handles SVCall exception.
-  * @param  None
-  * @retval None
-  */
-void SVC_Handler(void)
-{
+  {}
 }
 
 /**
@@ -121,29 +117,83 @@ void SVC_Handler(void)
   * @retval None
   */
 void DebugMon_Handler(void)
-{
-}
+{}
 
 /**
-  * @brief  This function handles PendSVC exception.
+  * @brief  This function handles SVCall exception.
+  * @param  None
+  * @retval None
+  */
+void SVC_Handler(void)
+{}
+
+/**
+  * @brief  This function handles PendSV_Handler exception.
   * @param  None
   * @retval None
   */
 void PendSV_Handler(void)
-{
-}
+{}
 
 /**
   * @brief  This function handles SysTick Handler.
   * @param  None
   * @retval None
   */
-/*void SysTick_Handler(void)
-{
-}*/
+//void SysTick_Handler(void)
+//{}
 
-/*----------------------------------------------------------------------------*/
-/*                 STM32F1xx Peripherals Interrupt Handlers                   */
+/******************************************************************************/
+/*            STM32F10x Peripherals Interrupt Handlers                        */
+/******************************************************************************/
+
+/**
+  * @brief  This function handles TIM2 global interrupt request.
+  * @param  None
+  * @retval None
+  */
+void TIM2_IRQHandler(void)
+{
+  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+
+    /* Pin PC.06 toggling with frequency = 73.24 Hz */
+    GPIO_WriteBit(GPIOC, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_6)));
+    capture = TIM_GetCapture1(TIM2);
+    TIM_SetCompare1(TIM2, capture + CCR1_Val);
+  }
+  else if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
+
+    /* Pin PC.07 toggling with frequency = 109.8 Hz */
+    GPIO_WriteBit(GPIOC, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_7)));
+    capture = TIM_GetCapture2(TIM2);
+    TIM_SetCompare2(TIM2, capture + CCR2_Val);
+  }
+  else if (TIM_GetITStatus(TIM2, TIM_IT_CC3) != RESET)
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC3);
+
+    /* Pin PC.08 toggling with frequency = 219.7 Hz */
+    GPIO_WriteBit(GPIOC, GPIO_Pin_8, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_8)));
+    capture = TIM_GetCapture3(TIM2);
+    TIM_SetCompare3(TIM2, capture + CCR3_Val);
+  }
+  else
+  {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_CC4);
+
+    /* Pin PC.09 toggling with frequency = 439.4 Hz */
+    GPIO_WriteBit(GPIOC, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_9)));
+    capture = TIM_GetCapture4(TIM2);
+    TIM_SetCompare4(TIM2, capture + CCR4_Val);
+  }
+}
+
+/******************************************************************************/
+/*                 STM32F10x Peripherals Interrupt Handlers                   */
 /*  Add here the Interrupt Handler for the used peripheral(s) (PPP), for the  */
 /*  available peripheral interrupt handler's name please refer to the startup */
 /*  file (startup_stm32f10x_md.s).                                            */
@@ -160,7 +210,10 @@ void PendSV_Handler(void)
 
 /**
   * @}
-  */ 
+  */
 
+/**
+  * @}
+  */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
