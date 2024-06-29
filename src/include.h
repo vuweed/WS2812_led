@@ -20,7 +20,7 @@
 #include <math.h>
 #include <stdbool.h>
 //#include <Ethernet/WString.h>
-
+#define VR_PIN B0
 #define min(a,b) ((a)<(b)?(a):(b))
 #define max(a,b) ((a)>(b)?(a):(b))
 #define abss(x) ((x)>0?(x):-(x))

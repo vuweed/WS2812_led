@@ -29,7 +29,7 @@
 
 /* Includes ------------------------------------------------------------------*/
 #include "stm32f1xx_it.h"
-
+#include <include.h>
 /** @addtogroup IO_Toggle
   * @{
   */
@@ -156,39 +156,40 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+    sound_value = analogRead(VR_PIN);
+    // TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 
-    /* Pin PC.06 toggling with frequency = 73.24 Hz */
-    GPIO_WriteBit(GPIOC, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_6)));
-    capture = TIM_GetCapture1(TIM2);
-    TIM_SetCompare1(TIM2, capture + CCR1_Val);
+    // /* Pin PC.06 toggling with frequency = 73.24 Hz */
+    // GPIO_WriteBit(GPIOC, GPIO_Pin_6, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_6)));
+    // capture = TIM_GetCapture1(TIM2);
+    // TIM_SetCompare1(TIM2, capture + CCR1_Val);
   }
   else if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)
   {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
+    // TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
 
-    /* Pin PC.07 toggling with frequency = 109.8 Hz */
-    GPIO_WriteBit(GPIOC, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_7)));
-    capture = TIM_GetCapture2(TIM2);
-    TIM_SetCompare2(TIM2, capture + CCR2_Val);
+    // /* Pin PC.07 toggling with frequency = 109.8 Hz */
+    // GPIO_WriteBit(GPIOC, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_7)));
+    // capture = TIM_GetCapture2(TIM2);
+    // TIM_SetCompare2(TIM2, capture + CCR2_Val);
   }
   else if (TIM_GetITStatus(TIM2, TIM_IT_CC3) != RESET)
   {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC3);
+    // TIM_ClearITPendingBit(TIM2, TIM_IT_CC3);
 
-    /* Pin PC.08 toggling with frequency = 219.7 Hz */
-    GPIO_WriteBit(GPIOC, GPIO_Pin_8, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_8)));
-    capture = TIM_GetCapture3(TIM2);
-    TIM_SetCompare3(TIM2, capture + CCR3_Val);
+    // /* Pin PC.08 toggling with frequency = 219.7 Hz */
+    // GPIO_WriteBit(GPIOC, GPIO_Pin_8, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_8)));
+    // capture = TIM_GetCapture3(TIM2);
+    // TIM_SetCompare3(TIM2, capture + CCR3_Val);
   }
   else
   {
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC4);
+    // TIM_ClearITPendingBit(TIM2, TIM_IT_CC4);
 
-    /* Pin PC.09 toggling with frequency = 439.4 Hz */
-    GPIO_WriteBit(GPIOC, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_9)));
-    capture = TIM_GetCapture4(TIM2);
-    TIM_SetCompare4(TIM2, capture + CCR4_Val);
+    // /* Pin PC.09 toggling with frequency = 439.4 Hz */
+    // GPIO_WriteBit(GPIOC, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_9)));
+    // capture = TIM_GetCapture4(TIM2);
+    // TIM_SetCompare4(TIM2, capture + CCR4_Val);
   }
 }
 
