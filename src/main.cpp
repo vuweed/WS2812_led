@@ -279,88 +279,62 @@ int main(void)
 
 	/* TIM2 enable counter */
 	TIM_Cmd(TIM2, ENABLE);
-	analogEnable(VR_PIN);
-//	for(i = 0; i < 10; ++i)
-//	{
-//		HC595_write(code7seg[i]);
-//		delay(150);
-//	}
+	// analogEnable(VR_PIN);
+	for(i = 0; i < 10; ++i)
+	{
+		HC595_write(code7seg[i]);
+		delay(150);
+	}
 
-	// init SD card
-//	while (!SD.begin(SPI1_PIN_NSS))
-//	{
-//		HC595_write(ERR_SD_INIT);
-//		delay(100);
-//	}
+	//  init SD card
+	while (!SD.begin(SPI1_PIN_NSS))
+	{
+		HC595_write(ERR_SD_INIT);
+		delay(100);
+	}
 
 	Serial2.begin(115200);
 	//check file exist list
-//	for(uint8_t ii = 0; ii < 10; ++ii)
-//	{
-//		_fileName[3] = ii + 48;
-//		root = SD.open("/");
-//		while(1)
-//		{
-//			File entry =  root.openNextFile();
-//			if (! entry)
-//			{
-//				// no more files
-//				break;
-//			}
-//			if (entry.isDirectory() == false)
-//			{
-//				if(strstr(entry.name(), (const char *)_fileName))
-//				{
-//					isMaster = ID_MASTER;
-//					fileExist[ii] = 1;
-//					entry.close();
-//					break;
-//				}
-//			}
-//			entry.close();
-//		}
-//		root.close();
-//	}
+	for(uint8_t ii = 0; ii < 10; ++ii)
+	{
+		_fileName[3] = ii + 48;
+		root = SD.open("/");
+		while(1)
+		{
+			File entry =  root.openNextFile();
+			if (! entry)
+			{
+				// no more files
+				break;
+			}
+			if (entry.isDirectory() == false)
+			{
+				if(strstr(entry.name(), (const char *)_fileName))
+				{
+					isMaster = ID_MASTER;
+					fileExist[ii] = 1;
+					entry.close();
+					break;
+				}
+			}
+			entry.close();
+		}
+		root.close();
+	}
 
-//	GPIO_begin();
-//
-//	// init W2812 channels
-//	for (i = 0; i < 20; ++i)
-//	{
-//		ports[i].begin(pins[i]);
-//		ports[i].clearAll(300);
-//	}
+	GPIO_begin();
 
-//	digitalWrite(HC595_PIN_SDA, 1);
-
-
-
-//	while(1)
-//	{
-//
-//	        delay(1000);
-//	        if(state_flag ==  0)
-//	        {
-//	          digitalWrite(HC595_PIN_SDA, 1);
-//	            delay(3000);
-//	            state_flag = 1;
-//	        }
-//	        else
-//	        {
-//	            digitalWrite(HC595_PIN_SDA, 0);
-//	          delay(3000);
-//	        }
-//
-//
-//
-//	}
-
+	// init W2812 channels
+	for (i = 0; i < 20; ++i)
+	{
+		ports[i].begin(pins[i]);
+		ports[i].clearAll(300);
+	}
 
 
 	while(1)
 	{
 		RESET:// reset when button is pressed
-		isMaster = ID_MASTER;
 		switch (isMaster)
 		{
 			case ID_MASTER:
@@ -473,7 +447,7 @@ int main(void)
                                     root.close();
                                     goto RESET;
                                 }
-                                ports[i].showStrip();
+                                ports[i].setAll(0, 0, 0);
                             }
 	                        state_flag = IDLE;
 	                    }
