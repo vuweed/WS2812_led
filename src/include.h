@@ -43,7 +43,7 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
-extern int toggle_all_led_flag;
+extern bool toggle_all_led_flag;
 extern int state_flag;
 typedef void (*voidFuncPtr)(void);
 typedef uint8_t byte;

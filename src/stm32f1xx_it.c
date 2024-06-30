@@ -163,7 +163,14 @@ void TIM2_IRQHandler(void)
         if(sound_value < 500)
         {
             state_flag = PROCESSING;
-            toggle_all_led_flag = ~toggle_all_led_flag;
+            if (toggle_all_led_flag == false)
+            {
+                toggle_all_led_flag = true;
+            }
+            else
+            {
+                toggle_all_led_flag = false;
+            }
 
         }
     }

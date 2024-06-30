@@ -222,7 +222,7 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
  */
 int sound_value = 0;
 int state_flag = IDLE;
-int toggle_all_led_flag = false;
+bool toggle_all_led_flag = false;
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
