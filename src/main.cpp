@@ -41,7 +41,7 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
-__IO uint16_t CCR1_Val = 65535;
+__IO uint16_t CCR1_Val = 40961;
 __IO uint16_t CCR2_Val = 27309;
 __IO uint16_t CCR3_Val = 13654;
 __IO uint16_t CCR4_Val = 6826;
@@ -221,6 +221,7 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
  * @retval None
  */
 int sound_value = 0;
+int state_flag = 1;
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -238,10 +239,9 @@ int main(void)
 
 	/* GPIO Configuration */
 	GPIO_Configuration();
-	SysTick_Init();
 	pinMode(HC595_PIN_LAT, OUTPUT);
 	pinMode(HC595_PIN_CLK, OUTPUT);
-	pinMode(HC595_PIN_SDA, OUTPUT);
+//	pinMode(HC595_PIN_SDA, OUTPUT);
 
 	/* ---------------------------------------------------------------
 	  TIM2 Configuration: Output Compare Timing Mode:
@@ -253,13 +253,11 @@ int main(void)
 	--------------------------------------------------------------- */
 
 	/* Compute the prescaler value */
-//	SystemCoreClock= SystemCoreClock/100;
-	PrescalerValue = (uint16_t)(SystemCoreClock / 65535) - 1;
-//	PrescalerValue = 1439;
+	PrescalerValue = (uint16_t)(SystemCoreClock / 12000000) - 1;
 
 	/* Time base configuration */
 	TIM_TimeBaseStructure.TIM_Period = 65535;
-	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
+	TIM_TimeBaseStructure.TIM_Prescaler = 0;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
@@ -274,37 +272,9 @@ int main(void)
 	TIM_OCInitStructure.TIM_Pulse = CCR1_Val;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
-	// TIM_OC1Init(TIM2, &TIM_OCInitStructure);
-
-	// TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
-	// /* Output Compare Timing Mode configuration: Channel2 */
-	// TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	// TIM_OCInitStructure.TIM_Pulse = CCR2_Val;
-
-	// TIM_OC2Init(TIM2, &TIM_OCInitStructure);
-
-	// TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
-	// /* Output Compare Timing Mode configuration: Channel3 */
-	// TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	// TIM_OCInitStructure.TIM_Pulse = CCR3_Val;
-
-	// TIM_OC3Init(TIM2, &TIM_OCInitStructure);
-
-	// TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
-	// /* Output Compare Timing Mode configuration: Channel4 */
-	// TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	// TIM_OCInitStructure.TIM_Pulse = CCR4_Val;
-
-	// TIM_OC4Init(TIM2, &TIM_OCInitStructure);
-
-	// TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);
-
 	/* TIM IT enable */
 	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
-	// TIM_ITConfig(TIM2, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4, ENABLE);
+	SysTick_Init();
 
 	/* TIM2 enable counter */
 	TIM_Cmd(TIM2, ENABLE);
@@ -363,18 +333,22 @@ int main(void)
 //	digitalWrite(HC595_PIN_SDA, 1);
 	while(1)
 	{
-	    digitalToggle(HC595_PIN_SDA);
-	    delay(1000);
-	    if(sound_value <  500)
-	    {
-//	        digitalWrite(HC595_PIN_SDA, 1);
-//	        delay(3000);
-	    }
-	    else
-	    {
-//	        digitalWrite(HC595_PIN_SDA, 0);
-//	        delay(3000);
-	    }
+
+	        delay(1000);
+	        if(state_flag ==  0)
+	        {
+	          digitalWrite(HC595_PIN_SDA, 1);
+	            delay(3000);
+	            state_flag = 1;
+	        }
+	        else
+	        {
+	            digitalWrite(HC595_PIN_SDA, 0);
+	          delay(3000);
+	        }
+
+
+
 	}
 
 //		RESET:// reset when button is pressed
@@ -612,7 +586,7 @@ void GPIO_Configuration(void)
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* GPIOC Configuration:Pin6, 7, 8 and 9 as alternate function push-pull */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_6 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_13 | GPIO_Pin_7 | GPIO_Pin_8 | GPIO_Pin_9;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 

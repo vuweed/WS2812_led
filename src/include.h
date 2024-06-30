@@ -44,6 +44,7 @@
 extern "C"{
 #endif
 
+extern int state_flag;
 typedef void (*voidFuncPtr)(void);
 typedef uint8_t byte;
 typedef bool boolean;
