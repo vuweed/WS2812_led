@@ -41,7 +41,7 @@
 /* Private variables ---------------------------------------------------------*/
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
-__IO uint16_t CCR1_Val = 40961;
+__IO uint16_t CCR1_Val = 65535;
 __IO uint16_t CCR2_Val = 27309;
 __IO uint16_t CCR3_Val = 13654;
 __IO uint16_t CCR4_Val = 6826;
@@ -253,11 +253,13 @@ int main(void)
 	--------------------------------------------------------------- */
 
 	/* Compute the prescaler value */
-	PrescalerValue = (uint16_t)(SystemCoreClock / 12000000) - 1;
+//	SystemCoreClock= SystemCoreClock/100;
+	PrescalerValue = (uint16_t)(SystemCoreClock / 65535) - 1;
+//	PrescalerValue = 1439;
 
 	/* Time base configuration */
 	TIM_TimeBaseStructure.TIM_Period = 65535;
-	TIM_TimeBaseStructure.TIM_Prescaler = 0;
+	TIM_TimeBaseStructure.TIM_Prescaler = PrescalerValue;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
@@ -272,300 +274,315 @@ int main(void)
 	TIM_OCInitStructure.TIM_Pulse = CCR1_Val;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
-	TIM_OC1Init(TIM2, &TIM_OCInitStructure);
+	// TIM_OC1Init(TIM2, &TIM_OCInitStructure);
 
-	TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
+	// TIM_OC1PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
-	/* Output Compare Timing Mode configuration: Channel2 */
-	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = CCR2_Val;
+	// /* Output Compare Timing Mode configuration: Channel2 */
+	// TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	// TIM_OCInitStructure.TIM_Pulse = CCR2_Val;
 
-	TIM_OC2Init(TIM2, &TIM_OCInitStructure);
+	// TIM_OC2Init(TIM2, &TIM_OCInitStructure);
 
-	TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Disable);
+	// TIM_OC2PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
-	/* Output Compare Timing Mode configuration: Channel3 */
-	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = CCR3_Val;
+	// /* Output Compare Timing Mode configuration: Channel3 */
+	// TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	// TIM_OCInitStructure.TIM_Pulse = CCR3_Val;
 
-	TIM_OC3Init(TIM2, &TIM_OCInitStructure);
+	// TIM_OC3Init(TIM2, &TIM_OCInitStructure);
 
-	TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);
+	// TIM_OC3PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
-	/* Output Compare Timing Mode configuration: Channel4 */
-	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = CCR4_Val;
+	// /* Output Compare Timing Mode configuration: Channel4 */
+	// TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	// TIM_OCInitStructure.TIM_Pulse = CCR4_Val;
 
-	TIM_OC4Init(TIM2, &TIM_OCInitStructure);
+	// TIM_OC4Init(TIM2, &TIM_OCInitStructure);
 
-	TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);
+	// TIM_OC4PreloadConfig(TIM2, TIM_OCPreload_Disable);
 
 	/* TIM IT enable */
-	TIM_ITConfig(TIM2, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4, ENABLE);
+	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+	// TIM_ITConfig(TIM2, TIM_IT_CC1 | TIM_IT_CC2 | TIM_IT_CC3 | TIM_IT_CC4, ENABLE);
 
 	/* TIM2 enable counter */
 	TIM_Cmd(TIM2, ENABLE);
-
-	for(i = 0; i < 10; ++i)
-	{
-		HC595_write(code7seg[i]);
-		delay(150);
-	}
+	analogEnable(VR_PIN);
+//	for(i = 0; i < 10; ++i)
+//	{
+//		HC595_write(code7seg[i]);
+//		delay(150);
+//	}
 
 	// init SD card
-	while (!SD.begin(SPI1_PIN_NSS))
-	{
-		HC595_write(ERR_SD_INIT);
-		delay(100);
-	}
+//	while (!SD.begin(SPI1_PIN_NSS))
+//	{
+//		HC595_write(ERR_SD_INIT);
+//		delay(100);
+//	}
 
 	Serial2.begin(115200);
 	//check file exist list
-	for(uint8_t ii = 0; ii < 10; ++ii)
-	{
-		_fileName[3] = ii + 48;
-		root = SD.open("/");
-		while(1)
-		{
-			File entry =  root.openNextFile();
-			if (! entry)
-			{
-				// no more files
-				break;
-			}
-			if (entry.isDirectory() == false)
-			{
-				if(strstr(entry.name(), (const char *)_fileName))
-				{
-					isMaster = ID_MASTER;
-					fileExist[ii] = 1;
-					entry.close();
-					break;
-				}
-			}
-			entry.close();
-		}
-		root.close();
-	}
+//	for(uint8_t ii = 0; ii < 10; ++ii)
+//	{
+//		_fileName[3] = ii + 48;
+//		root = SD.open("/");
+//		while(1)
+//		{
+//			File entry =  root.openNextFile();
+//			if (! entry)
+//			{
+//				// no more files
+//				break;
+//			}
+//			if (entry.isDirectory() == false)
+//			{
+//				if(strstr(entry.name(), (const char *)_fileName))
+//				{
+//					isMaster = ID_MASTER;
+//					fileExist[ii] = 1;
+//					entry.close();
+//					break;
+//				}
+//			}
+//			entry.close();
+//		}
+//		root.close();
+//	}
 
-	GPIO_begin();
+//	GPIO_begin();
+//
+//	// init W2812 channels
+//	for (i = 0; i < 20; ++i)
+//	{
+//		ports[i].begin(pins[i]);
+//		ports[i].clearAll(300);
+//	}
 
-	// init W2812 channels
-	for (i = 0; i < 20; ++i)
-	{
-		ports[i].begin(pins[i]);
-		ports[i].clearAll(300);
-	}
-
-
+//	digitalWrite(HC595_PIN_SDA, 1);
 	while(1)
 	{
-		RESET:// reset when button is pressed
-		switch (isMaster)
-		{
-			case ID_MASTER:
-				_resetFlag = 0;// clear reset flag
-				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
-				_fileName[3] = _SelectedEffect + 48;// update filename base on selected effect
-				RS485_data[5] = _SelectedEffect + 48;// update RS485's filename base on selected effect
-
-
-				// delay2.u32 = analogRead(B0);
-				// Serial.print("1: ");
-				// Serial.println(delay2.u32);
-				delay2.u32 = map2(delay2.u32, 0, 4096, 20, 200);
-				delay2.u32=40;
-				// update delay value to RS485 data
-				RS485_data[6] = delay2.bytes[0];
-				RS485_data[7] = delay2.bytes[1];
-				RS485_data[8] = delay2.bytes[2];
-				RS485_data[9] = delay2.bytes[3];
-
-				Serial2.write(RS485_data, 10);// send data to RS485
-
-				// check file with substring
-				root = SD.open("/");
-				while(1)
-				{
-					if(sound_value < 500)
-					{
-
-						myFile =  root.openNextFile();
-						if (! myFile)
-						{
-							// no more files
-							break;
-						}
-						if (myFile.isDirectory() == false)
-						{
-							if(strstr(myFile.name(), (const char *)_fileName))
-							{
-	//							// read parameters:
-								myFile.readBytes(w.bytes , 4);
-								myFile.readBytes(h.bytes , 4);
-								myFile.readBytes(numOfFrames.bytes , 4);
-								for(k = 0; k < 4; ++k)
-								{
-									w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-									h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-									numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-								}
-								// set up W2812 parameter
-								for (i = 0; i < w.u32; ++i)
-								{
-									ports[i].setLED(h.u32);
-								}
-
-								// display to every channels
-								for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-								{
-									for (i = 0; i < w.u32; ++i)
-									{
-										if (_resetFlag == 1)
-										{
-											myFile.close();
-											root.close();
-											goto RESET;
-										}
-										myFile.readBytes(ports[i]._leds ,h.u32 * 3);
-										ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
-									}
-									for (i = 0; i < w.u32; ++i)
-									{
-										if (_resetFlag == 1)
-										{
-											myFile.close();
-											root.close();
-											goto RESET;
-										}
-										ports[i].showStrip();
-									}
-
-									// delay and check _resetFlag
-									// Serial.print("2: ");
-									// Serial.println(delay2.u32);
-									for (i = 0; i < delay2.u32; ++i)
-									{
-										if (_resetFlag == 1)
-										{
-											myFile.close();
-											root.close();
-											goto RESET;
-										}
-										delay(1);
-									}
-								}
-								// close the file:
-								myFile.close();
-							}
-						}
-						myFile.close();
-					}
-				}
-				root.close();
-
-				break;
-			case ID_SLAVE:
-				// RS485_rec();
-				// wait for RS485 signal
-				while (_resetFlag == 0)
-				{
-					HC595_write(ERR_SLAVE_WAIT);
-					// delay and check _resetFlag
-					for (i = 0; i < 100; ++i)
-					{
-						if (_resetFlag == 1)
-						{
-							//myFile.close();
-							goto RESET;
-						}
-						delay(1);
-					}
-				}
-				_SelectedEffect = _fileName[3]-48;
-				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
-				_resetFlag = 0;
-
-				// check file with substring
-				root = SD.open("/");
-				while(1)
-				{
-					myFile =  root.openNextFile();
-					if (! myFile)
-					{
-						// no more files
-						break;
-					}
-					if (myFile.isDirectory() == false)
-					{
-						if(strstr(myFile.name(), (const char *)_fileName))
-						{
-//							// read parameters:
-							myFile.readBytes(w.bytes , 4);
-							myFile.readBytes(h.bytes , 4);
-							myFile.readBytes(numOfFrames.bytes , 4);
-							for(k = 0; k < 4; ++k)
-							{
-								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-								h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-								numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-							}
-							// set up W2812 parameter
-							for (i = 0; i < w.u32; ++i)
-							{
-								ports[i].setLED(h.u32);
-							}
-
-							// display to every channels
-							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-							{
-								for (i = 0; i < w.u32; ++i)
-								{
-									if (_resetFlag == 1)
-									{
-										myFile.close();
-										root.close();
-										goto RESET;
-									}
-									myFile.readBytes(ports[i]._leds ,h.u32 * 3);
-									ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
-								}
-								for (i = 0; i < w.u32; ++i)
-								{
-									if (_resetFlag == 1)
-									{
-										myFile.close();
-										root.close();
-										goto RESET;
-									}
-									ports[i].showStrip();
-								}
-
-								// delay and check _resetFlag
-								for (i = 0; i < delay2.u32; ++i)
-								{
-									if (_resetFlag == 1)
-									{
-										myFile.close();
-										root.close();
-										goto RESET;
-									}
-									delay(1);
-								}
-							}
-							// close the file:
-							myFile.close();
-						}
-					}
-					myFile.close();
-				}
-				root.close();
-
-				break;
-			default:
-				break;
-		}
+	    digitalToggle(HC595_PIN_SDA);
+	    delay(1000);
+	    if(sound_value <  500)
+	    {
+//	        digitalWrite(HC595_PIN_SDA, 1);
+//	        delay(3000);
+	    }
+	    else
+	    {
+//	        digitalWrite(HC595_PIN_SDA, 0);
+//	        delay(3000);
+	    }
 	}
+
+//		RESET:// reset when button is pressed
+//		switch (isMaster)
+//		{
+//			case ID_MASTER:
+//				_resetFlag = 0;// clear reset flag
+//				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
+//				_fileName[3] = _SelectedEffect + 48;// update filename base on selected effect
+//				RS485_data[5] = _SelectedEffect + 48;// update RS485's filename base on selected effect
+//
+//
+//				// delay2.u32 = analogRead(B0);
+//				// Serial.print("1: ");
+//				// Serial.println(delay2.u32);
+//				delay2.u32 = map2(delay2.u32, 0, 4096, 20, 200);
+//				delay2.u32=40;
+//				// update delay value to RS485 data
+//				RS485_data[6] = delay2.bytes[0];
+//				RS485_data[7] = delay2.bytes[1];
+//				RS485_data[8] = delay2.bytes[2];
+//				RS485_data[9] = delay2.bytes[3];
+//
+//				Serial2.write(RS485_data, 10);// send data to RS485
+//
+//				// check file with substring
+//				root = SD.open("/");
+//				while(1)
+//				{
+//					if(sound_value < 500)
+//					{
+//
+//						myFile =  root.openNextFile();
+//						if (! myFile)
+//						{
+//							// no more files
+//							break;
+//						}
+//						if (myFile.isDirectory() == false)
+//						{
+//							if(strstr(myFile.name(), (const char *)_fileName))
+//							{
+//	//							// read parameters:
+//								myFile.readBytes(w.bytes , 4);
+//								myFile.readBytes(h.bytes , 4);
+//								myFile.readBytes(numOfFrames.bytes , 4);
+//								for(k = 0; k < 4; ++k)
+//								{
+//									w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+//									h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+//									numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+//								}
+//								// set up W2812 parameter
+//								for (i = 0; i < w.u32; ++i)
+//								{
+//									ports[i].setLED(h.u32);
+//								}
+//
+//								// display to every channels
+//								for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+//								{
+//									for (i = 0; i < w.u32; ++i)
+//									{
+//										if (_resetFlag == 1)
+//										{
+//											myFile.close();
+//											root.close();
+//											goto RESET;
+//										}
+//										myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+//										ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+//									}
+//									for (i = 0; i < w.u32; ++i)
+//									{
+//										if (_resetFlag == 1)
+//										{
+//											myFile.close();
+//											root.close();
+//											goto RESET;
+//										}
+//										ports[i].showStrip();
+//									}
+//
+//									// delay and check _resetFlag
+//									// Serial.print("2: ");
+//									// Serial.println(delay2.u32);
+//									for (i = 0; i < delay2.u32; ++i)
+//									{
+//										if (_resetFlag == 1)
+//										{
+//											myFile.close();
+//											root.close();
+//											goto RESET;
+//										}
+//										delay(1);
+//									}
+//								}
+//								// close the file:
+//								myFile.close();
+//							}
+//						}
+//						myFile.close();
+//					}
+//				}
+//				root.close();
+//
+//				break;
+//			case ID_SLAVE:
+//				// RS485_rec();
+//				// wait for RS485 signal
+//				while (_resetFlag == 0)
+//				{
+//					HC595_write(ERR_SLAVE_WAIT);
+//					// delay and check _resetFlag
+//					for (i = 0; i < 100; ++i)
+//					{
+//						if (_resetFlag == 1)
+//						{
+//							//myFile.close();
+//							goto RESET;
+//						}
+//						delay(1);
+//					}
+//				}
+//				_SelectedEffect = _fileName[3]-48;
+//				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
+//				_resetFlag = 0;
+//
+//				// check file with substring
+//				root = SD.open("/");
+//				while(1)
+//				{
+//					myFile =  root.openNextFile();
+//					if (! myFile)
+//					{
+//						// no more files
+//						break;
+//					}
+//					if (myFile.isDirectory() == false)
+//					{
+//						if(strstr(myFile.name(), (const char *)_fileName))
+//						{
+////							// read parameters:
+//							myFile.readBytes(w.bytes , 4);
+//							myFile.readBytes(h.bytes , 4);
+//							myFile.readBytes(numOfFrames.bytes , 4);
+//							for(k = 0; k < 4; ++k)
+//							{
+//								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+//								h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+//								numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+//							}
+//							// set up W2812 parameter
+//							for (i = 0; i < w.u32; ++i)
+//							{
+//								ports[i].setLED(h.u32);
+//							}
+//
+//							// display to every channels
+//							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+//							{
+//								for (i = 0; i < w.u32; ++i)
+//								{
+//									if (_resetFlag == 1)
+//									{
+//										myFile.close();
+//										root.close();
+//										goto RESET;
+//									}
+//									myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+//									ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+//								}
+//								for (i = 0; i < w.u32; ++i)
+//								{
+//									if (_resetFlag == 1)
+//									{
+//										myFile.close();
+//										root.close();
+//										goto RESET;
+//									}
+//									ports[i].showStrip();
+//								}
+//
+//								// delay and check _resetFlag
+//								for (i = 0; i < delay2.u32; ++i)
+//								{
+//									if (_resetFlag == 1)
+//									{
+//										myFile.close();
+//										root.close();
+//										goto RESET;
+//									}
+//									delay(1);
+//								}
+//							}
+//							// close the file:
+//							myFile.close();
+//						}
+//					}
+//					myFile.close();
+//				}
+//				root.close();
+//
+//				break;
+//			default:
+//				break;
+//		}
+//	}
 }
 
 /**
