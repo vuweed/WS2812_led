@@ -156,13 +156,14 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-    if(state_flag == 1)
+    if(state_flag == IDLE)
     {
 //        state_flag = 0;
         sound_value = analogRead(VR_PIN);
         if(sound_value < 500)
         {
-            state_flag = 0;
+            state_flag = PROCESSING;
+            toggle_all_led_flag = ~toggle_all_led_flag;
 
         }
     }

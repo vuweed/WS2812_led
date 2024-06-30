@@ -221,7 +221,8 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
  * @retval None
  */
 int sound_value = 0;
-int state_flag = 1;
+int state_flag = IDLE;
+int toggle_all_led_flag = false;
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -238,10 +239,10 @@ int main(void)
 	NVIC_Configuration();
 
 	/* GPIO Configuration */
-	GPIO_Configuration();
+//	GPIO_Configuration();
 	pinMode(HC595_PIN_LAT, OUTPUT);
 	pinMode(HC595_PIN_CLK, OUTPUT);
-//	pinMode(HC595_PIN_SDA, OUTPUT);
+	pinMode(HC595_PIN_SDA, OUTPUT);
 
 	/* ---------------------------------------------------------------
 	  TIM2 Configuration: Output Compare Timing Mode:
@@ -331,232 +332,259 @@ int main(void)
 //	}
 
 //	digitalWrite(HC595_PIN_SDA, 1);
+
+
+
+//	while(1)
+//	{
+//
+//	        delay(1000);
+//	        if(state_flag ==  0)
+//	        {
+//	          digitalWrite(HC595_PIN_SDA, 1);
+//	            delay(3000);
+//	            state_flag = 1;
+//	        }
+//	        else
+//	        {
+//	            digitalWrite(HC595_PIN_SDA, 0);
+//	          delay(3000);
+//	        }
+//
+//
+//
+//	}
+
+
+
 	while(1)
 	{
-
-	        delay(1000);
-	        if(state_flag ==  0)
-	        {
-	          digitalWrite(HC595_PIN_SDA, 1);
-	            delay(3000);
-	            state_flag = 1;
-	        }
-	        else
-	        {
-	            digitalWrite(HC595_PIN_SDA, 0);
-	          delay(3000);
-	        }
+		RESET:// reset when button is pressed
+		isMaster = ID_MASTER;
+		switch (isMaster)
+		{
+			case ID_MASTER:
+				_resetFlag = 0;// clear reset flag
+				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
+				_fileName[3] = _SelectedEffect + 48;// update filename base on selected effect
+				RS485_data[5] = _SelectedEffect + 48;// update RS485's filename base on selected effect
 
 
+				// delay2.u32 = analogRead(B0);
+				// Serial.print("1: ");
+				// Serial.println(delay2.u32);
+				delay2.u32 = map2(delay2.u32, 0, 4096, 20, 200);
+				delay2.u32=40;
+				// update delay value to RS485 data
+				RS485_data[6] = delay2.bytes[0];
+				RS485_data[7] = delay2.bytes[1];
+				RS485_data[8] = delay2.bytes[2];
+				RS485_data[9] = delay2.bytes[3];
 
+				Serial2.write(RS485_data, 10);// send data to RS485
+
+				// check file with substring
+				root = SD.open("/");
+				while(1)
+				{
+				    if (toggle_all_led_flag == false)
+				    {
+                        myFile =  root.openNextFile();
+                        if (! myFile)
+                        {
+                            // no more files
+                            break;
+                        }
+                        if (myFile.isDirectory() == false)
+                        {
+                            if(strstr(myFile.name(), (const char *)_fileName))
+                            {
+    //                          // read parameters:
+                                myFile.readBytes(w.bytes , 4);
+                                myFile.readBytes(h.bytes , 4);
+                                myFile.readBytes(numOfFrames.bytes , 4);
+                                for(k = 0; k < 4; ++k)
+                                {
+                                    w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+                                    h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+                                    numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+                                }
+                                // set up W2812 parameter
+                                for (i = 0; i < w.u32; ++i)
+                                {
+                                    ports[i].setLED(h.u32);
+                                }
+
+                                // display to every channels
+                                for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+                                {
+                                    for (i = 0; i < w.u32; ++i)
+                                    {
+                                        if (_resetFlag == 1)
+                                        {
+                                            myFile.close();
+                                            root.close();
+                                            goto RESET;
+                                        }
+                                        myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+                                        ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+                                    }
+                                    for (i = 0; i < w.u32; ++i)
+                                    {
+                                        if (_resetFlag == 1)
+                                        {
+                                            myFile.close();
+                                            root.close();
+                                            goto RESET;
+                                        }
+                                        ports[i].showStrip();
+                                    }
+
+                                    // delay and check _resetFlag
+                                    // Serial.print("2: ");
+                                    // Serial.println(delay2.u32);
+                                    for (i = 0; i < delay2.u32; ++i)
+                                    {
+                                        if (_resetFlag == 1)
+                                        {
+                                            myFile.close();
+                                            root.close();
+                                            goto RESET;
+                                        }
+                                        delay(1);
+                                    }
+                                }
+                                // close the file:
+                                myFile.close();
+                            }
+                        }
+                        myFile.close();
+				    }
+				    else
+				    {
+	                    if(state_flag ==  PROCESSING)
+	                    {
+	                        //turn off all led strips
+	                        for (i = 0; i < w.u32; ++i)
+                            {
+                                if (_resetFlag == 1)
+                                {
+                                    myFile.close();
+                                    root.close();
+                                    goto RESET;
+                                }
+                                ports[i].showStrip();
+                            }
+	                        state_flag = IDLE;
+	                    }
+
+				    }
+
+				}
+				root.close();
+
+				break;
+			case ID_SLAVE:
+				// RS485_rec();
+				// wait for RS485 signal
+				while (_resetFlag == 0)
+				{
+					HC595_write(ERR_SLAVE_WAIT);
+					// delay and check _resetFlag
+					for (i = 0; i < 100; ++i)
+					{
+						if (_resetFlag == 1)
+						{
+							//myFile.close();
+							goto RESET;
+						}
+						delay(1);
+					}
+				}
+				_SelectedEffect = _fileName[3]-48;
+				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
+				_resetFlag = 0;
+
+				// check file with substring
+				root = SD.open("/");
+				while(1)
+				{
+					myFile =  root.openNextFile();
+					if (! myFile)
+					{
+						// no more files
+						break;
+					}
+					if (myFile.isDirectory() == false)
+					{
+						if(strstr(myFile.name(), (const char *)_fileName))
+						{
+//							// read parameters:
+							myFile.readBytes(w.bytes , 4);
+							myFile.readBytes(h.bytes , 4);
+							myFile.readBytes(numOfFrames.bytes , 4);
+							for(k = 0; k < 4; ++k)
+							{
+								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+								h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+								numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+							}
+							// set up W2812 parameter
+							for (i = 0; i < w.u32; ++i)
+							{
+								ports[i].setLED(h.u32);
+							}
+
+							// display to every channels
+							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+							{
+								for (i = 0; i < w.u32; ++i)
+								{
+									if (_resetFlag == 1)
+									{
+										myFile.close();
+										root.close();
+										goto RESET;
+									}
+									myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+									ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+								}
+								for (i = 0; i < w.u32; ++i)
+								{
+									if (_resetFlag == 1)
+									{
+										myFile.close();
+										root.close();
+										goto RESET;
+									}
+									ports[i].showStrip();
+								}
+
+								// delay and check _resetFlag
+								for (i = 0; i < delay2.u32; ++i)
+								{
+									if (_resetFlag == 1)
+									{
+										myFile.close();
+										root.close();
+										goto RESET;
+									}
+									delay(1);
+								}
+							}
+							// close the file:
+							myFile.close();
+						}
+					}
+					myFile.close();
+				}
+				root.close();
+
+				break;
+			default:
+				break;
+		}
 	}
-
-//		RESET:// reset when button is pressed
-//		switch (isMaster)
-//		{
-//			case ID_MASTER:
-//				_resetFlag = 0;// clear reset flag
-//				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
-//				_fileName[3] = _SelectedEffect + 48;// update filename base on selected effect
-//				RS485_data[5] = _SelectedEffect + 48;// update RS485's filename base on selected effect
-//
-//
-//				// delay2.u32 = analogRead(B0);
-//				// Serial.print("1: ");
-//				// Serial.println(delay2.u32);
-//				delay2.u32 = map2(delay2.u32, 0, 4096, 20, 200);
-//				delay2.u32=40;
-//				// update delay value to RS485 data
-//				RS485_data[6] = delay2.bytes[0];
-//				RS485_data[7] = delay2.bytes[1];
-//				RS485_data[8] = delay2.bytes[2];
-//				RS485_data[9] = delay2.bytes[3];
-//
-//				Serial2.write(RS485_data, 10);// send data to RS485
-//
-//				// check file with substring
-//				root = SD.open("/");
-//				while(1)
-//				{
-//					if(sound_value < 500)
-//					{
-//
-//						myFile =  root.openNextFile();
-//						if (! myFile)
-//						{
-//							// no more files
-//							break;
-//						}
-//						if (myFile.isDirectory() == false)
-//						{
-//							if(strstr(myFile.name(), (const char *)_fileName))
-//							{
-//	//							// read parameters:
-//								myFile.readBytes(w.bytes , 4);
-//								myFile.readBytes(h.bytes , 4);
-//								myFile.readBytes(numOfFrames.bytes , 4);
-//								for(k = 0; k < 4; ++k)
-//								{
-//									w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-//									h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-//									numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-//								}
-//								// set up W2812 parameter
-//								for (i = 0; i < w.u32; ++i)
-//								{
-//									ports[i].setLED(h.u32);
-//								}
-//
-//								// display to every channels
-//								for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-//								{
-//									for (i = 0; i < w.u32; ++i)
-//									{
-//										if (_resetFlag == 1)
-//										{
-//											myFile.close();
-//											root.close();
-//											goto RESET;
-//										}
-//										myFile.readBytes(ports[i]._leds ,h.u32 * 3);
-//										ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
-//									}
-//									for (i = 0; i < w.u32; ++i)
-//									{
-//										if (_resetFlag == 1)
-//										{
-//											myFile.close();
-//											root.close();
-//											goto RESET;
-//										}
-//										ports[i].showStrip();
-//									}
-//
-//									// delay and check _resetFlag
-//									// Serial.print("2: ");
-//									// Serial.println(delay2.u32);
-//									for (i = 0; i < delay2.u32; ++i)
-//									{
-//										if (_resetFlag == 1)
-//										{
-//											myFile.close();
-//											root.close();
-//											goto RESET;
-//										}
-//										delay(1);
-//									}
-//								}
-//								// close the file:
-//								myFile.close();
-//							}
-//						}
-//						myFile.close();
-//					}
-//				}
-//				root.close();
-//
-//				break;
-//			case ID_SLAVE:
-//				// RS485_rec();
-//				// wait for RS485 signal
-//				while (_resetFlag == 0)
-//				{
-//					HC595_write(ERR_SLAVE_WAIT);
-//					// delay and check _resetFlag
-//					for (i = 0; i < 100; ++i)
-//					{
-//						if (_resetFlag == 1)
-//						{
-//							//myFile.close();
-//							goto RESET;
-//						}
-//						delay(1);
-//					}
-//				}
-//				_SelectedEffect = _fileName[3]-48;
-//				HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
-//				_resetFlag = 0;
-//
-//				// check file with substring
-//				root = SD.open("/");
-//				while(1)
-//				{
-//					myFile =  root.openNextFile();
-//					if (! myFile)
-//					{
-//						// no more files
-//						break;
-//					}
-//					if (myFile.isDirectory() == false)
-//					{
-//						if(strstr(myFile.name(), (const char *)_fileName))
-//						{
-////							// read parameters:
-//							myFile.readBytes(w.bytes , 4);
-//							myFile.readBytes(h.bytes , 4);
-//							myFile.readBytes(numOfFrames.bytes , 4);
-//							for(k = 0; k < 4; ++k)
-//							{
-//								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-//								h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-//								numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-//							}
-//							// set up W2812 parameter
-//							for (i = 0; i < w.u32; ++i)
-//							{
-//								ports[i].setLED(h.u32);
-//							}
-//
-//							// display to every channels
-//							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-//							{
-//								for (i = 0; i < w.u32; ++i)
-//								{
-//									if (_resetFlag == 1)
-//									{
-//										myFile.close();
-//										root.close();
-//										goto RESET;
-//									}
-//									myFile.readBytes(ports[i]._leds ,h.u32 * 3);
-//									ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
-//								}
-//								for (i = 0; i < w.u32; ++i)
-//								{
-//									if (_resetFlag == 1)
-//									{
-//										myFile.close();
-//										root.close();
-//										goto RESET;
-//									}
-//									ports[i].showStrip();
-//								}
-//
-//								// delay and check _resetFlag
-//								for (i = 0; i < delay2.u32; ++i)
-//								{
-//									if (_resetFlag == 1)
-//									{
-//										myFile.close();
-//										root.close();
-//										goto RESET;
-//									}
-//									delay(1);
-//								}
-//							}
-//							// close the file:
-//							myFile.close();
-//						}
-//					}
-//					myFile.close();
-//				}
-//				root.close();
-//
-//				break;
-//			default:
-//				break;
-//		}
-//	}
 }
 
 /**

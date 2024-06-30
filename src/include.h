@@ -43,11 +43,17 @@
 #ifdef __cplusplus
 extern "C"{
 #endif
-
+extern int toggle_all_led_flag;
 extern int state_flag;
 typedef void (*voidFuncPtr)(void);
 typedef uint8_t byte;
 typedef bool boolean;
+typedef enum
+{ PROCESSING = 0,
+  IDLE
+} Sound_Sensor_Flag_t;
+
+
 void TimingDelay_Decrement(void);
 void delay(__IO uint32_t i);
 void delayMicroseconds(__IO uint32_t i);
