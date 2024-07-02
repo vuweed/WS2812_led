@@ -221,7 +221,7 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
  * @retval None
  */
 int sound_value = 0;
-int state_flag = IDLE;
+int state_flag = STATE_1;
 bool toggle_all_led_flag = false;
 int main(void)
 {
