@@ -156,27 +156,35 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-    if(state_flag == IDLE)
+    if(state_flag == STATE_1)
     {
 //        state_flag = 0;
         sound_value = analogRead(VR_PIN);
         if(sound_value < 700)
         {
-            state_flag = PROCESSING;
+            state_flag = PROCESSING_1;
             toggle_all_led_flag = false;
-            // if (toggle_all_led_flag == false)
-            // {
-            //     toggle_all_led_flag = true;
-            // }
-            // else
-            // {
-            //     toggle_all_led_flag = false;
-            // }
 
         }
         else
         {
-          state_flag = PROCESSING;
+          state_flag = PROCESSING_2;
+          toggle_all_led_flag = true;
+        }
+    }
+    else if(state_flag == STATE_2)
+    {
+//        state_flag = 0;
+        sound_value = analogRead(VR_PIN);
+        if(sound_value < 700)
+        {
+            state_flag = PROCESSING_1;
+            toggle_all_led_flag = false;
+
+        }
+        else
+        {
+          state_flag = PROCESSING_2;
           toggle_all_led_flag = true;
         }
     }

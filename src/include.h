@@ -49,8 +49,10 @@ typedef void (*voidFuncPtr)(void);
 typedef uint8_t byte;
 typedef bool boolean;
 typedef enum
-{ PROCESSING = 0,
-  IDLE
+{ PROCESSING_1 = 0,
+  PROCESSING_2,
+  STATE_1,
+  STATE_2
 } Sound_Sensor_Flag_t;
 
 
