@@ -401,8 +401,8 @@ int main(void)
 											}
 											// myFile.readBytes(ports[i]._leds ,h.u32 * 3);
 											// ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
-											ports[i].setAll(0,0,0);
-											ports[i].clearAll();
+											ports[i].setAll(0,255,0);
+											// ports[i].clearAll();
 										}
 										for (i = 0; i < w.u32; ++i)
 										{
@@ -412,8 +412,8 @@ int main(void)
 												root.close();
 												goto RESET;
 											}
-											ports[i].clearAll();
-											// ports[i].showStrip();
+											// ports[i].clearAll();
+											ports[i].showStrip();
 										}
 
 										// delay and check _resetFlag
