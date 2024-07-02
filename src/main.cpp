@@ -433,6 +433,7 @@ int main(void)
                             }
                         }
                         myFile.close();
+						state_flag = IDLE;
 				    }
 				    else
 				    {
