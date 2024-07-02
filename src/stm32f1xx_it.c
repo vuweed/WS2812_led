@@ -160,18 +160,24 @@ void TIM2_IRQHandler(void)
     {
 //        state_flag = 0;
         sound_value = analogRead(VR_PIN);
-        if(sound_value < 500)
+        if(sound_value < 700)
         {
             state_flag = PROCESSING;
-            if (toggle_all_led_flag == false)
-            {
-                toggle_all_led_flag = true;
-            }
-            else
-            {
-                toggle_all_led_flag = false;
-            }
+            toggle_all_led_flag = false;
+            // if (toggle_all_led_flag == false)
+            // {
+            //     toggle_all_led_flag = true;
+            // }
+            // else
+            // {
+            //     toggle_all_led_flag = false;
+            // }
 
+        }
+        else
+        {
+          state_flag = PROCESSING;
+          toggle_all_led_flag = true;
         }
     }
 
