@@ -339,7 +339,6 @@ int main(void)
 		RESET:// reset when button is pressed
 		switch (isMaster)
 		{
-			isMaster = 1;
 			case ID_MASTER:
 				// _resetFlag = 0;// clear reset flag
 				// HC595_write(code7seg[_SelectedEffect]);// show selected effect to 7segs
@@ -452,8 +451,8 @@ int main(void)
 				    }
 				    else
 				    {
-                        if(state_flag ==  PROCESSING_2)
-                        {
+//                        if(state_flag ==  PROCESSING_1)
+//                        {
                             while(count_for_loop < 5)
                             {
 						        count_for_loop++;
@@ -530,10 +529,10 @@ int main(void)
 			// 						}
 			// 					}
 			// 					myFile.close();
+//						    state_flag = STATE_1;
 							}
 						    count_for_loop = 0;
-						    state_flag = STATE_2;
-						}
+//						}
 				    }
 
 				}
