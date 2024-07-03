@@ -156,38 +156,55 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-    if(state_flag == STATE_1)
+    if((STATE_1 == state_flag) || (STATE_2 == state_flag))
     {
-//        state_flag = 0;
-        sound_value = analogRead(VR_PIN);
-        if(sound_value < 700)
-        {
-            state_flag = PROCESSING_1;
-            toggle_all_led_flag = false;
+      sound_value = analogRead(VR_PIN);
+      if(sound_value < 700)
+      {
+        //turn on led
+        state_flag = PROCESSING_1;
+        toggle_all_led_flag = false;
 
-        }
-        else
-        {
-          state_flag = PROCESSING_2;
-          toggle_all_led_flag = true;
-        }
-    }
-    else if(state_flag == STATE_2)
-    {
-//        state_flag = 0;
-        sound_value = analogRead(VR_PIN);
-        if(sound_value < 700)
-        {
-            state_flag = PROCESSING_1;
-            toggle_all_led_flag = false;
+      }
+      else
+      {
+        state_flag = PROCESSING_2;
+        toggle_all_led_flag = true;
+      }
 
-        }
-        else
-        {
-          state_flag = PROCESSING_2;
-          toggle_all_led_flag = true;
-        }
     }
+
+
+    // if(state_flag == STATE_1)
+    // {
+    //     sound_value = analogRead(VR_PIN);
+    //     if(sound_value < 700)
+    //     {
+    //         state_flag = PROCESSING_1;
+    //         toggle_all_led_flag = false;
+
+    //     }
+    //     else
+    //     {
+    //       state_flag = PROCESSING_2;
+    //       toggle_all_led_flag = true;
+    //     }
+    // }
+    // else if(state_flag == STATE_2)
+    // {
+    //     sound_value = analogRead(VR_PIN);
+    //     if(sound_value < 700)
+    //     {
+    //         state_flag = PROCESSING_1;
+    //         toggle_all_led_flag = false;
+
+    //     }
+    //     else
+    //     {
+    //       state_flag = PROCESSING_2;
+    //       toggle_all_led_flag = true;
+    //     }
+    // }
 
      TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 
