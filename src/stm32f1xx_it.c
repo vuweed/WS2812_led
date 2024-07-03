@@ -156,9 +156,9 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
+      sound_value = analogRead(VR_PIN);
     if((STATE_1 == state_flag) || (STATE_2 == state_flag))
     {
-      sound_value = analogRead(VR_PIN);
       if(sound_value < 700)
       {
         //turn on led
