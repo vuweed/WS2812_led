@@ -295,7 +295,7 @@ int main(void)
 	 	delay(100);
 	 }
 
-	Serial2.begin(115200);
+	 Serial2.begin(115200);
 	 //check file exist list
 	 for(uint8_t ii = 0; ii < 10; ++ii)
 	 {
@@ -361,12 +361,93 @@ int main(void)
 
 				 // check file with substring
 				 root = SD.open("/");
+
+
+				 ///////////////////////////////////////////////////
+				            while(count_for_loop < 5)
+                            {
+                                count_for_loop++;
+                 					myFile =  root.openNextFile();
+                 					if (! myFile)
+                 					{
+                 						// no more files
+                 						break;
+                 					}
+                 					if (myFile.isDirectory() == false)
+                 					{
+                 						if(strstr(myFile.name(), (const char *)_fileName))
+                 						{
+                 //                          // read parameters:
+                 							myFile.readBytes(w.bytes , 4);
+                 							myFile.readBytes(h.bytes , 4);
+                 							myFile.readBytes(numOfFrames.bytes , 4);
+                 							for(k = 0; k < 4; ++k)
+                 							{
+                 								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+                 								h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+                 								numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+                 							}
+                 							// set up W2812 parameter
+                 							for (i = 0; i < w.u32; ++i)
+                 							{
+                 								ports[i].setLED(h.u32);
+                 							}
+
+                 							// display to every channels
+                 							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+                 							{
+                 								for (i = 0; i < w.u32; ++i)
+                 								{
+                 									if (_resetFlag == 1)
+                 									{
+                 										myFile.close();
+                 										root.close();
+                 										goto RESET;
+                 									}
+                 									myFile.readBytes(ports[i]._leds ,h.u32 * 3);
+                 									ports[i]._leds = cryption(ports[i]._leds ,h.u32 * 3);
+                 								}
+                 								for (i = 0; i < w.u32; ++i)
+                 								{
+                 									if (_resetFlag == 1)
+                 									{
+                 										myFile.close();
+                 										root.close();
+                 										goto RESET;
+                 									}
+                 									ports[i].showStrip();
+                 								}
+
+                 								// delay and check _resetFlag
+                 								// Serial.print("2: ");
+                 								// Serial.println(delay2.u32);
+                 								for (i = 0; i < delay2.u32; ++i)
+                 								{
+                 									if (_resetFlag == 1)
+                 									{
+                 										myFile.close();
+                 										root.close();
+                 										goto RESET;
+                 									}
+                 									delay(1);
+                 								}
+                 							}
+                 							// close the file:
+                 							myFile.close();
+                 						}
+                 					}
+                 					myFile.close();
+
+
+                            }
+                            count_for_loop = 0;
+				///////////////////////////////////////////////////
 				while(1)
 				{
-				    // if (toggle_all_led_flag == false)
-				    // {
-                        // if(state_flag ==  PROCESSING_1)
-                        // {
+				    if (toggle_all_led_flag == false)
+				    {
+                        if(state_flag ==  PROCESSING_1)
+                        {
                             while(count_for_loop < 5)
                             {
                                 count_for_loop++;
@@ -445,10 +526,10 @@ int main(void)
                             }
                             count_for_loop = 0;
                             state_flag = STATE_1;
-                        // }
-				    // }
-				    // else
-				    // {
+                        }
+				    }
+				    else
+				    {
 						while(count_for_loop < 5)
 						{
 							count_for_loop++;
