@@ -295,7 +295,7 @@ int main(void)
 	 	delay(100);
 	 }
 
-	// Serial2.begin(115200);
+	Serial2.begin(115200);
 	 //check file exist list
 	 for(uint8_t ii = 0; ii < 10; ++ii)
 	 {
@@ -363,10 +363,10 @@ int main(void)
 				 root = SD.open("/");
 				while(1)
 				{
-				    if (toggle_all_led_flag == false)
-				    {
-                        if(state_flag ==  PROCESSING_1)
-                        {
+				    // if (toggle_all_led_flag == false)
+				    // {
+                        // if(state_flag ==  PROCESSING_1)
+                        // {
                             while(count_for_loop < 5)
                             {
                                 count_for_loop++;
@@ -445,10 +445,10 @@ int main(void)
                             }
                             count_for_loop = 0;
                             state_flag = STATE_1;
-                        }
-				    }
-				    else
-				    {
+                        // }
+				    // }
+				    // else
+				    // {
 						while(count_for_loop < 5)
 						{
 							count_for_loop++;
