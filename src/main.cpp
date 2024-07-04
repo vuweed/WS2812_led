@@ -449,19 +449,12 @@ int main(void)
 				    {
                         if(state_flag ==  PROCESSING_1)
                         {
-//                        	count_for_loop = 0;
-                            while(count_for_loop_2 < 1000)
+        				    while(count_for_loop_2 < 100)
                             {
                                 count_for_loop_2++;
                  					myFile =  root.openNextFile();
                  					if (! myFile)
                  					{
-        								if(count_for_loop_2 >= 999)
-        								{
-        									count_for_loop = 0;
-        								}
-//        								delay(1000);
-
                  						// no more files
                  						break;
                  					}
@@ -532,11 +525,7 @@ int main(void)
 
 
                             }
-                            if(count_for_loop_2 > 999)
-                            {
-                            	count_for_loop_2 = 0;
-                            	state_flag = STATE_1;
-                            }
+                            count_for_loop_2 = 0;
                         }
 				    }
 				    else
