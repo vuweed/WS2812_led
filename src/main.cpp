@@ -436,22 +436,13 @@ int main(void)
 				myFile.close();
 			}
 			count_for_loop = 0;
-			///////////////////////////////////////////////////
-			//                         	for (i = 0; i < 20; ++i)
-			//                         	{
-			// //                        		ports[i].begin(pins[i]);
-			//                         		// ports[i].clearAll(300);
-			// 								ports[i].setAll(0,0,0);
-			//                         	}
-			// 							myFile.close();
-			// if (root.isOpen())
-			// {
-				root.close();
-			// }
-			root = SD.open("/");
+
+
+
 
 			//////////////////////////////////////////222222222222222//////////////////
-
+			root.close();
+			root = SD.open("/");
 			////////////////////////////////////////////////2222222222222222222222//////////////////////
 			delay(2000);
 
@@ -530,6 +521,7 @@ int main(void)
 				myFile.close();
 			}
 			count_for_loop = 0;
+			root.close();
 
 			while (1)
 			{
@@ -537,7 +529,8 @@ int main(void)
 				{
 					if (state_flag == PROCESSING_1)
 					{
-						while (count_for_loop_2 < 100)
+						root = SD.open("/");
+						while (count_for_loop_2 < 8)
 						{
 							count_for_loop_2++;
 							myFile = root.openNextFile();
@@ -611,11 +604,13 @@ int main(void)
 							}
 							myFile.close();
 						}
-						if (count_for_loop_2 > 99)
+						if (count_for_loop_2 > 7)
 						{
 							count_for_loop_2 = 0;
 							state_flag = STATE_1;
 						}
+						root.close();
+
 					}
 				}
 				else
