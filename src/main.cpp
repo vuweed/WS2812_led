@@ -615,6 +615,7 @@ int main(void)
 				}
 				else
 				{
+					root = SD.open("/");
 					while (count_for_loop < 6)
 					{
 						count_for_loop++;
@@ -700,6 +701,11 @@ int main(void)
 					}
 					//						if(coun)
 					//						count_for_loop = 0;
+					for (i = 0; i < 20; ++i)
+					{
+						ports[i].clearAll(300);
+					}
+					root.close();
 				}
 			}
 			root.close();
