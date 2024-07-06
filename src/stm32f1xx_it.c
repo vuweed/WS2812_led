@@ -156,66 +156,40 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-//    if((STATE_1 != state_flag))
-//    {
-      if(false == toggle_all_led_flag)
-      {
-          if(STATE_1 == state_flag)
-          {
-              sound_value = analogRead(VR_PIN);
-          }
+    sound_value = analogRead(VR_PIN);
+    if(sound_value < 750)
+    {
+      state_flag = PROCESSING_1;
+    }
+    else
+    {
+      state_flag = STATE_1;
+    }
+      // if(false == toggle_all_led_flag)
+      // {
+      //     if(STATE_1 == state_flag)
+      //     {
+      //         sound_value = analogRead(VR_PIN);
+      //     }
 
-      }
-      else
-      {
-          sound_value = analogRead(VR_PIN);
-      }
-      if(sound_value < 700)
-      {
-        //turn on led
-        state_flag = PROCESSING_1;
-        toggle_all_led_flag = false;
+      // }
+      // else
+      // {
+      //     sound_value = analogRead(VR_PIN);
+      // }
+      // if(sound_value < 700)
+      // {
+      //   //turn on led
+      //   state_flag = PROCESSING_1;
+      //   toggle_all_led_flag = false;
 
-      }
-      else
-      {
-//        state_flag = PROCESSING_1;
-        toggle_all_led_flag = true;
-      }
-
-//    }
+      // }
+      // else
+      // {
+      //   toggle_all_led_flag = true;
+      // }
 
 
-    // if(state_flag == STATE_1)
-    // {
-    //     sound_value = analogRead(VR_PIN);
-    //     if(sound_value < 700)
-    //     {
-    //         state_flag = PROCESSING_1;
-    //         toggle_all_led_flag = false;
-
-    //     }
-    //     else
-    //     {
-    //       state_flag = PROCESSING_2;
-    //       toggle_all_led_flag = true;
-    //     }
-    // }
-    // else if(state_flag == STATE_2)
-    // {
-    //     sound_value = analogRead(VR_PIN);
-    //     if(sound_value < 700)
-    //     {
-    //         state_flag = PROCESSING_1;
-    //         toggle_all_led_flag = false;
-
-    //     }
-    //     else
-    //     {
-    //       state_flag = PROCESSING_2;
-    //       toggle_all_led_flag = true;
-    //     }
-    // }
 
      TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
 
@@ -224,33 +198,7 @@ void TIM2_IRQHandler(void)
      capture = TIM_GetCapture1(TIM2);
      TIM_SetCompare1(TIM2, capture + CCR1_Val);
   }
-  // else if (TIM_GetITStatus(TIM2, TIM_IT_CC2) != RESET)
-  // {
-  //   // TIM_ClearITPendingBit(TIM2, TIM_IT_CC2);
 
-  //   // /* Pin PC.07 toggling with frequency = 109.8 Hz */
-  //   // GPIO_WriteBit(GPIOC, GPIO_Pin_7, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_7)));
-  //   // capture = TIM_GetCapture2(TIM2);
-  //   // TIM_SetCompare2(TIM2, capture + CCR2_Val);
-  // }
-  // else if (TIM_GetITStatus(TIM2, TIM_IT_CC3) != RESET)
-  // {
-  //   // TIM_ClearITPendingBit(TIM2, TIM_IT_CC3);
-
-  //   // /* Pin PC.08 toggling with frequency = 219.7 Hz */
-  //   // GPIO_WriteBit(GPIOC, GPIO_Pin_8, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_8)));
-  //   // capture = TIM_GetCapture3(TIM2);
-  //   // TIM_SetCompare3(TIM2, capture + CCR3_Val);
-  // }
-  // else
-  // {
-  //   // TIM_ClearITPendingBit(TIM2, TIM_IT_CC4);
-
-  //   // /* Pin PC.09 toggling with frequency = 439.4 Hz */
-  //   // GPIO_WriteBit(GPIOC, GPIO_Pin_9, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_9)));
-  //   // capture = TIM_GetCapture4(TIM2);
-  //   // TIM_SetCompare4(TIM2, capture + CCR4_Val);
-  // }
 }
 
 /******************************************************************************/
