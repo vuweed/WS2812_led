@@ -400,7 +400,8 @@ int main(void)
 				}
 				// set up W2812 parameter
 				w.u32 = 2;
-				h.u32 = 100;
+//				h.u32 = 100;
+				h.u32 = map2(sound_value, 0, 4095, 1, 100);
 				numOfFrames.u32 = 2;
 				for (i = 0; i < w.u32; ++i)
 				{
@@ -410,7 +411,7 @@ int main(void)
 				// display to every channels
 				for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
 				{
-					for (i = 0; i < w.u32; ++i)
+					for (i = 0; i < (w.u32); ++i)
 					{
 						if (_resetFlag == 1)
 						{
