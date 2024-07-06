@@ -157,7 +157,7 @@ void TIM2_IRQHandler(void)
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
     sound_value = analogRead(VR_PIN);
-    if(sound_value < 750)
+    if(sound_value < 1000)
     {
       state_flag = PROCESSING_1;
     }

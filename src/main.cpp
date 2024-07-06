@@ -590,7 +590,8 @@ int main(void)
 											}
 											else
 											{
-												// ports[i].clearAll();
+												 ports[i].clearAll();
+												 delay(50);
 											}
 										}
 
