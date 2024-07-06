@@ -296,7 +296,7 @@ int main(void)
 	// }
 
 	Serial2.begin(115200);
-	Serial.begin(115200);
+//	Serial.begin(115200);
 	// check file exist list
 	// for (uint8_t ii = 0; ii < 10; ++ii)
 	// {
@@ -328,11 +328,11 @@ int main(void)
 	GPIO_begin();
 
 	// init W2812 channels
-//	for (i = 0; i < 20; ++i)
-//	{
-//		ports[i].begin(pins[i]);
-//		ports[i].clearAll(300);
-//	}
+	for (i = 0; i < 20; ++i)
+	{
+		ports[i].begin(pins[i]);
+		ports[i].clearAll(300);
+	}
 
 	while (1)
 	{
@@ -360,21 +360,22 @@ int main(void)
 
 			// check file with substring
 //			root = SD.open("/");
-			while(1)
-			{
-	            Serial.print("sensor: ");
-	            Serial.println(sound_value);
-	            Serial.print(" - brightness: ");
-	            Serial.println(g_brightness);
-	            delay(40);
-			}
 
+//			while(1)
+//			{
+//	            Serial.print("sensor: ");
+//	            Serial.println(sound_value);
+//	            Serial.print(" - brightness: ");
+//	            Serial.println(g_brightness);
+//	            delay(40);
+//			}
+//
 
 			///////////////////////////////////////////////////
 			while (1)
 			{
-			    Serial.print("sensor: ");
-			    Serial.println(sound_value);
+//			    Serial.print("sensor: ");
+//			    Serial.println(sound_value);
 //				count_for_loop++;
 				// myFile = root.openNextFile();
 				// if (!myFile)
@@ -417,8 +418,11 @@ int main(void)
 									root.close();
 									goto RESET;
 								}
-								ports[i].setPixel(i,0,255,0);
-								// myFile.readBytes(ports[i]._leds, h.u32 * 3);
+//								g_brightness = 255;
+								ports[i].setBrightness(255);
+//								ports[i].setPixel(i,0,0,255);
+								ports[i].setAll(255,0,0);
+//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
 //								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
 //                                ports[i].setBrightness(g_brightness);
 //                                ports[i].setAllCustom();
