@@ -225,8 +225,6 @@ bool toggle_all_led_flag = false;
 int count_for_loop_2 = 0;
 int count_for_loop = 0;
 uint8_t g_brightness = 0;
-
-
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -298,7 +296,7 @@ int main(void)
 	// }
 
 	Serial2.begin(115200);
-//	Serial.begin(115200);
+	//	Serial.begin(115200);
 	// check file exist list
 	// for (uint8_t ii = 0; ii < 10; ++ii)
 	// {
@@ -330,11 +328,11 @@ int main(void)
 	GPIO_begin();
 
 	// init W2812 channels
-	for (i = 0; i < 20; ++i)
-	{
+for (i = 0; i < 20; ++i)
+{
 		ports[i].begin(pins[i]);
-		ports[i].clearAll(300);
-	}
+ports[i].clearAll(300);
+}
 
 	while (1)
 	{
@@ -362,22 +360,22 @@ int main(void)
 
 			// check file with substring
 //			root = SD.open("/");
-
+			
 //			while(1)
-//			{
+			//			{
 //	            Serial.print("sensor: ");
-//	            Serial.println(sound_value);
-//	            Serial.print(" - brightness: ");
-//	            Serial.println(g_brightness);
-//	            delay(40);
-//			}
+	            //	            Serial.println(sound_value);
+	            //	            Serial.print(" - brightness: ");
+	            //	            Serial.println(g_brightness);
+	            //	            delay(40);
+			//			}
 //
 
 			///////////////////////////////////////////////////
 			while (1)
 			{
-//			    Serial.print("sensor: ");
-//			    Serial.println(sound_value);
+			    //			    Serial.print("sensor: ");
+			    //			    Serial.println(sound_value);
 //				count_for_loop++;
 				// myFile = root.openNextFile();
 				// if (!myFile)
@@ -420,11 +418,11 @@ int main(void)
 									root.close();
 									goto RESET;
 								}
-//								g_brightness = 255;
+								//								g_brightness = 255;
 								ports[i].setBrightness(g_brightness);
 //								ports[i].setPixel(i,0,0,255);
 								ports[i].setAll(255,0,0);
-//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
+								//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
 //								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
 //                                ports[i].setBrightness(g_brightness);
 //                                ports[i].setAllCustom();
@@ -443,16 +441,16 @@ int main(void)
 							// delay and check _resetFlag
 							// Serial.print("2: ");
 							// Serial.println(delay2.u32);
-//							for (i = 0; i < delay2.u32; ++i)
-//							{
+							//							for (i = 0; i < delay2.u32; ++i)
+							//							{
 //								if (_resetFlag == 1)
-//								{
+								//								{
 //									myFile.close();
-//									root.close();
-//									goto RESET;
-//								}
+									//									root.close();
+									//									goto RESET;
+								//								}
 //								delay(1);
-//							}
+							//							}
 						}
 						// close the file:
 						myFile.close();
