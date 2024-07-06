@@ -419,13 +419,13 @@ int main(void)
 							goto RESET;
 						}
 						//								g_brightness = 255;
-						ports[i].setBrightness(g_brightness);
-						//								ports[i].setPixel(i,0,0,255);
+//						ports[i].setBrightness(g_brightness);
+//						ports[i].setPixel(i,0,0,255);
 						ports[i].setAll(255, 0, 0);
-						//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
-						//								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-						//                                ports[i].setBrightness(g_brightness);
-						//                                ports[i].setAllCustom();
+//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
+								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+                                ports[i].setBrightness(g_brightness);
+                                ports[i].setAllCustom();
 					}
 					for (i = 0; i < w.u32; ++i)
 					{

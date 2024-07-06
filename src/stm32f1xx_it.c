@@ -160,7 +160,7 @@ void PendSV_Handler(void)
   */
 void TIM2_IRQHandler(void)
 {
-  int old_brightness = 0;
+  static int old_brightness = 0;
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
     // sound_value = analogRead(VR_PIN);
@@ -185,7 +185,7 @@ void TIM2_IRQHandler(void)
     // }
 
     g_brightness = map2(sound_value, 0, 4095, 1, 255);
-    if(g_brightness >= 70)
+    if(g_brightness >= 50)
     {
         g_brightness = 255;
         old_brightness = 255;
