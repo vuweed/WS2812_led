@@ -45,6 +45,11 @@ extern __IO uint16_t CCR2_Val;
 extern __IO uint16_t CCR3_Val;
 extern __IO uint16_t CCR4_Val;
 
+
+long map2(long x, long in_min, long in_max, long out_min, long out_max)
+{
+	return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
 
@@ -178,6 +183,14 @@ void TIM2_IRQHandler(void)
     //   count_val = 0;
     // }
     g_brightness = 255 - map2(sound_value, 0, 4096, 0, 255);
+    if(g_brightness < 50)
+    {
+        g_brightness = 0;
+    }
+    if((g_brightness > 200) && (g_brightness <= 255))
+    {
+        g_brightness = 255;
+    }
     // if(sound_value < 1000)
     // {
     //   g_brightness = map2(sound_value, 0, 4096, 0, 255);
