@@ -182,15 +182,32 @@ void TIM2_IRQHandler(void)
     // {
     //   count_val = 0;
     // }
-    g_brightness = 255 - map2(sound_value, 0, 4096, 0, 255);
-    if(g_brightness < 50)
-    {
-        g_brightness = 0;
-    }
-    if((g_brightness > 200) && (g_brightness <= 255))
+
+    g_brightness = map2(sound_value, 0, 4095, 1, 255);
+    if(g_brightness >= 200)
     {
         g_brightness = 255;
     }
+    else if (g_brightness <= 10)
+    {
+        g_brightness = 0;
+    }
+    else
+    {
+//        g_brightness = map2(sound_value, 0, 4095, 1, 255);
+    }
+//    if(g_brightness < 50)
+//    {
+//        g_brightness = 0;
+//    }
+//    else if((g_brightness > 200) && (g_brightness <= 255))
+//    {
+//        g_brightness = 255;
+//    }
+//    else
+//    {
+//        g_brightness = 0;
+//    }
     // if(sound_value < 1000)
     // {
     //   g_brightness = map2(sound_value, 0, 4096, 0, 255);

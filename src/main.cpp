@@ -296,6 +296,7 @@ int main(void)
 	// }
 
 	Serial2.begin(115200);
+	Serial.begin(115200);
 	// check file exist list
 	// for (uint8_t ii = 0; ii < 10; ++ii)
 	// {
@@ -327,11 +328,11 @@ int main(void)
 	GPIO_begin();
 
 	// init W2812 channels
-	for (i = 0; i < 20; ++i)
-	{
-		ports[i].begin(pins[i]);
-		ports[i].clearAll(300);
-	}
+//	for (i = 0; i < 20; ++i)
+//	{
+//		ports[i].begin(pins[i]);
+//		ports[i].clearAll(300);
+//	}
 
 	while (1)
 	{
@@ -359,10 +360,21 @@ int main(void)
 
 			// check file with substring
 //			root = SD.open("/");
+			while(1)
+			{
+	            Serial.print("sensor: ");
+	            Serial.println(sound_value);
+	            Serial.print(" - brightness: ");
+	            Serial.println(g_brightness);
+	            delay(40);
+			}
+
 
 			///////////////////////////////////////////////////
 			while (1)
 			{
+			    Serial.print("sensor: ");
+			    Serial.println(sound_value);
 //				count_for_loop++;
 				// myFile = root.openNextFile();
 				// if (!myFile)
@@ -386,9 +398,9 @@ int main(void)
 							numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
 						}
 						// set up W2812 parameter
-						w.u32 = 2;
-						h.u32 = 50;
-						numOfFrames.u32 = 2;
+						w.u32 = 20;
+						h.u32 = 100;
+						numOfFrames.u32 = 20;
 						for (i = 0; i < w.u32; ++i)
 						{
 							ports[i].setLED(h.u32);
@@ -407,7 +419,9 @@ int main(void)
 								}
 								ports[i].setPixel(i,0,255,0);
 								// myFile.readBytes(ports[i]._leds, h.u32 * 3);
-								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+//								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+//                                ports[i].setBrightness(g_brightness);
+//                                ports[i].setAllCustom();
 							}
 							for (i = 0; i < w.u32; ++i)
 							{
@@ -440,16 +454,16 @@ int main(void)
 				// }
 				// myFile.close();
 			}
-			count_for_loop = 0;
+//			count_for_loop = 0;
 			root.close();
 			//////////////////////////////////////////222222222222222//////////////////
-			for (i = 0; i < 20; ++i)
-			{
-//				ports[i].begin(pins[i]);
-				ports[i].clearAll();
-			}
-			root.close();
-			delay(1000);
+//			for (i = 0; i < 20; ++i)
+//			{
+////				ports[i].begin(pins[i]);
+//				ports[i].clearAll();
+//			}
+//			root.close();
+//			delay(1000);
 
 			while (1)
 			{
@@ -457,7 +471,7 @@ int main(void)
 				// {
 				// 	if (state_flag == PROCESSING_1)
 				// 	{
-						root = SD.open("/");
+//						root = SD.open("/");
 						while (1)
 						{
 				// 			count_for_loop_2++;
