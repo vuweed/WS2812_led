@@ -328,11 +328,11 @@ int main(void)
 	GPIO_begin();
 
 	// init W2812 channels
-for (i = 0; i < 20; ++i)
-{
+	for (i = 0; i < 20; ++i)
+	{
 		ports[i].begin(pins[i]);
-ports[i].clearAll(300);
-}
+		ports[i].clearAll(300);
+	}
 
 	while (1)
 	{
@@ -359,24 +359,24 @@ ports[i].clearAll(300);
 			Serial2.write(RS485_data, 10); // send data to RS485
 
 			// check file with substring
-//			root = SD.open("/");
-			
-//			while(1)
+			//			root = SD.open("/");
+
+			//			while(1)
 			//			{
-//	            Serial.print("sensor: ");
-	            //	            Serial.println(sound_value);
-	            //	            Serial.print(" - brightness: ");
-	            //	            Serial.println(g_brightness);
-	            //	            delay(40);
+			//	            Serial.print("sensor: ");
+			//	            Serial.println(sound_value);
+			//	            Serial.print(" - brightness: ");
+			//	            Serial.println(g_brightness);
+			//	            delay(40);
 			//			}
-//
+			//
 
 			///////////////////////////////////////////////////
 			while (1)
 			{
-			    //			    Serial.print("sensor: ");
-			    //			    Serial.println(sound_value);
-//				count_for_loop++;
+				//			    Serial.print("sensor: ");
+				//			    Serial.println(sound_value);
+				//				count_for_loop++;
 				// myFile = root.openNextFile();
 				// if (!myFile)
 				// {
@@ -391,83 +391,83 @@ ports[i].clearAll(300);
 				// 		myFile.readBytes(w.bytes, 4);
 				// 		myFile.readBytes(h.bytes, 4);
 				// 		myFile.readBytes(numOfFrames.bytes, 4);
-						
-						for (k = 0; k < 4; ++k)
-						{
-							w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-							h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-							numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-						}
-						// set up W2812 parameter
-						w.u32 = 2;
-						h.u32 = 100;
-						numOfFrames.u32 = 2;
-						for (i = 0; i < w.u32; ++i)
-						{
-							ports[i].setLED(h.u32);
-						}
-						
-						// display to every channels
-						for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-						{
-							for (i = 0; i < w.u32; ++i)
-							{
-								if (_resetFlag == 1)
-								{
-									myFile.close();
-									root.close();
-									goto RESET;
-								}
-								//								g_brightness = 255;
-								ports[i].setBrightness(g_brightness);
-//								ports[i].setPixel(i,0,0,255);
-								ports[i].setAll(255,0,0);
-								//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
-//								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-//                                ports[i].setBrightness(g_brightness);
-//                                ports[i].setAllCustom();
-							}
-							for (i = 0; i < w.u32; ++i)
-							{
-								if (_resetFlag == 1)
-								{
-									myFile.close();
-									root.close();
-									goto RESET;
-								}
-								ports[i].showStrip();
-							}
 
-							// delay and check _resetFlag
-							// Serial.print("2: ");
-							// Serial.println(delay2.u32);
-							//							for (i = 0; i < delay2.u32; ++i)
-							//							{
-//								if (_resetFlag == 1)
-								//								{
-//									myFile.close();
-									//									root.close();
-									//									goto RESET;
-								//								}
-//								delay(1);
-							//							}
+				for (k = 0; k < 4; ++k)
+				{
+					w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+					h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+					numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+				}
+				// set up W2812 parameter
+				w.u32 = 2;
+				h.u32 = 100;
+				numOfFrames.u32 = 2;
+				for (i = 0; i < w.u32; ++i)
+				{
+					ports[i].setLED(h.u32);
+				}
+
+				// display to every channels
+				for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+				{
+					for (i = 0; i < w.u32; ++i)
+					{
+						if (_resetFlag == 1)
+						{
+							myFile.close();
+							root.close();
+							goto RESET;
 						}
-						// close the file:
-						myFile.close();
-					// }
+						//								g_brightness = 255;
+						ports[i].setBrightness(g_brightness);
+						//								ports[i].setPixel(i,0,0,255);
+						ports[i].setAll(255, 0, 0);
+						//								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
+						//								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+						//                                ports[i].setBrightness(g_brightness);
+						//                                ports[i].setAllCustom();
+					}
+					for (i = 0; i < w.u32; ++i)
+					{
+						if (_resetFlag == 1)
+						{
+							myFile.close();
+							root.close();
+							goto RESET;
+						}
+						ports[i].showStrip();
+					}
+
+					// delay and check _resetFlag
+					// Serial.print("2: ");
+					// Serial.println(delay2.u32);
+                    for (i = 0; i < delay2.u32; ++i)
+                    {
+                        if (_resetFlag == 1)
+                        {
+                            myFile.close();
+                            root.close();
+                            goto RESET;
+                        }
+                        delay(1);
+                    }
+				}
+				// close the file:
+				myFile.close();
+				// }
 				// }
 				// myFile.close();
 			}
-//			count_for_loop = 0;
+			//			count_for_loop = 0;
 			root.close();
 			//////////////////////////////////////////222222222222222//////////////////
-//			for (i = 0; i < 20; ++i)
-//			{
-////				ports[i].begin(pins[i]);
-//				ports[i].clearAll();
-//			}
-//			root.close();
-//			delay(1000);
+			//			for (i = 0; i < 20; ++i)
+			//			{
+			////				ports[i].begin(pins[i]);
+			//				ports[i].clearAll();
+			//			}
+			//			root.close();
+			//			delay(1000);
 
 			while (1)
 			{
@@ -475,95 +475,93 @@ ports[i].clearAll(300);
 				// {
 				// 	if (state_flag == PROCESSING_1)
 				// 	{
-//						root = SD.open("/");
-						while (1)
+				//						root = SD.open("/");
+				while (1)
+				{
+					// 			count_for_loop_2++;
+					myFile = root.openNextFile();
+					if (!myFile)
+					{
+						// no more files
+						break;
+					}
+					if (myFile.isDirectory() == false)
+					{
+						if (strstr(myFile.name(), (const char *)_fileName))
 						{
-				// 			count_for_loop_2++;
-							myFile = root.openNextFile();
-							if (!myFile)
+							//                          // read parameters:
+							myFile.readBytes(w.bytes, 4);
+							myFile.readBytes(h.bytes, 4);
+							myFile.readBytes(numOfFrames.bytes, 4);
+							for (k = 0; k < 4; ++k)
 							{
-								// no more files
-								break;
+								w.bytes[k] = w.bytes[k] ^ keys[k % 18];
+								h.bytes[k] = h.bytes[k] ^ keys[k % 18];
+								numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
 							}
-							if (myFile.isDirectory() == false)
+							// set up W2812 parameter
+							for (i = 0; i < w.u32; ++i)
 							{
-								if (strstr(myFile.name(), (const char *)_fileName))
+								ports[i].setLED(h.u32);
+							}
+
+							// display to every channels
+							for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+							{
+								for (i = 0; i < w.u32; ++i)
 								{
-									//                          // read parameters:
-									myFile.readBytes(w.bytes, 4);
-									myFile.readBytes(h.bytes, 4);
-									myFile.readBytes(numOfFrames.bytes, 4);
-									for (k = 0; k < 4; ++k)
+									if (_resetFlag == 1)
 									{
-										w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-										h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-										numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
+										myFile.close();
+										root.close();
+										goto RESET;
 									}
-									// set up W2812 parameter
-									for (i = 0; i < w.u32; ++i)
+									myFile.readBytes(ports[i]._leds, h.u32 * 3);
+									ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+									ports[i].setBrightness(g_brightness);
+									ports[i].setAllCustom();
+								}
+								for (i = 0; i < w.u32; ++i)
+								{
+									if (_resetFlag == 1)
 									{
-										ports[i].setLED(h.u32);
+										myFile.close();
+										root.close();
+										goto RESET;
 									}
+									ports[i].showStrip();
+									// if(PROCESSING_1 == state_flag)
+									// {
+									// 	ports[i].showStrip();
+									// }
+									// else
+									// {
+									// 	 ports[i].clearAll();
+									// 	//  delay(50);
+									// }
+								}
 
-									// display to every channels
-									for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+								// delay and check _resetFlag
+								// Serial.print("2: ");
+								// Serial.println(delay2.u32);
+								for (i = 0; i < delay2.u32; ++i)
+								{
+									if (_resetFlag == 1)
 									{
-										for (i = 0; i < w.u32; ++i)
-										{
-											if (_resetFlag == 1)
-											{
-												myFile.close();
-												root.close();
-												goto RESET;
-											}
-											myFile.readBytes(ports[i]._leds, h.u32 * 3);
-											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-											ports[i].setBrightness(g_brightness);
-											ports[i].setAllCustom();
-										}
-										for (i = 0; i < w.u32; ++i)
-										{
-											if (_resetFlag == 1)
-											{
-												myFile.close();
-												root.close();
-												goto RESET;
-											}
-											ports[i].showStrip();
-											// if(PROCESSING_1 == state_flag)
-											// {
-											// 	ports[i].showStrip();
-											// }
-											// else
-											// {
-											// 	 ports[i].clearAll();
-											// 	//  delay(50);
-											// }
-										}
-
-										// delay and check _resetFlag
-										// Serial.print("2: ");
-										// Serial.println(delay2.u32);
-										for (i = 0; i < delay2.u32; ++i)
-										{
-											if (_resetFlag == 1)
-											{
-												myFile.close();
-												root.close();
-												goto RESET;
-											}
-											delay(1);
-										}
+										myFile.close();
+										root.close();
+										goto RESET;
 									}
-									// close the file:
-									myFile.close();
+									delay(1);
 								}
 							}
+							// close the file:
 							myFile.close();
-
 						}
-						root.close();
-
+					}
+					myFile.close();
+				}
+				root.close();
 			}
 			root.close();
 
