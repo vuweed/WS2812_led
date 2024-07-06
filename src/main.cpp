@@ -225,6 +225,8 @@ bool toggle_all_led_flag = false;
 int count_for_loop_2 = 0;
 int count_for_loop = 0;
 uint8_t g_brightness = 0;
+
+
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -399,9 +401,9 @@ int main(void)
 							numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
 						}
 						// set up W2812 parameter
-						w.u32 = 20;
+						w.u32 = 2;
 						h.u32 = 100;
-						numOfFrames.u32 = 20;
+						numOfFrames.u32 = 2;
 						for (i = 0; i < w.u32; ++i)
 						{
 							ports[i].setLED(h.u32);
@@ -419,7 +421,7 @@ int main(void)
 									goto RESET;
 								}
 //								g_brightness = 255;
-								ports[i].setBrightness(255);
+								ports[i].setBrightness(g_brightness);
 //								ports[i].setPixel(i,0,0,255);
 								ports[i].setAll(255,0,0);
 //								 myFile.readBytes(ports[i]._leds, h.u32 * 3);
@@ -441,16 +443,16 @@ int main(void)
 							// delay and check _resetFlag
 							// Serial.print("2: ");
 							// Serial.println(delay2.u32);
-							for (i = 0; i < delay2.u32; ++i)
-							{
-								if (_resetFlag == 1)
-								{
-									myFile.close();
-									root.close();
-									goto RESET;
-								}
-								delay(1);
-							}
+//							for (i = 0; i < delay2.u32; ++i)
+//							{
+//								if (_resetFlag == 1)
+//								{
+//									myFile.close();
+//									root.close();
+//									goto RESET;
+//								}
+//								delay(1);
+//							}
 						}
 						// close the file:
 						myFile.close();
