@@ -224,7 +224,60 @@ int state_flag = STATE_1;
 bool toggle_all_led_flag = false;
 int count_for_loop_2 = 0;
 int count_for_loop = 0;
+extern uint16_t capture;
 
+void TIM2_IRQHandler(void)
+{
+  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
+  {
+	if((STATE_1 != state_flag))
+	{
+		static uint32_t count = 0;
+		count++;
+		if(count > 150)
+		{
+			count = 0;
+			for (int i = 0; i < 20; ++i)
+			{
+			ports[i].clearAll();
+			}
+		}
+		if(false == toggle_all_led_flag)
+		{
+			if(STATE_1 == state_flag)
+			{
+				sound_value = analogRead(VR_PIN);
+			}
+
+		}
+		else
+		{
+			sound_value = analogRead(VR_PIN);
+		}
+		if(sound_value < 700)
+		{
+			//turn on led
+			state_flag = PROCESSING_1;
+			toggle_all_led_flag = false;
+
+		}
+		else
+		{
+	//        state_flag = PROCESSING_1;
+			toggle_all_led_flag = true;
+		}
+
+
+		TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+
+		// /* Pin PC.06 toggling with frequency = 73.24 Hz */
+	//     GPIO_WriteBit(GPIOC, GPIO_Pin_13, (BitAction)(1 - GPIO_ReadOutputDataBit(GPIOC, GPIO_Pin_13)));
+		capture = TIM_GetCapture1(TIM2);
+		TIM_SetCompare1(TIM2, capture + CCR1_Val);
+	}
+  }
+ 
+}
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
