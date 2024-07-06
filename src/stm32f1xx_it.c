@@ -158,6 +158,7 @@ void TIM2_IRQHandler(void)
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
     sound_value = analogRead(VR_PIN);
+    
     // static uint32_t count_val = 0;
     // count_val++;
     // if(count_val < 50)
@@ -172,15 +173,15 @@ void TIM2_IRQHandler(void)
     // {
     //   count_val = 0;
     // }
-    
-    if(sound_value < 1000)
-    {
-      g_brightness = 255;
-    }
-    else
-    {
-      g_brightness = 0;
-    }
+    g_brightness = map2(sound_value, 0, 4096, 0, 255);
+    // if(sound_value < 1000)
+    // {
+    //   g_brightness = map2(sound_value, 0, 4096, 0, 255);
+    // }
+    // else
+    // {
+    //   g_brightness = 0;
+    // }
       // if(false == toggle_all_led_flag)
       // {
       //     if(STATE_1 == state_flag)
