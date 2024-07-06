@@ -455,7 +455,6 @@ int main(void)
 						root = SD.open("/");
 						while (1)
 						{
-							
 				// 			count_for_loop_2++;
 							myFile = root.openNextFile();
 							if (!myFile)
@@ -541,8 +540,7 @@ int main(void)
 
 						}
 						root.close();
-				
-					root.close();
+
 			}
 			root.close();
 

@@ -157,8 +157,12 @@ void TIM2_IRQHandler(void)
 {
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
-    sound_value = analogRead(VR_PIN);
-    
+    // sound_value = analogRead(VR_PIN);
+    for (int i = 0; i < 32; i++) //create a for loop to read
+    { sound_value += analogRead(VR_PIN);  } //read the sound sensor
+
+    sound_value >>= 5; //bitshift operation
+//     Serial.println(sound_value); //print the value of sound sensor
     // static uint32_t count_val = 0;
     // count_val++;
     // if(count_val < 50)
@@ -173,7 +177,7 @@ void TIM2_IRQHandler(void)
     // {
     //   count_val = 0;
     // }
-    g_brightness = map2(sound_value, 0, 4096, 0, 255);
+    g_brightness = 255 - map2(sound_value, 0, 4096, 0, 255);
     // if(sound_value < 1000)
     // {
     //   g_brightness = map2(sound_value, 0, 4096, 0, 255);
