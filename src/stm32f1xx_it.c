@@ -158,6 +158,16 @@ void TIM2_IRQHandler(void)
   {
 //    if((STATE_1 != state_flag))
 //    {
+      static uint32_t count = 0;
+      count++;
+      if(count > 150)
+      {
+        count = 0;
+        for (int i = 0; i < 20; ++i)
+        {
+          ports[i].clearAll();
+        }
+      }
       if(false == toggle_all_led_flag)
       {
           if(STATE_1 == state_flag)

@@ -445,10 +445,10 @@ int main(void)
 
 			while (1)
 			{
-				if (toggle_all_led_flag == false)
-				{
-					if (state_flag == PROCESSING_1)
-					{
+				// if (toggle_all_led_flag == false)
+				// {
+					// if (state_flag == PROCESSING_1)
+					// {
 						root = SD.open("/");
 						while (count_for_loop_2 < 8)
 						{
@@ -530,24 +530,19 @@ int main(void)
 							state_flag = STATE_1;
 						}
 						root.close();
-					}
-				}
-				else
-				{
-					// root = SD.open("/");
-					// while (count_for_loop < 6)
-					// {
-					// 	count_for_loop++;
-					// 	// turn off all led strips
 					// }
-					// clear all
-					for (i = 0; i < 20; ++i)
-					{
-						ports[i].clearAll(300);
-					}
-					root.close();
-					delay(500);
-				}
+				// }
+				// else
+				// {
+				// 	// root = SD.open("/");
+				// 	// clear all
+				// 	for (i = 0; i < 20; ++i)
+				// 	{
+				// 		ports[i].clearAll(300);
+				// 	}
+				// 	root.close();
+				// 	delay(500);
+				// }
 			}
 			root.close();
 
