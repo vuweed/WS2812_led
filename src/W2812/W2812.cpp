@@ -19,6 +19,8 @@ Ws2812::~Ws2812()
 	// TODO Auto-generated destructor stub
 }
 
+
+
 void Ws2812::begin(uint16_t pinData)
 {
 	_pinData = pinData;
@@ -218,11 +220,16 @@ void Ws2812::showStrip()
 }
 
 // Set a LED color (not yet visible)
-void Ws2812::setPixel(uint16_t Pixel, uint8_t green, uint8_t red, uint8_t blue)
-{
-	_leds[Pixel * 3] = green;
-	_leds[Pixel * 3 + 1] = red;
-	_leds[Pixel * 3 + 2] = blue;
+// void Ws2812::setPixel(uint16_t Pixel, uint8_t green, uint8_t red, uint8_t blue)
+// {
+// 	_leds[Pixel * 3] = green;
+// 	_leds[Pixel * 3 + 1] = red;
+// 	_leds[Pixel * 3 + 2] = blue;
+// }
+void Ws2812::setPixel(uint16_t Pixel, uint8_t green, uint8_t red, uint8_t blue) {
+    _leds[Pixel * 3] = (green * _brightness) / 255;
+    _leds[Pixel * 3 + 1] = (red * _brightness) / 255;
+    _leds[Pixel * 3 + 2] = (blue * _brightness) / 255;
 }
 
 // Set all LEDs to a given color and apply it (visible)
@@ -235,4 +242,10 @@ void Ws2812::setAll(uint8_t green, uint8_t red, uint8_t blue)
 		setPixel(i, green, red, blue);
 	}
 	__enable_irq();
+}
+
+
+
+void Ws2812::setBrightness(uint8_t brightness) {
+    _brightness = brightness;
 }

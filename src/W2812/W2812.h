@@ -45,7 +45,7 @@ class Ws2812
 {
 public:
 	uint8_t *_leds;
-
+	uint8_t _brightness;
 	Ws2812();
 	virtual ~Ws2812();
 	// config
@@ -66,6 +66,8 @@ public:
 	void clearAll();
 	// clean all led 2
 	void clearAll(uint16_t numOfLeds);
+	//
+	void setBrightness(uint8_t brightness);
 
 	void send(uint8_t b,uint8_t g,uint8_t r);
 private:

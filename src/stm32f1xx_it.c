@@ -39,6 +39,7 @@
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 uint16_t capture = 0;
+extern uint8_t g_brightness;
 extern __IO uint16_t CCR1_Val;
 extern __IO uint16_t CCR2_Val;
 extern __IO uint16_t CCR3_Val;
@@ -157,14 +158,29 @@ void TIM2_IRQHandler(void)
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
     sound_value = analogRead(VR_PIN);
-    if(sound_value < 1000)
+    static uint32_t count_val = 0;
+    count_val++;
+    if(count_val < 50)
     {
-      state_flag = PROCESSING_1;
+        g_brightness = 0;
+    }
+    else if ((count_val >= 50) && (count_val < 100))
+    {
+      g_brightness = 255;
     }
     else
     {
-      state_flag = STATE_1;
+      count_val = 0;
     }
+    
+    // if(sound_value < 1000)
+    // {
+    //   state_flag = PROCESSING_1;
+    // }
+    // else
+    // {
+    //   state_flag = STATE_1;
+    // }
       // if(false == toggle_all_led_flag)
       // {
       //     if(STATE_1 == state_flag)

@@ -224,7 +224,7 @@ int state_flag = STATE_1;
 bool toggle_all_led_flag = false;
 int count_for_loop_2 = 0;
 int count_for_loop = 0;
-
+uint8_t g_brightness = 0;
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -444,87 +444,7 @@ int main(void)
 				ports[i].clearAll();
 			}
 			root.close();
-			delay(2000);
-
-			root = SD.open("/");
-			////////////////////////////////////////////////2222222222222222222222//////////////////////
-
-			while (count_for_loop < 50)
-			{
-				count_for_loop++;
-				myFile = root.openNextFile();
-				if (!myFile)
-				{
-					// no more files
-					break;
-				}
-				if (myFile.isDirectory() == false)
-				{
-					if (strstr(myFile.name(), (const char *)_fileName))
-					{
-						//                          // read parameters:
-						myFile.readBytes(w.bytes, 4);
-						myFile.readBytes(h.bytes, 4);
-						myFile.readBytes(numOfFrames.bytes, 4);
-						for (k = 0; k < 4; ++k)
-						{
-							w.bytes[k] = w.bytes[k] ^ keys[k % 18];
-							h.bytes[k] = h.bytes[k] ^ keys[k % 18];
-							numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
-						}
-						// set up W2812 parameter
-						for (i = 0; i < w.u32; ++i)
-						{
-							ports[i].setLED(h.u32);
-						}
-
-						// display to every channels
-						for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-						{
-							for (i = 0; i < w.u32; ++i)
-							{
-								if (_resetFlag == 1)
-								{
-									myFile.close();
-									root.close();
-									goto RESET;
-								}
-								myFile.readBytes(ports[i]._leds, h.u32 * 3);
-								ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-							}
-							for (i = 0; i < w.u32; ++i)
-							{
-								if (_resetFlag == 1)
-								{
-									myFile.close();
-									root.close();
-									goto RESET;
-								}
-								ports[i].showStrip();
-							}
-
-							// delay and check _resetFlag
-							// Serial.print("2: ");
-							// Serial.println(delay2.u32);
-							for (i = 0; i < delay2.u32; ++i)
-							{
-								if (_resetFlag == 1)
-								{
-									myFile.close();
-									root.close();
-									goto RESET;
-								}
-								delay(1);
-							}
-						}
-						// close the file:
-						myFile.close();
-					}
-				}
-				myFile.close();
-			}
-			count_for_loop = 0;
-			root.close();
+			delay(1000);
 
 			while (1)
 			{
@@ -535,6 +455,7 @@ int main(void)
 						root = SD.open("/");
 						while (1)
 						{
+							
 				// 			count_for_loop_2++;
 							myFile = root.openNextFile();
 							if (!myFile)
@@ -575,6 +496,7 @@ int main(void)
 											}
 											myFile.readBytes(ports[i]._leds, h.u32 * 3);
 											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+											ports[i].setBrightness(g_brightness);
 										}
 										for (i = 0; i < w.u32; ++i)
 										{
@@ -584,15 +506,16 @@ int main(void)
 												root.close();
 												goto RESET;
 											}
-											if(PROCESSING_1 == state_flag)
-											{
-												ports[i].showStrip();
-											}
-											else
-											{
-												 ports[i].clearAll();
-												 delay(50);
-											}
+											ports[i].showStrip();
+											// if(PROCESSING_1 == state_flag)
+											// {
+											// 	ports[i].showStrip();
+											// }
+											// else
+											// {
+											// 	 ports[i].clearAll();
+											// 	//  delay(50);
+											// }
 										}
 
 										// delay and check _resetFlag
