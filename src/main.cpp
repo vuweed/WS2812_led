@@ -497,6 +497,7 @@ int main(void)
 											myFile.readBytes(ports[i]._leds, h.u32 * 3);
 											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
 											ports[i].setBrightness(g_brightness);
+											ports[i].setAllCustom();
 										}
 										for (i = 0; i < w.u32; ++i)
 										{

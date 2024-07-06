@@ -244,6 +244,18 @@ void Ws2812::setAll(uint8_t green, uint8_t red, uint8_t blue)
 	__enable_irq();
 }
 
+void Ws2812::setAllCustom(void)
+{
+	uint8_t i;
+	__disable_irq();
+	for (i = 0; i < _numOfLeds; ++i)
+	{
+		setPixel(i, _leds[i * 3], _leds[i * 3 + 1], _leds[i * 3 + 2]);
+	}
+	__enable_irq();
+}
+
+
 
 
 void Ws2812::setBrightness(uint8_t brightness) {
