@@ -436,17 +436,18 @@ int main(void)
 				myFile.close();
 			}
 			count_for_loop = 0;
-
+//			root.close();
 			//////////////////////////////////////////222222222222222//////////////////
-			root.close();
 			for (i = 0; i < 20; ++i)
 			{
-				ports[i].begin(pins[i]);
+//				ports[i].begin(pins[i]);
 				ports[i].clearAll();
 			}
+			root.close();
+			delay(2000);
+
 			root = SD.open("/");
 			////////////////////////////////////////////////2222222222222222222222//////////////////////
-			delay(2000);
 
 			while (count_for_loop < 50)
 			{
