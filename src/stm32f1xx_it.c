@@ -187,13 +187,20 @@ void TIM2_IRQHandler(void)
     g_brightness = map2(sound_value, 0, 4095, 1, 255);
     if(g_brightness >= 50)
     {
+        
         g_brightness = 255;
         old_brightness = 255;
     }
-    else if (g_brightness <= 10)
+    else if (g_brightness <= 5)
     {
-        g_brightness = 0;
-        old_brightness = 20;
+        static int aging_counter = 0;
+        aging_counter++;
+        if(aging_counter >= 10)
+        {
+          aging_counter = 0;
+          g_brightness = 0;
+          old_brightness = 0;
+        }
     }
     else
     {
