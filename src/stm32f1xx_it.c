@@ -160,6 +160,7 @@ void PendSV_Handler(void)
   */
 void TIM2_IRQHandler(void)
 {
+  uint8_t black_count = 0;
   static int old_brightness = 0;
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
@@ -169,7 +170,10 @@ void TIM2_IRQHandler(void)
 
     sound_value >>= 6; //bitshift operation
 //     Serial.println(sound_value); //print the value of sound sensor
-    // static uint32_t count_val = 0;
+    static uint32_t count_val = 0;
+
+
+
     // count_val++;
     // if(count_val < 50)
     // {
@@ -183,11 +187,23 @@ void TIM2_IRQHandler(void)
     // {
     //   count_val = 0;
     // }
-
-    g_brightness = map2(sound_value, 0, 4095, 1, 255);
+    
+    black_count = map2(analogRead(A2), 0, 4095, 0, 200);
+    if(STATE_1 == state_flag)
+    {
+      g_brightness = map2(sound_value, 0, 4095, 1, 255);
+    }
+    if (PROCESSING_1 == state_flag)
+    {
+      if(++count_val > black_count)
+      {
+        count_val = 0;
+        state_flag = STATE_1;
+      }
+    }
     if(g_brightness >= 50)
     {
-        
+
         g_brightness = 255;
         old_brightness = 255;
     }
@@ -200,6 +216,7 @@ void TIM2_IRQHandler(void)
           aging_counter = 0;
           g_brightness = 0;
           old_brightness = 0;
+          state_flag = PROCESSING_1;
         }
     }
     else
