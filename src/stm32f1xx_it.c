@@ -175,7 +175,7 @@ void TIM2_IRQHandler(void)
     static uint32_t count_val = 0;
 
 
-    blackout_val = analogRead(A2);
+    blackout_val = analogRead(B1);
     black_count = map2(blackout_val, 0, 4095, 0, 200);
     if(STATE_1 == state_flag)
     {
