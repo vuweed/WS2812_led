@@ -158,9 +158,11 @@ void PendSV_Handler(void)
   * @param  None
   * @retval None
   */
+uint8_t black_count = 0;
+int blackout_val = 0;
 void TIM2_IRQHandler(void)
 {
-  uint8_t black_count = 0;
+
   static int old_brightness = 0;
   if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
   {
@@ -173,22 +175,8 @@ void TIM2_IRQHandler(void)
     static uint32_t count_val = 0;
 
 
-
-    // count_val++;
-    // if(count_val < 50)
-    // {
-    //     g_brightness = 0;
-    // }
-    // else if ((count_val >= 50) && (count_val < 100))
-    // {
-    //   g_brightness = 255;
-    // }
-    // else
-    // {
-    //   count_val = 0;
-    // }
-    
-    black_count = map2(analogRead(A2), 0, 4095, 0, 200);
+    blackout_val = analogRead(A2);
+    black_count = map2(blackout_val, 0, 4095, 0, 200);
     if(STATE_1 == state_flag)
     {
       g_brightness = map2(sound_value, 0, 4095, 1, 255);
