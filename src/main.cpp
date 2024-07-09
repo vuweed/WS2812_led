@@ -225,6 +225,8 @@ bool toggle_all_led_flag = false;
 int count_for_loop_2 = 0;
 int count_for_loop = 0;
 uint8_t g_brightness = 0;
+extern int aging_counter;
+extern int user_brightness;
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -496,7 +498,7 @@ int main(void)
 											}
 											myFile.readBytes(ports[i]._leds, h.u32 * 3);
 											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-											ports[i].setBrightness(g_brightness);
+											ports[i].setBrightness(user_brightness);
 											ports[i].setAllCustom();
 										}
 										for (i = 0; i < w.u32; ++i)
@@ -519,6 +521,11 @@ int main(void)
 											// }
 										}
 
+										if(PROCESSING_1 == state_flag)
+										{
+											delay(1000);
+											state_flag = STATE_1;
+										}
 										// delay and check _resetFlag
 										// Serial.print("2: ");
 										// Serial.println(delay2.u32);

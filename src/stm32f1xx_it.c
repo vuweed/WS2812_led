@@ -160,6 +160,9 @@ void PendSV_Handler(void)
   */
 uint8_t black_count = 0;
 int blackout_val = 0;
+int user_brightness = 0;
+int aging_counter = 0;
+
 void TIM2_IRQHandler(void)
 {
 
@@ -174,87 +177,25 @@ void TIM2_IRQHandler(void)
 //     Serial.println(sound_value); //print the value of sound sensor
     static uint32_t count_val = 0;
 
-
-    blackout_val = analogRead(B1);
-    black_count = map2(blackout_val, 0, 4095, 0, 200);
     if(STATE_1 == state_flag)
     {
       g_brightness = map2(sound_value, 0, 4095, 1, 255);
-    }
-    if (PROCESSING_1 == state_flag)
-    {
-      if(++count_val > black_count)
+      if(g_brightness >= 5)
       {
-        count_val = 0;
-        state_flag = STATE_1;
+        aging_counter = 0;
+        user_brightness = 255;
+      }
+      else if (g_brightness <= 5)
+      {
+          aging_counter++;
+          if(aging_counter >= analogRead(B1))
+          {
+            aging_counter = 0;
+            user_brightness = 0;
+            state_flag = PROCESSING_1;
+          }
       }
     }
-    if(g_brightness >= 50)
-    {
-
-        g_brightness = 255;
-        old_brightness = 255;
-    }
-    else if (g_brightness <= 5)
-    {
-        static int aging_counter = 0;
-        aging_counter++;
-        if(aging_counter >= 10)
-        {
-          aging_counter = 0;
-          g_brightness = 0;
-          old_brightness = 0;
-          state_flag = PROCESSING_1;
-        }
-    }
-    else
-    {
-      g_brightness = old_brightness;
-//        g_brightness = map2(sound_value, 0, 4095, 1, 255);
-    }
-//    if(g_brightness < 50)
-//    {
-//        g_brightness = 0;
-//    }
-//    else if((g_brightness > 200) && (g_brightness <= 255))
-//    {
-//        g_brightness = 255;
-//    }
-//    else
-//    {
-//        g_brightness = 0;
-//    }
-    // if(sound_value < 1000)
-    // {
-    //   g_brightness = map2(sound_value, 0, 4096, 0, 255);
-    // }
-    // else
-    // {
-    //   g_brightness = 0;
-    // }
-      // if(false == toggle_all_led_flag)
-      // {
-      //     if(STATE_1 == state_flag)
-      //     {
-      //         sound_value = analogRead(VR_PIN);
-      //     }
-
-      // }
-      // else
-      // {
-      //     sound_value = analogRead(VR_PIN);
-      // }
-      // if(sound_value < 700)
-      // {
-      //   //turn on led
-      //   state_flag = PROCESSING_1;
-      //   toggle_all_led_flag = false;
-
-      // }
-      // else
-      // {
-      //   toggle_all_led_flag = true;
-      // }
 
 
 
