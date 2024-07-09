@@ -187,8 +187,9 @@ void TIM2_IRQHandler(void)
       }
       else if (g_brightness <= 5)
       {
+          blackout_val = map2(analogRead(B1), 0, 4095, 0, 100);
           aging_counter++;
-          if(aging_counter >= analogRead(B1))
+          if(aging_counter >= blackout_val)
           {
             aging_counter = 0;
             user_brightness = 0;
