@@ -87,8 +87,17 @@ uint8_t fileExist[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 uint8_t RS485_data[10] = {'R', 'S', 'S', '0', '0', '1', 50, 0x00, 0x00, 0x00};
 const uint8_t keys[18] = {0x19, 0xAA, 0x37, 0x92, 0x01, 0x12, 0x96, 0xCF, 0xF2, 0x09, 0xA5, 0xFA, 0xFB, 0xFE, 0x66, 0x9F, 0xDF, 0xF9};
 
+int sound_value = 0;
+int state_flag = STATE_1;
+bool toggle_all_led_flag = false;
+int count_for_loop = 0;
+uint8_t g_brightness = 0;
+
 uint8_t const code7seg[] = {0xC0, 0XF9, 0XA4, 0XB0, 0X99, 0X92, 0X82, 0XF8, 0X80, 0X90};
 uint8_t isMaster = ID_SLAVE;
+
+extern int aging_counter;
+extern int user_brightness;
 /* Private function prototypes -----------------------------------------------*/
 void RCC_Configuration(void);
 void GPIO_Configuration(void);
@@ -219,14 +228,7 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
  * @param  None
  * @retval None
  */
-int sound_value = 0;
-int state_flag = STATE_1;
-bool toggle_all_led_flag = false;
-int count_for_loop_2 = 0;
-int count_for_loop = 0;
-uint8_t g_brightness = 0;
-extern int aging_counter;
-extern int user_brightness;
+
 int main(void)
 {
 	/*!< At this stage the microcontroller clock setting is already configured,
@@ -439,7 +441,6 @@ int main(void)
 				myFile.close();
 			}
 			count_for_loop = 0;
-//			root.close();
 			//////////////////////////////////////////222222222222222//////////////////
 			for (i = 0; i < 20; ++i)
 			{
@@ -451,14 +452,9 @@ int main(void)
 
 			while (1)
 			{
-				// if (toggle_all_led_flag == false)
-				// {
-				// 	if (state_flag == PROCESSING_1)
-				// 	{
 						root = SD.open("/");
 						while (1)
 						{
-				// 			count_for_loop_2++;
 							myFile = root.openNextFile();
 							if (!myFile)
 							{
@@ -510,15 +506,6 @@ int main(void)
 												goto RESET;
 											}
 											ports[i].showStrip();
-											// if(PROCESSING_1 == state_flag)
-											// {
-											// 	ports[i].showStrip();
-											// }
-											// else
-											// {
-											// 	 ports[i].clearAll();
-											// 	//  delay(50);
-											// }
 										}
 
 										if(PROCESSING_1 == state_flag)
