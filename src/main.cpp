@@ -183,11 +183,18 @@ void INT_Minus_FUNC()
 	}
 }
 
-void button_switching_mode_int_func()
-{
-	//switching mode
-	button_state != button_state;
-}
+// void button_switching_mode_int_func()
+// {
+// 	//switching mode
+// 	if(false == button_state)
+// 	{
+// 		button_state = true;
+// 	}
+// 	else
+// 	{
+// 		button_state = false;
+// 	}
+// }
 
 void GPIO_begin(void)
 {
@@ -195,6 +202,7 @@ void GPIO_begin(void)
 	pinMode(HC595_PIN_CLK, OUTPUT);
 	pinMode(HC595_PIN_SDA, OUTPUT);
 	pinMode(RS485_PIN_DIR, OUTPUT); // RS485 DIR
+	pinMode(B9, INPUT);
 
 	if (isMaster == ID_MASTER)
 	{
@@ -205,7 +213,8 @@ void GPIO_begin(void)
 
 		attachInterrupt(B2, FALLING, INT_Plus_FUNC);  // button config interrupt
 		attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
-		attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
+		// attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
+		
 		analogEnable(VR_PIN); // VR config ADC
 	}
 	else
@@ -339,12 +348,12 @@ int main(void)
 	//black count Vr
 	analogEnable(B1);
 	// init W2812 channels
-	for (i = 0; i < 20; ++i)
+	for (i = 0; i < 19; ++i)
 	{
 		ports[i].begin(pins[i]);
 		ports[i].clearAll(300);
 	}
-
+		// attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
 	while (1)
 	{
 	RESET: // reset when button is pressed

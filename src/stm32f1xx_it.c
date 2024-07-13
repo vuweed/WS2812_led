@@ -180,7 +180,7 @@ void TIM2_IRQHandler(void)
 
         sound_value >>= 6; // bitshift operation
         //     Serial.println(sound_value); //print the value of sound sensor
-
+        button_state = digitalRead(B9);
         // 1st mode - react with sound
         if (button_state == 1)
         {
