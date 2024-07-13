@@ -510,7 +510,7 @@ int main(void)
 											}
 											myFile.readBytes(ports[i]._leds, h.u32 * 3);
 											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-											if (1 == button_state) //1st mode - react with sound
+											if (false == button_state) //1st mode - react with sound
 											{
 												ports[i].setBrightness(g_brightness);
 											}

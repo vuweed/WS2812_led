@@ -182,7 +182,7 @@ void TIM2_IRQHandler(void)
         //     Serial.println(sound_value); //print the value of sound sensor
         button_state = digitalRead(B9);
         // 1st mode - react with sound
-        if (button_state == 1)
+        if (button_state == false)
         {
             static int old_brightness = 0;
             g_brightness = map2(sound_value, 0, 4095, 1, 255);
@@ -214,9 +214,9 @@ void TIM2_IRQHandler(void)
                 }
                 else if (g_brightness <= 5)
                 {
-                    blackout_val = map2(analogRead(B1), 0, 4095, 0, 100);
+                    blackout_val = map2(analogRead(B1), 0, 4095, 0, 10);
                     aging_counter++;
-                    if (aging_counter >= blackout_val)
+                    if (aging_counter >= blackout_val * 100)
                     {
                         aging_counter = 0;
                         user_brightness = 0;
