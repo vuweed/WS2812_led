@@ -92,6 +92,7 @@ int state_flag = STATE_1;
 bool toggle_all_led_flag = false;
 int count_for_loop = 0;
 uint8_t g_brightness = 0;
+bool button_state = 0;
 
 uint8_t const code7seg[] = {0xC0, 0XF9, 0XA4, 0XB0, 0X99, 0X92, 0X82, 0XF8, 0X80, 0X90};
 uint8_t isMaster = ID_SLAVE;
@@ -182,6 +183,12 @@ void INT_Minus_FUNC()
 	}
 }
 
+void button_switching_mode_int_func()
+{
+	//switching mode
+	button_state != button_state;
+}
+
 void GPIO_begin(void)
 {
 	pinMode(HC595_PIN_LAT, OUTPUT);
@@ -198,7 +205,7 @@ void GPIO_begin(void)
 
 		attachInterrupt(B2, FALLING, INT_Plus_FUNC);  // button config interrupt
 		attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
-
+		attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
 		analogEnable(VR_PIN); // VR config ADC
 	}
 	else
@@ -494,7 +501,14 @@ int main(void)
 											}
 											myFile.readBytes(ports[i]._leds, h.u32 * 3);
 											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-											ports[i].setBrightness(user_brightness);
+											if (1 == button_state) //1st mode - react with sound
+											{
+												ports[i].setBrightness(g_brightness);
+											}
+											else  // 2nd mode - running with a delay Vr
+											{
+												ports[i].setBrightness(user_brightness);
+											}
 											ports[i].setAllCustom();
 										}
 										for (i = 0; i < w.u32; ++i)

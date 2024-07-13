@@ -43,6 +43,7 @@ uint8_t black_count = 0;
 int blackout_val = 0;
 int user_brightness = 0;
 int aging_counter = 0;
+extern bool button_state;
 extern uint8_t g_brightness;
 extern __IO uint16_t CCR1_Val;
 extern __IO uint16_t CCR2_Val;
@@ -51,7 +52,7 @@ extern __IO uint16_t CCR4_Val;
 
 long map2(long x, long in_min, long in_max, long out_min, long out_max)
 {
-  return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
 }
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -76,10 +77,10 @@ void NMI_Handler(void)
  */
 void HardFault_Handler(void)
 {
-  /* Go to infinite loop when Hard Fault exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Hard Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -89,10 +90,10 @@ void HardFault_Handler(void)
  */
 void MemManage_Handler(void)
 {
-  /* Go to infinite loop when Memory Manage exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Memory Manage exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -102,10 +103,10 @@ void MemManage_Handler(void)
  */
 void BusFault_Handler(void)
 {
-  /* Go to infinite loop when Bus Fault exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Bus Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -115,10 +116,10 @@ void BusFault_Handler(void)
  */
 void UsageFault_Handler(void)
 {
-  /* Go to infinite loop when Usage Fault exception occurs */
-  while (1)
-  {
-  }
+    /* Go to infinite loop when Usage Fault exception occurs */
+    while (1)
+    {
+    }
 }
 
 /**
@@ -169,44 +170,68 @@ void PendSV_Handler(void)
 void TIM2_IRQHandler(void)
 {
 
-  if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
-  {
-    // sound_value = analogRead(VR_PIN);
-    for (int i = 0; i < 64; i++) // create a for loop to read
+    if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
     {
-      sound_value += analogRead(VR_PIN);
-    } // read the sound sensor
-
-    sound_value >>= 6; // bitshift operation
-    //     Serial.println(sound_value); //print the value of sound sensor
-
-    if (STATE_1 == state_flag)
-    {
-      g_brightness = map2(sound_value, 0, 4095, 1, 255);
-      if (g_brightness >= 5)
-      {
-        aging_counter = 0;
-        user_brightness = 255;
-      }
-      else if (g_brightness <= 5)
-      {
-        blackout_val = map2(analogRead(B1), 0, 4095, 0, 100);
-        aging_counter++;
-        if (aging_counter >= blackout_val)
+        // sound_value = analogRead(VR_PIN);
+        for (int i = 0; i < 64; i++) // create a for loop to read
         {
-          aging_counter = 0;
-          user_brightness = 0;
-          state_flag = PROCESSING_1;
+            sound_value += analogRead(VR_PIN);
+        } // read the sound sensor
+
+        sound_value >>= 6; // bitshift operation
+        //     Serial.println(sound_value); //print the value of sound sensor
+
+        // 1st mode - react with sound
+        if (button_state == 1)
+        {
+            static int old_brightness = 0;
+            g_brightness = map2(sound_value, 0, 4095, 1, 255);
+            if (g_brightness >= 50)
+            {
+                g_brightness = 255;
+                old_brightness = 255;
+            }
+            else if (g_brightness <= 10)
+            {
+                g_brightness = 0;
+                old_brightness = 20;
+            }
+            else
+            {
+                g_brightness = old_brightness;
+                //        g_brightness = map2(sound_value, 0, 4095, 1, 255);
+            }
         }
-      }
+        else // 2nd mode - running with a delay Vr
+        {
+            if (STATE_1 == state_flag)
+            {
+                g_brightness = map2(sound_value, 0, 4095, 1, 255);
+                if (g_brightness >= 5)
+                {
+                    aging_counter = 0;
+                    user_brightness = 255;
+                }
+                else if (g_brightness <= 5)
+                {
+                    blackout_val = map2(analogRead(B1), 0, 4095, 0, 100);
+                    aging_counter++;
+                    if (aging_counter >= blackout_val)
+                    {
+                        aging_counter = 0;
+                        user_brightness = 0;
+                        state_flag = PROCESSING_1;
+                    }
+                }
+            }
+        }
+
+        TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
+
+        // /* Pin PC.06 toggling with frequency = 73.24 Hz */
+        capture = TIM_GetCapture1(TIM2);
+        TIM_SetCompare1(TIM2, capture + CCR1_Val);
     }
-
-    TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
-
-    // /* Pin PC.06 toggling with frequency = 73.24 Hz */
-    capture = TIM_GetCapture1(TIM2);
-    TIM_SetCompare1(TIM2, capture + CCR1_Val);
-  }
 }
 
 /******************************************************************************/
