@@ -202,7 +202,6 @@ void GPIO_begin(void)
 	pinMode(HC595_PIN_CLK, OUTPUT);
 	pinMode(HC595_PIN_SDA, OUTPUT);
 	pinMode(RS485_PIN_DIR, OUTPUT); // RS485 DIR
-	pinMode(B9, INPUT);
 
 	if (isMaster == ID_MASTER)
 	{
@@ -348,12 +347,12 @@ int main(void)
 	//black count Vr
 	analogEnable(B1);
 	// init W2812 channels
-	for (i = 0; i < 19; ++i)
+	for (i = 0; i < 20; ++i)
 	{
 		ports[i].begin(pins[i]);
 		ports[i].clearAll(300);
 	}
-		// attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
+
 	while (1)
 	{
 	RESET: // reset when button is pressed

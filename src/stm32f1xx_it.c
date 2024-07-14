@@ -172,7 +172,6 @@ void TIM2_IRQHandler(void)
 
     if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
     {
-        // sound_value = analogRead(VR_PIN);
         for (int i = 0; i < 64; i++) // create a for loop to read
         {
             sound_value += analogRead(VR_PIN);
@@ -180,7 +179,8 @@ void TIM2_IRQHandler(void)
 
         sound_value >>= 6; // bitshift operation
         //     Serial.println(sound_value); //print the value of sound sensor
-        // button_state = digitalRead(B9);
+
+        // mode selection using Blank_out Vr
         blackout_val = map2(analogRead(B1), 0, 4095, 0, 10);
         
         if(0 == blackout_val)
