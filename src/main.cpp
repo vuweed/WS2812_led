@@ -211,7 +211,7 @@ void GPIO_begin(void)
 		RS485_send();
 
 		attachInterrupt(B2, FALLING, INT_Plus_FUNC);  // button config interrupt
-		attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
+		// attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
 		// attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
 		
 		analogEnable(VR_PIN); // VR config ADC
