@@ -166,7 +166,7 @@ void PendSV_Handler(void)
  * @param  None
  * @retval None
  */
-
+int aging_counter_2 = 0;
 void TIM2_IRQHandler(void)
 {
 
@@ -180,7 +180,24 @@ void TIM2_IRQHandler(void)
 
         sound_value >>= 6; // bitshift operation
         //     Serial.println(sound_value); //print the value of sound sensor
-        button_state = digitalRead(B9);
+        // button_state = digitalRead(B9);
+        blackout_val = map2(analogRead(B1), 0, 4095, 0, 10);
+        
+        if(0 == blackout_val)
+        {
+            aging_counter_2++;
+            if (aging_counter_2 > 100)
+            {
+                aging_counter_2 = 0;
+                button_state = false;
+            }
+        }
+        else
+        {
+            aging_counter_2 = 0;
+            button_state = true;
+        }
+
         // 1st mode - react with sound
         if (button_state == false)
         {
