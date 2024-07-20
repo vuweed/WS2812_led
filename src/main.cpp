@@ -40,7 +40,8 @@ GPIO_InitTypeDef         GPIO_InitStructure;
 DMA_InitTypeDef          DMA_InitStructure;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef        TIM_OCInitStructure;
-uint16_t SRC_Buffer[6] = {0x0FFF, 0x0000, 0x0FFF};
+#define BUFFER_SIZE 12
+uint16_t SRC_Buffer[BUFFER_SIZE] = {90, 0, 30, 90, 0, 30, 90, 0, 30, 90, 0, 30};
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -80,7 +81,7 @@ int main(void)
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
   DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)SRC_Buffer;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
-  DMA_InitStructure.DMA_BufferSize = 3;
+  DMA_InitStructure.DMA_BufferSize = BUFFER_SIZE;
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -104,8 +105,8 @@ int main(void)
                                                = 24 MHz / 4096 = 5.8KHz KHz
     TIM1 Channel1 duty cycle = (TIM1_CCR1/ TIM1_ARR)* 100 = 33.33%
   ----------------------------------------------------------------------- */
-  TIM_TimeBaseStructure.TIM_Period = 0xFFFF;
-  TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t) (SystemCoreClock / 24000000) - 1;
+  TIM_TimeBaseStructure.TIM_Period = 90;
+  TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t) (SystemCoreClock / 72000000) - 1;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
@@ -113,7 +114,7 @@ int main(void)
   /* TIM Configuration in PWM Mode */
   TIM_OCInitStructure.TIM_OCMode =  TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-  TIM_OCInitStructure.TIM_Pulse = 0xFFF;
+  TIM_OCInitStructure.TIM_Pulse = 90;
   TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
   /* TIM1 DMAR Base register and DMA Burst Length Config */
@@ -136,10 +137,10 @@ int main(void)
   {
   }
   // Example stop condition (after a delay or event)
-  for (int i = 0; i < 3000000; i++) {
-      // Your delay or condition here
-	  //around 1s
-  }
+//  for (int i = 0; i < 3000000; i++) {
+//      // Your delay or condition here
+//	  //around 1s
+//  }
 
   // Disable the timer and DMA after the condition is met
   TIM_CtrlPWMOutputs(TIM1, DISABLE);
