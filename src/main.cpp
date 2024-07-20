@@ -10,12 +10,80 @@ GPIO_InitTypeDef         GPIO_InitStructure;
 DMA_InitTypeDef          DMA_InitStructure;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef        TIM_OCInitStructure;
+#define MAX_LED 120
+#define USE_BRIGHTNESS 0
+#define DMA_BUF_SIZE 	(3 * ((24 * MAX_LED) + 50))
+uint16_t pwmData[((24 * MAX_LED) + 50)];
+//uint16_t SRC_Buffer[DMA_BUF_SIZE] = {0};
+//#define MAX_LED 1
+#define USE_BRIGHTNESS 0
+
+#define PI 3.14159265
+
+uint8_t LED_Data[MAX_LED][4];
+uint8_t LED_Mod[MAX_LED][4]; // for brightness
+int pulse_indx = 0;
 #define BUFFER_SIZE 12
 uint16_t SRC_Buffer[BUFFER_SIZE] = {30, 60, 30, 90, 60, 30, 90, 0, 30, 90, 0, 30};
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
+void Set_LED(int LEDnum, int Red, int Green, int Blue)
+{
+	LED_Data[LEDnum][0] = LEDnum;
+	LED_Data[LEDnum][1] = Green;
+	LED_Data[LEDnum][2] = Red;
+	LED_Data[LEDnum][3] = Blue;
+}
 
+void Wrap_buffer_led(void)
+{
+	uint32_t indx = 0;
+	uint32_t color;
+
+	for (int i = 0; i < MAX_LED; i++)
+	{
+#if USE_BRIGHTNESS
+		color = ((LED_Mod[i][1] << 16) | (LED_Mod[i][2] << 8) | (LED_Mod[i][3]));
+#else
+		color = ((LED_Data[i][1] << 16) | (LED_Data[i][2] << 8) | (LED_Data[i][3]));
+#endif
+
+		for (int i = 23; i >= 0; i--)
+		{
+			if (color & (1 << i))
+			{
+				pwmData[indx] = 60; // 2/3 of 90 = 1
+			}
+
+			else
+				pwmData[indx] = 30; // 1/3 of 90 = 0
+
+			indx++;
+		}
+	}
+
+	for (int i = 0; i < 50; i++)
+	{
+		pwmData[indx] = 0;
+		indx++;
+	}
+
+	// for(int i = 0; i < indx; i++)
+	// {
+	// 	SRC_Buffer[3*i] = TIM_TimeBaseStructure.TIM_Period; //90
+	// 	SRC_Buffer[1 + 3*i] = 0;
+	// 	SRC_Buffer[2 + 3*i] = pwmData[i];
+	// }
+	// SRC_Buffer[1] = 2;
+	// // update 1st index
+	// SRC_Buffer[2] = pwmData[0];
+	//    DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
+	//    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_1, (uint32_t *)pwmData, indx);
+	//    HAL_TIM_PWM_Start_DMA(&htim1, TIM_CHANNEL_2, (uint32_t *)pwmData, indx);
+	//    while (!datasentflag){};
+	//    datasentflag = 0;
+}
 /**
   * @brief  Main program
   * @param  None
@@ -42,9 +110,9 @@ int main(void)
   DMA_DeInit(DMA1_Channel5);
 
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
-  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)SRC_Buffer;
+  DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
   DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
-  DMA_InitStructure.DMA_BufferSize = BUFFER_SIZE;
+  DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);
   DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
   DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
   DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
@@ -70,6 +138,11 @@ int main(void)
   /* TIM1 DMAR Base register and DMA Burst Length Config */
   TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
 
+	for (int i; i < MAX_LED; i++)
+	{
+		Set_LED(i, 255, 0, 0);
+	}
+	Wrap_buffer_led();
   /* TIM1 DMA Update enable */
   TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
 
