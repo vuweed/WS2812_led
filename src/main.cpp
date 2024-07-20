@@ -40,7 +40,7 @@ GPIO_InitTypeDef         GPIO_InitStructure;
 DMA_InitTypeDef          DMA_InitStructure;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef        TIM_OCInitStructure;
-uint16_t SRC_Buffer[6] = {0x0FFF, 0x0000, 0x0555};
+uint16_t SRC_Buffer[6] = {0x0FFF, 0x0000, 0x0FFF};
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -135,6 +135,18 @@ int main(void)
   while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
   {
   }
+  // Example stop condition (after a delay or event)
+  for (int i = 0; i < 3000000; i++) {
+      // Your delay or condition here
+	  //around 1s
+  }
+
+  // Disable the timer and DMA after the condition is met
+  TIM_CtrlPWMOutputs(TIM1, DISABLE);
+  DMA_Cmd(DMA1_Channel5, DISABLE);
+  TIM_Cmd(TIM1, DISABLE);
+
+
 
   /* Infinite loop */
   while(1)
