@@ -1,38 +1,8 @@
-/**
-  ******************************************************************************
-  * @file    TIM/DMABurst/main.c
-  * @author  MCD Application Team
-  * @version V3.5.0
-  * @date    08-April-2011
-  * @brief   Main program body
-  ******************************************************************************
-  * @attention
-  *
-  * THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
-  * WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE
-  * TIME. AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY
-  * DIRECT, INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING
-  * FROM THE CONTENT OF SUCH FIRMWARE AND/OR THE USE MADE BY CUSTOMERS OF THE
-  * CODING INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
-  *
-  * <h2><center>&copy; COPYRIGHT 2011 STMicroelectronics</center></h2>
-  ******************************************************************************
-  */
-
-/* Includes ------------------------------------------------------------------*/
 #include "stm32f10x.h"
-
-/** @addtogroup STM32F10x_StdPeriph_Examples
-  * @{
-  */
-
-/** @addtogroup TIM_DMABurst
-  * @{
-  */
 
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
-#define TIM1_DMAR_ADDRESS ((uint32_t)0x40012C4C) /* TIM ARR (Auto Reload Register) address */
+#define TIM1_DMAR_ADDRESS ((uint32_t)0x40012C34) /* TIM CCR1 (Capture/Compare Register 1) address */
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -41,7 +11,7 @@ DMA_InitTypeDef          DMA_InitStructure;
 TIM_TimeBaseInitTypeDef  TIM_TimeBaseStructure;
 TIM_OCInitTypeDef        TIM_OCInitStructure;
 #define BUFFER_SIZE 12
-uint16_t SRC_Buffer[BUFFER_SIZE] = {90, 0, 30, 90, 0, 30, 90, 0, 30, 90, 0, 30};
+uint16_t SRC_Buffer[BUFFER_SIZE] = {30, 60, 30, 90, 60, 30, 90, 0, 30, 90, 0, 30};
 
 /* Private function prototypes -----------------------------------------------*/
 /* Private functions ---------------------------------------------------------*/
@@ -53,13 +23,6 @@ uint16_t SRC_Buffer[BUFFER_SIZE] = {90, 0, 30, 90, 0, 30, 90, 0, 30, 90, 0, 30};
   */
 int main(void)
 {
-  /*!< At this stage the microcontroller clock setting is already configured,
-       this is done through SystemInit() function which is called from startup
-       file (startup_stm32f10x_xx.s) before to branch to application main.
-       To reconfigure the default setting of SystemInit() function, refer to
-       system_stm32f10x.c file
-     */
-
   /* TIM1 and GPIOA clock enable */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA, ENABLE);
 
@@ -92,19 +55,6 @@ int main(void)
   DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 
   /* Time base configuration */
-  /* -----------------------------------------------------------------------
-    TIM1 Configuration: generate 1 PWM signal using the DMA burst mode:
-    The TIM1CLK frequency is set to SystemCoreClock (Hz), to get TIM1 counter
-    clock at 24 MHz the Prescaler is computed as following:
-     - Prescaler = (TIM1CLK / TIM1 counter clock) - 1
-    SystemCoreClock is set to 72 MHz for Low-density, Medium-density, High-density
-    and Connectivity line devices and to 24 MHz for Low-Density Value line and
-    Medium-Density Value line devices
-
-    The TIM1 period is 5.8 KHz: TIM1 Frequency = TIM1 counter clock/(ARR + 1)
-                                               = 24 MHz / 4096 = 5.8KHz KHz
-    TIM1 Channel1 duty cycle = (TIM1_CCR1/ TIM1_ARR)* 100 = 33.33%
-  ----------------------------------------------------------------------- */
   TIM_TimeBaseStructure.TIM_Period = 90;
   TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t) (SystemCoreClock / 72000000) - 1;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
@@ -118,7 +68,7 @@ int main(void)
   TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
   /* TIM1 DMAR Base register and DMA Burst Length Config */
-  TIM_DMAConfig(TIM1, TIM_DMABase_ARR, TIM_DMABurstLength_3Transfers);
+  TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
 
   /* TIM1 DMA Update enable */
   TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
@@ -136,25 +86,17 @@ int main(void)
   while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
   {
   }
-  // Example stop condition (after a delay or event)
-//  for (int i = 0; i < 3000000; i++) {
-//      // Your delay or condition here
-//	  //around 1s
-//  }
 
   // Disable the timer and DMA after the condition is met
   TIM_CtrlPWMOutputs(TIM1, DISABLE);
   DMA_Cmd(DMA1_Channel5, DISABLE);
   TIM_Cmd(TIM1, DISABLE);
 
-
-
   /* Infinite loop */
   while(1)
   {
   }
 }
-
 
 #ifdef  USE_FULL_ASSERT
 
@@ -174,13 +116,3 @@ void assert_failed(uint8_t* file, uint32_t line)
   {}
 }
 #endif
-
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
-
-/******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE****/
