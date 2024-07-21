@@ -472,8 +472,8 @@ int main(void)
                             }
 
                             // display to every channels
-//                            for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-//                            {
+                            for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+                            {
                                 for (i = 0; i < w.u32; ++i)
                                 {
                                     if (_resetFlag == 1)
@@ -482,10 +482,11 @@ int main(void)
                                         root.close();
                                         goto RESET;
                                     }
-//                                    myFile.readBytes(ports[i]._leds, h.u32 * 3);
-//                                    ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+                                    myFile.readBytes(ports[i]._leds, h.u32 * 3);
+                                    ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
                                     ports[i].setBrightness(255);
-                                    ports[i].setAll(255, 0, 0);
+//                                    ports[i].setAll(0, 255, 0);
+                                    ports[i].showStrip();
                                 }
     //							for (i = 0; i < w.u32; ++i)
     //							{
@@ -501,17 +502,17 @@ int main(void)
                                 // delay and check _resetFlag
                                 // Serial.print("2: ");
                                 // Serial.println(delay2.u32);
-                                for (i = 0; i < delay2.u32; ++i)
-                                {
-                                    if (_resetFlag == 1)
-                                    {
-                                        myFile.close();
-                                        root.close();
-                                        goto RESET;
-                                    }
-                                    delay(1);
-                                }
-//                            }
+//                                for (i = 0; i < delay2.u32; ++i)
+//                                {
+//                                    if (_resetFlag == 1)
+//                                    {
+//                                        myFile.close();
+//                                        root.close();
+//                                        goto RESET;
+//                                    }
+//                                    delay(1);
+//                                }
+                            }
                             // close the file:
                             myFile.close();
                         }

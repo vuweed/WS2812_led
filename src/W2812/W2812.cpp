@@ -221,13 +221,29 @@ void Ws2812::showStrip()
 	uint16_t i;
 	uint16_t i3;
 
-	__disable_irq();
+//	__disable_irq();
 	for (i = 0; i < _numOfLeds; ++i)
 	{
 		i3=3*i;
-		sendData(i, _leds[i3], _leds[i3 + 1], _leds[i3 + 2]);
+		setPixel(i, _leds[i3], _leds[i3 + 1], _leds[i3 + 2]);
 	}
-	__enable_irq();
+    Wrap_buffer_led(0);
+
+    __disable_irq();
+    refresh_strip();
+    __enable_irq();
+
+
+//    uint8_t i = 0;
+//    for (i = 0; i < _numOfLeds; ++i)
+//    {
+//        setPixel(i, green, red, blue);
+//    }
+//    Wrap_buffer_led(0);
+//
+//    __disable_irq();
+//    refresh_strip();
+//    __enable_irq();
 }
 
 // Set a LED color (not yet visible)
