@@ -245,6 +245,42 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
 	}
 	return data;
 }
+
+
+void config_TIM_DMA()
+{
+	//  /* TIM1 DeInit */
+	//  TIM_DeInit(TIM1);
+	//
+	//  /* DMA1 Channel5 Config */
+	//  DMA_DeInit(DMA1_Channel5);
+
+	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
+	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
+	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
+	DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);
+	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
+	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
+	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
+	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
+	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
+	//   DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+
+	/* Time base configuration */
+	TIM_TimeBaseStructure.TIM_Period = 90;
+	TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t)(SystemCoreClock / 72000000) - 1;
+	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
+	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
+	//   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+
+	/* TIM Configuration in PWM Mode */
+	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
+	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
+	TIM_OCInitStructure.TIM_Pulse = 90;
+}
+
 /**
  * @brief  Main program
  * @param  None
@@ -304,11 +340,21 @@ int main(void)
 	/* TIM IT enable */
 	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 	SysTick_Init();
+////////////////////////////////////////////////////////
+		/* TIM1 and GPIOA clock enable */
+	RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA, ENABLE);
 
+	/* DMA clock enable */
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
+	/* GPIOA Configuration: Channel 1 as alternate function push-pull */
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
+	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
+	GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-
-
+	config_TIM_DMA();
+///////////////////////////////////////////////////////
 
 	/* TIM2 enable counter */
 	TIM_Cmd(TIM2, ENABLE);
