@@ -6,8 +6,11 @@
 
 #include <include.h>
 #include <W2812/W2812.h>
-
-
+#include "../GPIO/GPIO.h"
+// extern GPIO_InitTypeDef GPIO_InitStructure;
+// extern DMA_InitTypeDef DMA_InitStructure;
+// TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+// TIM_OCInitTypeDef TIM_OCInitStructure;
 
 Ws2812::Ws2812()
 {
@@ -186,46 +189,6 @@ void Ws2812::sendByte(uint8_t dat)
 // }
 
 
-void Ws2812::refresh_strip()
-{
-		/* TIM1 DeInit */
-		TIM_DeInit(TIM1);
-
-		/* DMA1 Channel5 Config */
-		DMA_DeInit(DMA1_Channel5);
-		DMA_Init(DMA1_Channel5, &DMA_InitStructure);
-		TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
-		TIM_OC1Init(TIM1, &TIM_OCInitStructure);
-		TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
-		
-		// for (int i = 0; i < MAX_LED; i++)
-		// {
-		// 	Set_LED(i, R, G, B);
-		// }
-		// Wrap_buffer_led();
-		/* TIM1 DMA Update enable */
-		TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
-
-		/* TIM1 enable */
-		TIM_Cmd(TIM1, ENABLE);
-
-		/* TIM1 PWM Outputs Enable */
-		TIM_CtrlPWMOutputs(TIM1, ENABLE);
-
-		/* DMA1 Channel5 enable */
-		DMA_Cmd(DMA1_Channel5, ENABLE);
-
-		/* Wait until DMA1 Channel5 end of Transfer */
-		while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
-		{
-		}
-
-		// Disable the timer and DMA after the condition is met
-		TIM_CtrlPWMOutputs(TIM1, DISABLE);
-		DMA_Cmd(DMA1_Channel5, DISABLE);
-		TIM_Cmd(TIM1, DISABLE);
-		TIM_DMACmd(TIM1, TIM_DMA_Update, DISABLE);
-}
 
 void Ws2812::sendData(uint16_t Pixel, uint8_t b, uint8_t g, uint8_t r)
 {

@@ -96,6 +96,7 @@ uint16_t analogRead(uint8_t GPIO_PINx);
 // ADC_DMA
 void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len);
 
+void refresh_strip();
 // PWM output functions
 void analogWrite(uint8_t GPIO_PINx, uint16_t val);
 void analogInit(uint8_t GPIO_PINx);

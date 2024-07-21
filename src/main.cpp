@@ -39,8 +39,10 @@
 /* Private define ------------------------------------------------------------*/
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-TIM_OCInitTypeDef TIM_OCInitStructure;
+extern TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+extern TIM_OCInitTypeDef TIM_OCInitStructure;
+extern GPIO_InitTypeDef GPIO_InitStructure;
+extern DMA_InitTypeDef DMA_InitStructure;
 __IO uint16_t CCR1_Val = 40961;
 __IO uint16_t CCR2_Val = 27309;
 __IO uint16_t CCR3_Val = 13654;
@@ -102,8 +104,7 @@ extern int user_brightness;
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
-// GPIO_InitTypeDef GPIO_InitStructure;
-// DMA_InitTypeDef DMA_InitStructure;
+
 // TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 // TIM_OCInitTypeDef TIM_OCInitStructure;
 
@@ -250,10 +251,10 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
 void config_TIM_DMA()
 {
 	//  /* TIM1 DeInit */
-	//  TIM_DeInit(TIM1);
+	  TIM_DeInit(TIM1);
 	//
 	//  /* DMA1 Channel5 Config */
-	//  DMA_DeInit(DMA1_Channel5);
+	  DMA_DeInit(DMA1_Channel5);
 
 	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
@@ -405,7 +406,7 @@ int main(void)
 	//black count Vr
 	analogEnable(B1);
 	// init W2812 channels
-	for (i = 0; i < 20; ++i)
+	for (i = 0; i < 2; ++i)
 	{
 		ports[i].begin(pins[i]);
 		ports[i].clearAll(300);

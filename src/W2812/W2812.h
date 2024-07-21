@@ -6,7 +6,7 @@
 
 #ifndef WS2812_H
 #define WS2812_H
-
+#include <include.h>
 
 #define ADDR_EFF	0x3000
 #define ADDR_COLOR	0x3001
@@ -45,6 +45,8 @@
 class Ws2812
 {
 public:
+
+
 	uint8_t *_leds;
 	uint8_t _brightness;
 	Ws2812();
@@ -72,17 +74,14 @@ public:
 
 	void setAllCustom(void);
 
-	void refresh_strip(void);
+	// void refresh_strip(void);
 
 	void Wrap_buffer_led(uint16_t Pixel);
 
 	void send(uint8_t b,uint8_t g,uint8_t r);
 private:
 	GPIO_TypeDef* _pinGPIO;
-	GPIO_InitTypeDef GPIO_InitStructure;
-	DMA_InitTypeDef DMA_InitStructure;
-	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
-	TIM_OCInitTypeDef TIM_OCInitStructure;
+
 
 
 	uint16_t _pinData;
