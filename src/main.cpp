@@ -100,10 +100,10 @@ void refresh_strip()
 		TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 		TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
 		
-		for (int i = 0; i < MAX_LED; i++)
-		{
-			Set_LED(i, R, G, B);
-		}
+		// for (int i = 0; i < MAX_LED; i++)
+		// {
+		// 	Set_LED(i, R, G, B);
+		// }
 		Wrap_buffer_led();
 		/* TIM1 DMA Update enable */
 		TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
@@ -186,16 +186,26 @@ int main(void)
 	/* Infinite loop */
 	while (1)
 	{
-		if (R == 255)
+		static int cnt = 0;
+		if(cnt >= MAX_LED)
 		{
-			R = 0;
+			cnt = 0;
+			for (int i = 0; i < MAX_LED; i++)
+			{
+				Set_LED(i, 0 , 0, 0);
+			}
+			refresh_strip();
+			for(int i = 0; i < 2000000; i++)
+			{
+
+			}
 		}
-		else
-		{
-			R = 255;
-		}
+
+		Set_LED(cnt, 255 , 0, 0);
+		cnt++;
+		
 		refresh_strip();
-		for(int i = 0; i < 1000000; i++)
+		for(int i = 0; i < 100; i++)
 		{
 
 		}
