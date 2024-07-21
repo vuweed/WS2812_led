@@ -98,6 +98,28 @@ uint8_t isMaster = ID_SLAVE;
 
 extern int aging_counter;
 extern int user_brightness;
+#define TIM1_DMAR_ADDRESS ((uint32_t)0x40012C34) /* TIM CCR1 (Capture/Compare Register 1) address */
+
+/* Private macro -------------------------------------------------------------*/
+/* Private variables ---------------------------------------------------------*/
+// GPIO_InitTypeDef GPIO_InitStructure;
+// DMA_InitTypeDef DMA_InitStructure;
+// TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+// TIM_OCInitTypeDef TIM_OCInitStructure;
+
+#define USE_BRIGHTNESS 0
+#define DMA_BUF_SIZE (3 * ((24 * MAX_LED) + 50))
+uint16_t pwmData[((24 * MAX_LED) + 50)];
+// uint16_t SRC_Buffer[DMA_BUF_SIZE] = {0};
+// #define MAX_LED 1
+#define USE_BRIGHTNESS 0
+
+#define PI 3.14159265
+
+uint8_t LED_Data[MAX_LED][4];
+uint8_t LED_Mod[MAX_LED][4]; // for brightness
+int pulse_indx = 0;
+int R = 0, G = 0, B = 0;
 /* Private function prototypes -----------------------------------------------*/
 void RCC_Configuration(void);
 void GPIO_Configuration(void);
@@ -282,6 +304,11 @@ int main(void)
 	/* TIM IT enable */
 	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 	SysTick_Init();
+
+
+
+
+
 
 	/* TIM2 enable counter */
 	TIM_Cmd(TIM2, ENABLE);

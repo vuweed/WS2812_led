@@ -20,6 +20,7 @@
 #include <math.h>
 #include <stdbool.h>
 //#include <Ethernet/WString.h>
+#define MAX_LED 100
 #define VR_PIN B0
 #define min(a,b) ((a)<(b)?(a):(b))
 #define max(a,b) ((a)>(b)?(a):(b))
@@ -45,6 +46,7 @@ extern "C"{
 #endif
 extern bool toggle_all_led_flag;
 extern int state_flag;
+extern uint16_t pwmData[((24 * MAX_LED) + 50)];
 typedef void (*voidFuncPtr)(void);
 typedef uint8_t byte;
 typedef bool boolean;

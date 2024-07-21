@@ -13,6 +13,7 @@
 #define DELAY		200/NUM_LEDS * _delay / 10 + 1
 #define DELAY2		200/NUM_LEDS * _delay / 100 + 1
 
+
 #define COLOR_RED			3,		239,	7
 #define COLOR_VIOLET		64,		160,    198
 #define COLOR_ORANGE		153,	255,	0
@@ -55,7 +56,7 @@ public:
 	//
 	void sendByte(uint8_t dat);
 	//
-	void sendData(uint8_t b, uint8_t g, uint8_t r);
+	void sendData(uint16_t Pixel, uint8_t b, uint8_t g, uint8_t r);
 	// Apply LED color changes
 	void showStrip();
 	// Set a LED color (not yet visible)
@@ -71,9 +72,19 @@ public:
 
 	void setAllCustom(void);
 
+	void refresh_strip(void);
+
+	void Wrap_buffer_led(uint16_t Pixel);
+
 	void send(uint8_t b,uint8_t g,uint8_t r);
 private:
 	GPIO_TypeDef* _pinGPIO;
+	GPIO_InitTypeDef GPIO_InitStructure;
+	DMA_InitTypeDef DMA_InitStructure;
+	TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
+	TIM_OCInitTypeDef TIM_OCInitStructure;
+
+
 	uint16_t _pinData;
 	uint8_t _pinNum;
 	uint16_t _numOfLeds;
