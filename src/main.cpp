@@ -23,6 +23,7 @@ uint16_t pwmData[((24 * MAX_LED) + 50)];
 uint8_t LED_Data[MAX_LED][4];
 uint8_t LED_Mod[MAX_LED][4]; // for brightness
 int pulse_indx = 0;
+int R = 0, G = 0, B = 0;
 #define BUFFER_SIZE 12
 uint16_t SRC_Buffer[BUFFER_SIZE] = {30, 60, 30, 90, 60, 30, 90, 0, 30, 90, 0, 30};
 
@@ -103,11 +104,11 @@ int main(void)
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(GPIOA, &GPIO_InitStructure);
 
-  /* TIM1 DeInit */
-  TIM_DeInit(TIM1);
-
-  /* DMA1 Channel5 Config */
-  DMA_DeInit(DMA1_Channel5);
+//  /* TIM1 DeInit */
+//  TIM_DeInit(TIM1);
+//
+//  /* DMA1 Channel5 Config */
+//  DMA_DeInit(DMA1_Channel5);
 
   DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
   DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
@@ -120,54 +121,75 @@ int main(void)
   DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
   DMA_InitStructure.DMA_Priority = DMA_Priority_High;
   DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
-  DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+//   DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 
   /* Time base configuration */
   TIM_TimeBaseStructure.TIM_Period = 90;
   TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t) (SystemCoreClock / 72000000) - 1;
   TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
   TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
-  TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+//   TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
 
   /* TIM Configuration in PWM Mode */
   TIM_OCInitStructure.TIM_OCMode =  TIM_OCMode_PWM1;
   TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
   TIM_OCInitStructure.TIM_Pulse = 90;
-  TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+//   TIM_OC1Init(TIM1, &TIM_OCInitStructure);
 
   /* TIM1 DMAR Base register and DMA Burst Length Config */
-  TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
+//   TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
 
-	for (int i; i < MAX_LED; i++)
-	{
-		Set_LED(i, 255, 0, 0);
-	}
-	Wrap_buffer_led();
-  /* TIM1 DMA Update enable */
-  TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
 
-  /* TIM1 enable */
-  TIM_Cmd(TIM1, ENABLE);
-
-  /* TIM1 PWM Outputs Enable */
-  TIM_CtrlPWMOutputs(TIM1, ENABLE);
-
-  /* DMA1 Channel5 enable */
-  DMA_Cmd(DMA1_Channel5, ENABLE);
-
-  /* Wait until DMA1 Channel5 end of Transfer */
-  while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
-  {
-  }
-
-  // Disable the timer and DMA after the condition is met
-  TIM_CtrlPWMOutputs(TIM1, DISABLE);
-  DMA_Cmd(DMA1_Channel5, DISABLE);
-  TIM_Cmd(TIM1, DISABLE);
 
   /* Infinite loop */
   while(1)
   {
+      /* TIM1 DeInit */
+      TIM_DeInit(TIM1);
+
+      /* DMA1 Channel5 Config */
+      DMA_DeInit(DMA1_Channel5);
+	DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+	TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
+	TIM_OC1Init(TIM1, &TIM_OCInitStructure);
+	TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
+        if(R == 255)
+        {
+            R= 0;
+
+        }
+        else
+        {
+            R= 255;
+        }
+		for (int i = 0; i < MAX_LED; i++)
+		{
+
+			Set_LED(i, R, G, B);
+		}
+		Wrap_buffer_led();
+	/* TIM1 DMA Update enable */
+	TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
+
+	/* TIM1 enable */
+	TIM_Cmd(TIM1, ENABLE);
+
+	/* TIM1 PWM Outputs Enable */
+	TIM_CtrlPWMOutputs(TIM1, ENABLE);
+
+	/* DMA1 Channel5 enable */
+	DMA_Cmd(DMA1_Channel5, ENABLE);
+
+	/* Wait until DMA1 Channel5 end of Transfer */
+	while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
+	{
+	}
+
+	// Disable the timer and DMA after the condition is met
+	TIM_CtrlPWMOutputs(TIM1, DISABLE);
+	DMA_Cmd(DMA1_Channel5, DISABLE);
+	TIM_Cmd(TIM1, DISABLE);
+	TIM_DMACmd(TIM1, TIM_DMA_Update, DISABLE);
   }
 }
 
