@@ -243,12 +243,12 @@ void Ws2812::Wrap_buffer_led(uint16_t Pixel)
 	uint32_t indx = 0;
 	uint32_t color;
 
-	for (Pixel = 0; Pixel < MAX_LED; Pixel++)
+	for (int cnt = 0; cnt < MAX_LED; cnt++)
 	{
 #if USE_BRIGHTNESS
 		// color = ((LED_Mod[i][1] << 16) | (LED_Mod[i][2] << 8) | (LED_Mod[i][3]));
 #else
-		color = ((_leds[Pixel * 3] << 16) | (_leds[Pixel * 3 + 1] << 8) | (_leds[Pixel * 3 + 2]));
+		color = ((_leds[cnt * 3] << 16) | (_leds[cnt * 3 + 1] << 8) | (_leds[cnt * 3 + 2]));
 #endif
 
 		for (int i = 23; i >= 0; i--)
@@ -276,19 +276,22 @@ void Ws2812::setPixel(uint16_t Pixel, uint8_t green, uint8_t red, uint8_t blue) 
     _leds[Pixel * 3] = (green * _brightness) / 255;
     _leds[Pixel * 3 + 1] = (red * _brightness) / 255;
     _leds[Pixel * 3 + 2] = (blue * _brightness) / 255;
-	Wrap_buffer_led(Pixel);
-	refresh_strip();
+//    Wrap_buffer_led(Pixel);
+//	refresh_strip();
 }
 
 // Set all LEDs to a given color and apply it (visible)
 void Ws2812::setAll(uint8_t green, uint8_t red, uint8_t blue)
 {
-	uint8_t i;
-	__disable_irq();
+	uint8_t i = 0;
 	for (i = 0; i < _numOfLeds; ++i)
 	{
 		setPixel(i, green, red, blue);
 	}
+	Wrap_buffer_led(0);
+
+	__disable_irq();
+	refresh_strip();
 	__enable_irq();
 }
 
