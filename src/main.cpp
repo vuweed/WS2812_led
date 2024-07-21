@@ -203,12 +203,13 @@ int main(void)
 
 		Set_LED(cnt, 255 , 0, 0);
 		cnt++;
-		
+		__disable_irq;
 		refresh_strip();
-		for(int i = 0; i < 100; i++)
-		{
+		__enable_irq;
+		// for(int i = 0; i < 100; i++)
+		// {
 
-		}
+		// }
 	}
 }
 
