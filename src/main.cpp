@@ -94,6 +94,7 @@ int state_flag = STATE_1;
 bool toggle_all_led_flag = false;
 int count_for_loop = 0;
 uint8_t g_brightness = 0;
+bool button_state = 0;
 
 uint8_t const code7seg[] = {0xC0, 0XF9, 0XA4, 0XB0, 0X99, 0X92, 0X82, 0XF8, 0X80, 0X90};
 uint8_t isMaster = ID_SLAVE;
@@ -205,6 +206,19 @@ void INT_Minus_FUNC()
 	}
 }
 
+// void button_switching_mode_int_func()
+// {
+// 	//switching mode
+// 	if(false == button_state)
+// 	{
+// 		button_state = true;
+// 	}
+// 	else
+// 	{
+// 		button_state = false;
+// 	}
+// }
+
 void GPIO_begin(void)
 {
 	pinMode(HC595_PIN_LAT, OUTPUT);
@@ -220,8 +234,9 @@ void GPIO_begin(void)
 		RS485_send();
 
 		attachInterrupt(B2, FALLING, INT_Plus_FUNC);  // button config interrupt
-		attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
-
+		// attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
+		// attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
+		
 		analogEnable(VR_PIN); // VR config ADC
 	}
 	else
@@ -437,7 +452,6 @@ int main(void)
 			Serial2.write(RS485_data, 10); // send data to RS485
 
 
-
 			while (1)
 			{
 						root = SD.open("/");
@@ -470,47 +484,30 @@ int main(void)
                                         ports[i].setLED(h.u32/10);
                                     }
 
-                                    // display to every channels
-                                    for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
-                                    {
-                                        for (i = 0; i < w.u32; ++i)
-                                        {
-                                            if (_resetFlag == 1)
-                                            {
-                                                myFile.close();
-                                                root.close();
-                                                goto RESET;
-                                            }
-                                            myFile.readBytes(ports[i]._leds, h.u32 * 3);
-                                            ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
-                                            ports[i].setBrightness(255);
-        //                                    ports[i].setAll(0, 255, 0);
-                                            ports[i].showStrip();
-                                        }
-            //                          for (i = 0; i < w.u32; ++i)
-            //                          {
-            //                              if (_resetFlag == 1)
-            //                              {
-            //                                  myFile.close();
-            //                                  root.close();
-            //                                  goto RESET;
-            //                              }
-            //                              ports[i].showStrip();
-            //                          }
+									// display to every channels
+									for (uint32_t frame = 0; frame < numOfFrames.u32; ++frame)
+									{
+										for (i = 0; i < w.u32; ++i)
+										{
+											if (_resetFlag == 1)
+											{
+												myFile.close();
+												root.close();
+												goto RESET;
+											}
+											myFile.readBytes(ports[i]._leds, h.u32 * 3);
+											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
+											if (false == button_state) //1st mode - react with sound
+											{
+												ports[i].setBrightness(g_brightness);
+											}
+											else  // 2nd mode - running with a delay Vr
+											{
+												ports[i].setBrightness(user_brightness);
+											}
+											ports[i].showStrip();
+										}
 
-                                        // delay and check _resetFlag
-                                        // Serial.print("2: ");
-                                        // Serial.println(delay2.u32);
-        //                                for (i = 0; i < delay2.u32; ++i)
-        //                                {
-        //                                    if (_resetFlag == 1)
-        //                                    {
-        //                                        myFile.close();
-        //                                        root.close();
-        //                                        goto RESET;
-        //                                    }
-        //                                    delay(1);
-        //                                }
                                     }
                                     // close the file:
                                     myFile.close();
