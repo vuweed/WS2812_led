@@ -419,7 +419,7 @@ int main(void)
 
 	GPIO_begin();
 	//black count Vr
-	analogEnable(B0);
+	analogEnable(BLANK_OUT_VR);
 	// init W2812 channels
 	for (i = 0; i < 2; ++i)
 	{

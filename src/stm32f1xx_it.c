@@ -181,7 +181,7 @@ void TIM2_IRQHandler(void)
         //     Serial.println(sound_value); //print the value of sound sensor
 
         // mode selection using Blank_out Vr
-        blackout_val = map2(analogRead(B0), 0, 4095, 0, 10);
+        blackout_val = map2(analogRead(BLANK_OUT_VR), 0, 4095, 0, 10);
         
         if(0 == blackout_val)
         {
@@ -231,7 +231,7 @@ void TIM2_IRQHandler(void)
                 }
                 else if (g_brightness <= 5)
                 {
-                    blackout_val = map2(analogRead(B0), 0, 4095, 0, 10);
+                    blackout_val = map2(analogRead(BLANK_OUT_VR), 0, 4095, 0, 10);
                     aging_counter++;
                     if (aging_counter >= blackout_val * 100)
                     {

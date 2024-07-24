@@ -22,6 +22,7 @@
 //#include <Ethernet/WString.h>
 #define MAX_LED 120
 #define VR_PIN B1
+#define BLANK_OUT_VR B0
 #define min(a,b) ((a)<(b)?(a):(b))
 #define max(a,b) ((a)>(b)?(a):(b))
 #define abss(x) ((x)>0?(x):-(x))
