@@ -313,7 +313,7 @@ int main(void)
 	   */
 
 	/* System Clocks Configuration */
-	RCC_Configuration();
+    RCC_Configuration();
 
 	/* NVIC Configuration */
 	NVIC_Configuration();
@@ -419,7 +419,7 @@ int main(void)
 
 	GPIO_begin();
 	//black count Vr
-	analogEnable(B1);
+	analogEnable(B0);
 	// init W2812 channels
 	for (i = 0; i < 2; ++i)
 	{
@@ -509,6 +509,12 @@ int main(void)
 										}
 
                                     }
+
+									if(PROCESSING_1 == state_flag)
+									{
+										delay(1000);
+										state_flag = STATE_1;
+									}
                                     // close the file:
                                     myFile.close();
                                 }

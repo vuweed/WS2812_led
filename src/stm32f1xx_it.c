@@ -181,7 +181,7 @@ void TIM2_IRQHandler(void)
         //     Serial.println(sound_value); //print the value of sound sensor
 
         // mode selection using Blank_out Vr
-        blackout_val = map2(analogRead(B1), 0, 4095, 0, 10);
+        blackout_val = map2(analogRead(B0), 0, 4095, 0, 10);
         
         if(0 == blackout_val)
         {
@@ -221,8 +221,8 @@ void TIM2_IRQHandler(void)
         }
         else // 2nd mode - running with a delay Vr
         {
-            if (STATE_1 == state_flag)
-            {
+//            if (STATE_1 == state_flag)
+//            {
                 g_brightness = map2(sound_value, 0, 4095, 1, 255);
                 if (g_brightness >= 5)
                 {
@@ -231,7 +231,7 @@ void TIM2_IRQHandler(void)
                 }
                 else if (g_brightness <= 5)
                 {
-                    blackout_val = map2(analogRead(B1), 0, 4095, 0, 10);
+                    blackout_val = map2(analogRead(B0), 0, 4095, 0, 10);
                     aging_counter++;
                     if (aging_counter >= blackout_val * 100)
                     {
@@ -240,7 +240,7 @@ void TIM2_IRQHandler(void)
                         state_flag = PROCESSING_1;
                     }
                 }
-            }
+//            }
         }
 
         TIM_ClearITPendingBit(TIM2, TIM_IT_CC1);
