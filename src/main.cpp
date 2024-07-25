@@ -141,7 +141,7 @@ int main(void)
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
 
     /* Time base configuration */
-    TIM_TimeBaseStructure.TIM_Period = 90;
+    TIM_TimeBaseStructure.TIM_Period = 90 - 1;
     TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t)(SystemCoreClock / 72000000) - 1;
     TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
     TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -149,7 +149,7 @@ int main(void)
     /* TIM Configuration in PWM Mode */
     TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
     TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-    TIM_OCInitStructure.TIM_Pulse = 90;
+    TIM_OCInitStructure.TIM_Pulse = 90 - 1;
 
     /* Infinite loop */
     while (1)
