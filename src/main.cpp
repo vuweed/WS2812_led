@@ -3,7 +3,8 @@
 /* Private typedef -----------------------------------------------------------*/
 /* Private define ------------------------------------------------------------*/
 #define TIM1_CCR2_ADDRESS ((uint32_t)0x40012C38) /* TIM CCR2 (Capture/Compare Register 2) address */
-
+#define TIM4_CCR3_ADDRESS ((uint32_t)0x4000083C) /* TIM CCR2 (Capture/Compare Register 2) address */
+#define TIM4_CCR4_ADDRESS ((uint32_t)0x40000840)
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 GPIO_InitTypeDef GPIO_InitStructure;
@@ -73,40 +74,40 @@ void Wrap_buffer_led(void)
 void refresh_strip()
 {
     /* TIM1 DeInit */
-    TIM_DeInit(TIM1);
+    TIM_DeInit(TIM4);
 
     /* DMA1 Channel5 Config */
-    DMA_DeInit(DMA1_Channel5);
-    DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+    DMA_DeInit(DMA1_Channel7);
+    DMA_Init(DMA1_Channel7, &DMA_InitStructure);
 
-    TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
-    TIM_OC2Init(TIM1, &TIM_OCInitStructure);
-    TIM_DMAConfig(TIM1, TIM_DMABase_CCR2, TIM_DMABurstLength_1Transfer);
+    TIM_TimeBaseInit(TIM4, &TIM_TimeBaseStructure);
+    TIM_OC3Init(TIM4, &TIM_OCInitStructure);
+    TIM_DMAConfig(TIM4, TIM_DMABase_CCR3, TIM_DMABurstLength_1Transfer);
 
     Wrap_buffer_led();
 
-    /* TIM1 DMA Update enable */
-    TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
+    /* TIM4 DMA Update enable */
+    TIM_DMACmd(TIM4, TIM_DMA_Update, ENABLE);
 
-    /* TIM1 enable */
-    TIM_Cmd(TIM1, ENABLE);
+    /* TIM4 enable */
+    TIM_Cmd(TIM4, ENABLE);
 
-    /* TIM1 PWM Outputs Enable */
-    TIM_CtrlPWMOutputs(TIM1, ENABLE);
+    /* TIM4 PWM Outputs Enable */
+    TIM_CtrlPWMOutputs(TIM4, ENABLE);
 
     /* DMA1 Channel5 enable */
-    DMA_Cmd(DMA1_Channel5, ENABLE);
+    DMA_Cmd(DMA1_Channel7, ENABLE);
 
     /* Wait until DMA1 Channel5 end of Transfer */
-    while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
+    while (!DMA_GetFlagStatus(DMA1_FLAG_TC7))
     {
     }
 
     // Disable the timer and DMA after the condition is met
-    TIM_CtrlPWMOutputs(TIM1, DISABLE);
-    DMA_Cmd(DMA1_Channel5, DISABLE);
-    TIM_Cmd(TIM1, DISABLE);
-    TIM_DMACmd(TIM1, TIM_DMA_Update, DISABLE);
+    TIM_CtrlPWMOutputs(TIM4, DISABLE);
+    DMA_Cmd(DMA1_Channel7, DISABLE);
+    TIM_Cmd(TIM4, DISABLE);
+    TIM_DMACmd(TIM4, TIM_DMA_Update, DISABLE);
 }
 
 /**
@@ -117,18 +118,18 @@ void refresh_strip()
 int main(void)
 {
     /* TIM1 and GPIOA clock enable */
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1 | RCC_APB2Periph_GPIOA, ENABLE);
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4 | RCC_APB2Periph_GPIOB, ENABLE);
 
     /* DMA clock enable */
     RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
     /* GPIOA Configuration: Channel 2 as alternate function push-pull */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_9;
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+    GPIO_Init(GPIOB, &GPIO_InitStructure);
 
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_CCR2_ADDRESS;
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM4_CCR3_ADDRESS;
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);
