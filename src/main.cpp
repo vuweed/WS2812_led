@@ -76,8 +76,8 @@ void refresh_strip()
     TIM_DeInit(TIM1);
 
     /* DMA1 Channel5 Config */
-    DMA_DeInit(DMA1_Channel3);
-    DMA_Init(DMA1_Channel3, &DMA_InitStructure);
+    DMA_DeInit(DMA1_Channel5);
+    DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 
     TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
     TIM_OC2Init(TIM1, &TIM_OCInitStructure);
@@ -86,7 +86,7 @@ void refresh_strip()
     Wrap_buffer_led();
 
     /* TIM1 DMA Update enable */
-    TIM_DMACmd(TIM1, TIM_DMA_CC2, ENABLE);
+    TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
 
     /* TIM1 enable */
     TIM_Cmd(TIM1, ENABLE);
@@ -95,18 +95,18 @@ void refresh_strip()
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 
     /* DMA1 Channel5 enable */
-    DMA_Cmd(DMA1_Channel3, ENABLE);
+    DMA_Cmd(DMA1_Channel5, ENABLE);
 
     /* Wait until DMA1 Channel5 end of Transfer */
-    while (!DMA_GetFlagStatus(DMA1_FLAG_TC3))
+    while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
     {
     }
 
     // Disable the timer and DMA after the condition is met
     TIM_CtrlPWMOutputs(TIM1, DISABLE);
-    DMA_Cmd(DMA1_Channel3, DISABLE);
+    DMA_Cmd(DMA1_Channel5, DISABLE);
     TIM_Cmd(TIM1, DISABLE);
-    TIM_DMACmd(TIM1, TIM_DMA_CC2, DISABLE);
+    TIM_DMACmd(TIM1, TIM_DMA_Update, DISABLE);
 }
 
 /**
@@ -167,9 +167,13 @@ int main(void)
             {
             }
         }
-
-        Set_LED(cnt, 255, 0, 0);
+//        for (int i = 0; i < MAX_LED; i++)
+//           {
+               Set_LED(cnt, 0, 255, 0);
+//           }
         cnt++;
+
+
         __disable_irq();
         refresh_strip();
         __enable_irq();
