@@ -41,12 +41,28 @@ typedef struct
     /* data */
 } WS2812_config_t;
 
-WS2812_config_t ws2812_struct_template[4] = {
-    {TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, 2, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3}, // PA7
-    {TIM2_CCR1_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_0, 1, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR1, DMA1_FLAG_TC2}, // PA0
-    {TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8, 1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5}, // PA8
-    {TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9, 2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5}  // PA9
+WS2812_config_t ws2812_struct_template[] = {
+    {TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8,  1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5},  // PA8
+    {TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9,  2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5},  // PA9
+    {TIM1_CCR3_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_10, 3, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR3, DMA1_FLAG_TC5},  // PA10
+    {TIM1_CCR4_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_11, 4, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR4, DMA1_FLAG_TC5},  // PA11
+
+    {TIM2_CCR1_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_0, 1, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR1, DMA1_FLAG_TC2},  // PA0
+    {TIM2_CCR2_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_1, 2, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR2, DMA1_FLAG_TC2},  // PA1
+    {TIM2_CCR3_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_2, 3, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR3, DMA1_FLAG_TC2},  // PA2
+    {TIM2_CCR4_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_3, 4, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR4, DMA1_FLAG_TC2},  // PA3
+
+    {TIM3_CCR1_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_6, 1, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR1, DMA1_FLAG_TC3},  // PA6
+    {TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, 2, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3},  // PA7
+    {TIM3_CCR3_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_0, 3, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR3, DMA1_FLAG_TC3},  // PB0
+    {TIM3_CCR4_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_1, 4, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR4, DMA1_FLAG_TC3},  // PB1
+
+    {TIM4_CCR1_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_6, 1, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR1, DMA1_FLAG_TC7},  // PB6
+    {TIM4_CCR2_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_7, 2, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR2, DMA1_FLAG_TC7},  // PB7
+    {TIM4_CCR3_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_8, 3, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR3, DMA1_FLAG_TC7},  // PB8
+    {TIM4_CCR4_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_9, 4, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR4, DMA1_FLAG_TC7}   // PB9
 };
+
 
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -234,17 +250,17 @@ int main(void)
             {
                 Set_LED(i, 0, 0, 0);
             }
-            refresh_strip(ws2812_struct_template + 2);
+            refresh_strip(ws2812_struct_template + 0);
             for (int i = 0; i < 2000000; i++)
             {
             }
         }
 
-        Set_LED(cnt, 0, 255, 0);
+        Set_LED(cnt, 0, 0, 255);
         cnt++;
 
         __disable_irq();
-        refresh_strip(ws2812_struct_template + 2);
+        refresh_strip(ws2812_struct_template + 0);
         __enable_irq();
     }
 }
