@@ -75,6 +75,17 @@ void Wrap_buffer_led(void)
 
 void refresh_strip()
 {
+
+    /* TIM3 and GPIOA clock enable */
+    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+
+    /* DMA clock enable */
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+
+    /* GPIOA Configuration: Channel 2 as alternate function push-pull */
+    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
+    GPIO_Init(GPIOA, &GPIO_InitStructure);
     /* TIM3 DeInit */
     TIM_DeInit(TIM3);
 
@@ -119,18 +130,10 @@ void refresh_strip()
  */
 int main(void)
 {
-    /* TIM3 and GPIOA clock enable */
-    RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-    RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
-    /* DMA clock enable */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-
-    /* GPIOA Configuration: Channel 2 as alternate function push-pull */
-    GPIO_InitStructure.GPIO_Pin = GPIO_Pin_7;
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-    GPIO_Init(GPIOA, &GPIO_InitStructure);
+
 
     DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM3_CCR2_ADDRESS;
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
