@@ -250,7 +250,12 @@ int main(void)
             {
                 Set_LED(i, 0, 0, 0);
             }
-            refresh_strip(ws2812_struct_template + 0);
+            __disable_irq();
+            for (int i = 0; i < 16; i++)
+            {
+                refresh_strip(ws2812_struct_template + i);
+            }
+            __enable_irq();
             for (int i = 0; i < 2000000; i++)
             {
             }
@@ -260,7 +265,10 @@ int main(void)
         cnt++;
 
         __disable_irq();
-        refresh_strip(ws2812_struct_template + 0);
+        for (int i = 0; i < 16; i++)
+        {
+            refresh_strip(ws2812_struct_template + i);
+        }
         __enable_irq();
     }
 }
