@@ -32,6 +32,7 @@ typedef struct
     uint32_t RCC_APBxPeriph_TIM;
     uint32_t RCC_APBxPeriph_GPIO;
     uint16_t GPIO_Pin;
+    uint8_t TIM_Ch;
     GPIO_TypeDef* GPIOx;
     TIM_TypeDef* TIMx;
     DMA_Channel_TypeDef* DMAy_Channelx;
@@ -40,9 +41,13 @@ typedef struct
     /* data */
 } WS2812_config_t;
 
-WS2812_config_t ws2812_struct_template[1] = {
-    {TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3},
+WS2812_config_t ws2812_struct_template[4] = {
+    {TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, 2, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3}, // PA7
+    {TIM2_CCR1_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_0, 1, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR1, DMA1_FLAG_TC2}, // PA0
+    {TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8, 1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5}, // PA8
+    {TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9, 2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5}  // PA9
 };
+
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
 GPIO_InitTypeDef GPIO_InitStructure;
@@ -113,8 +118,14 @@ void refresh_strip(WS2812_config_t* ws2812_struct_template)
 {
 
     /* TIM3 and GPIOA clock enable */
-    //if
-    RCC_APB1PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
+    if (RCC_APB2Periph_TIM1 == ws2812_struct_template->RCC_APBxPeriph_TIM)
+    {
+        RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
+    }
+    else
+    {
+        RCC_APB1PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
+    }
     //if
     RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_GPIO, ENABLE);
 
@@ -128,11 +139,27 @@ void refresh_strip(WS2812_config_t* ws2812_struct_template)
     TIM_DeInit(ws2812_struct_template->TIMx);
 
     /* DMA1 Channel2 Config */
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ws2812_struct_template->TIMx_CCR_x_ADDRESS;
     DMA_DeInit(ws2812_struct_template->DMAy_Channelx);
     DMA_Init(ws2812_struct_template->DMAy_Channelx, &DMA_InitStructure);
 
     TIM_TimeBaseInit(ws2812_struct_template->TIMx, &TIM_TimeBaseStructure);
-    TIM_OC2Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    if (1 == ws2812_struct_template->TIM_Ch)
+    {
+            TIM_OC1Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+    else if (2 == ws2812_struct_template->TIM_Ch)
+    {
+        TIM_OC2Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+     else if (3 == ws2812_struct_template->TIM_Ch)
+    {
+        TIM_OC3Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+    else
+    {
+        TIM_OC4Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
     TIM_DMAConfig(ws2812_struct_template->TIMx, ws2812_struct_template->TIM_DMABase, TIM_DMABurstLength_1Transfer);
 
     Wrap_buffer_led();
@@ -173,7 +200,7 @@ int main(void)
     GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 
 
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM3_CCR2_ADDRESS;
+    // DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM3_CCR2_ADDRESS;
     DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
     DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
     DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);
@@ -207,7 +234,7 @@ int main(void)
             {
                 Set_LED(i, 0, 0, 0);
             }
-            refresh_strip(ws2812_struct_template);
+            refresh_strip(ws2812_struct_template + 2);
             for (int i = 0; i < 2000000; i++)
             {
             }
@@ -217,7 +244,7 @@ int main(void)
         cnt++;
 
         __disable_irq();
-        refresh_strip(ws2812_struct_template);
+        refresh_strip(ws2812_struct_template + 2);
         __enable_irq();
     }
 }
