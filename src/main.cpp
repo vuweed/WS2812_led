@@ -477,7 +477,7 @@ int main(void)
                                     // set up W2812 parameter
                                     for (i = 0; i < w.u32; ++i)
                                     {
-                                        ports[i].setLED(h.u32/10);
+                                        ports[i].setLED(h.u32);
                                     }
 
 									// display to every channels
