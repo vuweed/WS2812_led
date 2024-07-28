@@ -70,7 +70,7 @@ GPIO_InitTypeDef GPIO_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 TIM_OCInitTypeDef TIM_OCInitStructure;
-#define MAX_LED 120
+#define MAX_LED 100
 #define USE_BRIGHTNESS 0
 #define DMA_BUF_SIZE (3 * ((24 * MAX_LED) + 50))
 uint16_t pwmData[((24 * MAX_LED) + 50)];
@@ -267,7 +267,7 @@ int main(void)
         Wrap_buffer_led();
         cnt++;
 
-        for (int i = 0; i < 8; i++)
+        for (int i = 0; i < 16; i++)
         {
             __disable_irq();
             refresh_strip(ws2812_struct_template + i);
