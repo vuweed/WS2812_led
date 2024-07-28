@@ -110,16 +110,12 @@ extern int user_brightness;
 // TIM_OCInitTypeDef TIM_OCInitStructure;
 
 #define USE_BRIGHTNESS 0
-#define DMA_BUF_SIZE (3 * ((24 * MAX_LED) + 50))
+// #define DMA_BUF_SIZE (3 * ((24 * MAX_LED) + 50))
 uint16_t pwmData[((24 * MAX_LED) + 50)];
-// uint16_t SRC_Buffer[DMA_BUF_SIZE] = {0};
 // #define MAX_LED 1
-#define USE_BRIGHTNESS 0
 
-#define PI 3.14159265
-
-uint8_t LED_Data[MAX_LED][4];
-uint8_t LED_Mod[MAX_LED][4]; // for brightness
+// uint8_t LED_Data[MAX_LED][4];
+// uint8_t LED_Mod[MAX_LED][4]; // for brightness
 int pulse_indx = 0;
 int R = 0, G = 0, B = 0;
 /* Private function prototypes -----------------------------------------------*/
@@ -279,13 +275,13 @@ void config_TIM_DMA()
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
 	DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-	DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
 	DMA_InitStructure.DMA_Priority = DMA_Priority_High;
 	DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
 	//   DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 
 	/* Time base configuration */
-	TIM_TimeBaseStructure.TIM_Period = 90;
+	TIM_TimeBaseStructure.TIM_Period = 90 - 1;
 	TIM_TimeBaseStructure.TIM_Prescaler = (uint16_t)(SystemCoreClock / 72000000) - 1;
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0x0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
@@ -294,7 +290,7 @@ void config_TIM_DMA()
 	/* TIM Configuration in PWM Mode */
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = 90;
+	TIM_OCInitStructure.TIM_Pulse = 90 - 1;
 }
 
 /**
