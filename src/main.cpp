@@ -224,7 +224,7 @@ int main(void)
     DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
     DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
     DMA_InitStructure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;
-    DMA_InitStructure.DMA_Mode = DMA_Mode_Normal;
+    DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
     DMA_InitStructure.DMA_Priority = DMA_Priority_High;
     DMA_InitStructure.DMA_M2M = DMA_M2M_Disable;
 
@@ -250,12 +250,12 @@ int main(void)
             {
                 Set_LED(i, 0, 0, 0);
             }
-            __disable_irq();
             for (int i = 0; i < 16; i++)
             {
+                __disable_irq();
                 refresh_strip(ws2812_struct_template + i);
+                __enable_irq();
             }
-            __enable_irq();
             for (int i = 0; i < 2000000; i++)
             {
             }
@@ -264,12 +264,12 @@ int main(void)
         Set_LED(cnt, 0, 0, 255);
         cnt++;
 
-        __disable_irq();
         for (int i = 0; i < 16; i++)
         {
+            __disable_irq();
             refresh_strip(ws2812_struct_template + i);
+            __enable_irq();
         }
-        __enable_irq();
     }
 }
 
