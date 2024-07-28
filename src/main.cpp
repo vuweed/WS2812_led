@@ -178,7 +178,7 @@ void refresh_strip(WS2812_config_t* ws2812_struct_template)
     }
     TIM_DMAConfig(ws2812_struct_template->TIMx, ws2812_struct_template->TIM_DMABase, TIM_DMABurstLength_1Transfer);
 
-    Wrap_buffer_led();
+    
 
     /* ws2812_struct_template->TIMx DMA Update enable */
     TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, ENABLE);
@@ -249,7 +249,9 @@ int main(void)
             for (int i = 0; i < MAX_LED; i++)
             {
                 Set_LED(i, 0, 0, 0);
+                
             }
+            Wrap_buffer_led();
             for (int i = 0; i < 16; i++)
             {
                 __disable_irq();
@@ -262,9 +264,10 @@ int main(void)
         }
 
         Set_LED(cnt, 0, 0, 255);
+        Wrap_buffer_led();
         cnt++;
 
-        for (int i = 0; i < 16; i++)
+        for (int i = 0; i < 8; i++)
         {
             __disable_irq();
             refresh_strip(ws2812_struct_template + i);
