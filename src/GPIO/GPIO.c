@@ -10,6 +10,10 @@
 #include "../include.h"
 #include "GPIO.h"
 
+
+
+
+
 GPIO_InitTypeDef GPIO_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
 TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -632,46 +636,99 @@ void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len)
 	/* Start conversion */
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
+WS2812_config_t ws2812_struct_template[] = {
+    {TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8,  1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5},  // PA8
+    {TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9,  2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5},  // PA9
+    {TIM1_CCR3_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_10, 3, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR3, DMA1_FLAG_TC5},  // PA10
+    {TIM1_CCR4_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_11, 4, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR4, DMA1_FLAG_TC5},  // PA11
+
+    {TIM2_CCR1_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_0, 1, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR1, DMA1_FLAG_TC2},  // PA0
+    {TIM2_CCR2_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_1, 2, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR2, DMA1_FLAG_TC2},  // PA1
+    {TIM2_CCR3_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_2, 3, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR3, DMA1_FLAG_TC2},  // PA2
+    {TIM2_CCR4_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_3, 4, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR4, DMA1_FLAG_TC2},  // PA3
+
+    {TIM3_CCR1_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_6, 1, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR1, DMA1_FLAG_TC3},  // PA6
+    {TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, 2, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3},  // PA7
+    {TIM3_CCR3_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_0, 3, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR3, DMA1_FLAG_TC3},  // PB0
+    {TIM3_CCR4_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_1, 4, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR4, DMA1_FLAG_TC3},  // PB1
+
+    {TIM4_CCR1_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_6, 1, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR1, DMA1_FLAG_TC7},  // PB6
+    {TIM4_CCR2_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_7, 2, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR2, DMA1_FLAG_TC7},  // PB7
+    {TIM4_CCR3_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_8, 3, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR3, DMA1_FLAG_TC7},  // PB8
+    {TIM4_CCR4_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_9, 4, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR4, DMA1_FLAG_TC7}   // PB9
+};
 
 
-
-void refresh_strip()
+void refresh_strip(WS2812_config_t* ws2812_struct_template)
 {
-		/* TIM1 DeInit */
-		TIM_DeInit(TIM1);
 
-		/* DMA1 Channel5 Config */
-		DMA_DeInit(DMA1_Channel5);
-		DMA_Init(DMA1_Channel5, &DMA_InitStructure);
-		TIM_TimeBaseInit(TIM1, &TIM_TimeBaseStructure);
-		TIM_OC1Init(TIM1, &TIM_OCInitStructure);
-		TIM_DMAConfig(TIM1, TIM_DMABase_CCR1, TIM_DMABurstLength_1Transfer);
-		
-		// for (int i = 0; i < MAX_LED; i++)
-		// {
-		// 	Set_LED(i, R, G, B);
-		// }
-		// Wrap_buffer_led();
-		/* TIM1 DMA Update enable */
-		TIM_DMACmd(TIM1, TIM_DMA_Update, ENABLE);
+    /* TIM3 and GPIOA clock enable */
+    if (RCC_APB2Periph_TIM1 == ws2812_struct_template->RCC_APBxPeriph_TIM)
+    {
+        RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
+    }
+    else
+    {
+        RCC_APB1PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
+    }
+    //if
+    RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_GPIO, ENABLE);
 
-		/* TIM1 enable */
-		TIM_Cmd(TIM1, ENABLE);
+    /* DMA clock enable */
+    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
-		/* TIM1 PWM Outputs Enable */
-		TIM_CtrlPWMOutputs(TIM1, ENABLE);
+    /* GPIOA Configuration: Channel 2 as alternate function push-pull */
+    GPIO_InitStructure.GPIO_Pin = ws2812_struct_template->GPIO_Pin;
+    GPIO_Init(ws2812_struct_template->GPIOx, &GPIO_InitStructure);
+    /* TIM3 DeInit */
+    TIM_DeInit(ws2812_struct_template->TIMx);
 
-		/* DMA1 Channel5 enable */
-		DMA_Cmd(DMA1_Channel5, ENABLE);
+    /* DMA1 Channel2 Config */
+    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ws2812_struct_template->TIMx_CCR_x_ADDRESS;
+    DMA_DeInit(ws2812_struct_template->DMAy_Channelx);
+    DMA_Init(ws2812_struct_template->DMAy_Channelx, &DMA_InitStructure);
 
-		/* Wait until DMA1 Channel5 end of Transfer */
-		while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
-		{
-		}
+    TIM_TimeBaseInit(ws2812_struct_template->TIMx, &TIM_TimeBaseStructure);
+    if (1 == ws2812_struct_template->TIM_Ch)
+    {
+            TIM_OC1Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+    else if (2 == ws2812_struct_template->TIM_Ch)
+    {
+        TIM_OC2Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+     else if (3 == ws2812_struct_template->TIM_Ch)
+    {
+        TIM_OC3Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+    else
+    {
+        TIM_OC4Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
+    }
+    TIM_DMAConfig(ws2812_struct_template->TIMx, ws2812_struct_template->TIM_DMABase, TIM_DMABurstLength_1Transfer);
 
-		// Disable the timer and DMA after the condition is met
-		TIM_CtrlPWMOutputs(TIM1, DISABLE);
-		DMA_Cmd(DMA1_Channel5, DISABLE);
-		TIM_Cmd(TIM1, DISABLE);
-		TIM_DMACmd(TIM1, TIM_DMA_Update, DISABLE);
+    
+
+    /* ws2812_struct_template->TIMx DMA Update enable */
+    TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, ENABLE);
+
+    /* ws2812_struct_template->TIMx enable */
+    TIM_Cmd(ws2812_struct_template->TIMx, ENABLE);
+
+    /* ws2812_struct_template->TIMx PWM Outputs Enable */
+    TIM_CtrlPWMOutputs(ws2812_struct_template->TIMx, ENABLE);
+
+    /* DMA1 Channel2 enable */
+    DMA_Cmd(ws2812_struct_template->DMAy_Channelx, ENABLE);
+
+    /* Wait until DMA1 Channel2 end of Transfer */
+    while (!DMA_GetFlagStatus(ws2812_struct_template->DMAy_FLAG))
+    {
+    }
+
+    // Disable the timer and DMA after the condition is met
+    TIM_CtrlPWMOutputs(ws2812_struct_template->TIMx, DISABLE);
+    DMA_Cmd(ws2812_struct_template->DMAy_Channelx, DISABLE);
+    TIM_Cmd(ws2812_struct_template->TIMx, DISABLE);
+    TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, DISABLE);
 }

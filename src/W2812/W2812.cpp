@@ -229,9 +229,12 @@ void Ws2812::showStrip()
 	}
     Wrap_buffer_led(0);
 
-    __disable_irq();
-    refresh_strip();
-    __enable_irq();
+	for (int i = 0; i < 2; i++)
+	{
+		__disable_irq();
+		refresh_strip(ws2812_struct_template + i);
+		__enable_irq();
+	}
 
 
 //    uint8_t i = 0;
@@ -307,7 +310,7 @@ void Ws2812::setAll(uint8_t green, uint8_t red, uint8_t blue)
 	Wrap_buffer_led(0);
 
 	__disable_irq();
-	refresh_strip();
+	// refresh_strip();
 	__enable_irq();
 }
 

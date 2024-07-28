@@ -43,6 +43,9 @@ extern TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
 extern TIM_OCInitTypeDef TIM_OCInitStructure;
 extern GPIO_InitTypeDef GPIO_InitStructure;
 extern DMA_InitTypeDef DMA_InitStructure;
+
+
+
 __IO uint16_t CCR1_Val = 40961;
 __IO uint16_t CCR2_Val = 27309;
 __IO uint16_t CCR3_Val = 13654;
@@ -360,10 +363,10 @@ int main(void)
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
 
 	/* GPIOA Configuration: Channel 1 as alternate function push-pull */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
+	// GPIO_InitStructure.GPIO_Pin = GPIO_Pin_8;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF_PP;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-	GPIO_Init(GPIOA, &GPIO_InitStructure);
+	// GPIO_Init(GPIOA, &GPIO_InitStructure);
 
 	config_TIM_DMA();
 ///////////////////////////////////////////////////////

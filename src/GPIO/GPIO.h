@@ -78,6 +78,47 @@
 extern "C"{
 #endif
 
+
+
+#define TIM1_CCR1_ADDRESS ((uint32_t)0x40012C34) /* TIM1 CCR1 (Capture/Compare Register 1) address */
+#define TIM1_CCR2_ADDRESS ((uint32_t)0x40012C38) /* TIM1 CCR2 (Capture/Compare Register 2) address */
+#define TIM1_CCR3_ADDRESS ((uint32_t)0x40012C3C) /* TIM1 CCR3 (Capture/Compare Register 3) address */
+#define TIM1_CCR4_ADDRESS ((uint32_t)0x40012C40) /* TIM1 CCR4 (Capture/Compare Register 4) address */
+
+/* TIM2 CCR addresses */
+#define TIM2_CCR1_ADDRESS ((uint32_t)0x40000034) /* TIM2 CCR1 (Capture/Compare Register 1) address */
+#define TIM2_CCR2_ADDRESS ((uint32_t)0x40000038) /* TIM2 CCR2 (Capture/Compare Register 2) address */
+#define TIM2_CCR3_ADDRESS ((uint32_t)0x4000003C) /* TIM2 CCR3 (Capture/Compare Register 3) address */
+#define TIM2_CCR4_ADDRESS ((uint32_t)0x40000040) /* TIM2 CCR4 (Capture/Compare Register 4) address */
+
+/* TIM3 CCR addresses */
+#define TIM3_CCR1_ADDRESS ((uint32_t)0x40000434) /* TIM3 CCR1 (Capture/Compare Register 1) address */
+#define TIM3_CCR2_ADDRESS ((uint32_t)0x40000438) /* TIM3 CCR2 (Capture/Compare Register 2) address */
+#define TIM3_CCR3_ADDRESS ((uint32_t)0x4000043C) /* TIM3 CCR3 (Capture/Compare Register 3) address */
+#define TIM3_CCR4_ADDRESS ((uint32_t)0x40000440) /* TIM3 CCR4 (Capture/Compare Register 4) address */
+
+/* TIM4 CCR addresses */
+#define TIM4_CCR1_ADDRESS ((uint32_t)0x40000834) /* TIM4 CCR1 (Capture/Compare Register 1) address */
+#define TIM4_CCR2_ADDRESS ((uint32_t)0x40000838) /* TIM4 CCR2 (Capture/Compare Register 2) address */
+#define TIM4_CCR3_ADDRESS ((uint32_t)0x4000083C) /* TIM4 CCR3 (Capture/Compare Register 3) address */
+#define TIM4_CCR4_ADDRESS ((uint32_t)0x40000840) /* TIM4 CCR4 (Capture/Compare Register 4) address */
+
+typedef struct
+{
+    uint32_t TIMx_CCR_x_ADDRESS;
+    uint32_t RCC_APBxPeriph_TIM;
+    uint32_t RCC_APBxPeriph_GPIO;
+    uint16_t GPIO_Pin;
+    uint8_t TIM_Ch;
+    GPIO_TypeDef* GPIOx;
+    TIM_TypeDef* TIMx;
+    DMA_Channel_TypeDef* DMAy_Channelx;
+    uint16_t TIM_DMABase;
+    uint32_t DMAy_FLAG;
+    /* data */
+} WS2812_config_t;
+
+extern WS2812_config_t ws2812_struct_template[];
 //Private function
 GPIO_TypeDef *getDigitalGPIO(uint8_t PINx);
 uint8_t getDigitalPin(uint8_t PINx);
@@ -96,7 +137,7 @@ uint16_t analogRead(uint8_t GPIO_PINx);
 // ADC_DMA
 void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len);
 
-void refresh_strip();
+void refresh_strip(WS2812_config_t* ws2812_struct_template);
 // PWM output functions
 void analogWrite(uint8_t GPIO_PINx, uint16_t val);
 void analogInit(uint8_t GPIO_PINx);
