@@ -7,6 +7,7 @@
 #include <include.h>
 #include <W2812/W2812.h>
 #include "../GPIO/GPIO.h"
+extern DMA_InitTypeDef DMA_InitStructure;
 // extern GPIO_InitTypeDef GPIO_InitStructure;
 // extern DMA_InitTypeDef DMA_InitStructure;
 // TIM_TimeBaseInitTypeDef TIM_TimeBaseStructure;
@@ -222,16 +223,39 @@ void Ws2812::showStrip()
 	uint16_t i3;
 
 //	__disable_irq();
-	for (i = 0; i < _numOfLeds; ++i)
+	for (int idx = 0; idx < 10; idx++)
 	{
-		i3=3*i;
-		setPixel(i, _leds[i3], _leds[i3 + 1], _leds[i3 + 2]);
-	}
-    Wrap_buffer_led(0);
+		for (i = 0; i < _numOfLeds/10; ++i)
+		{
+			i3=3*i;
+			setPixel(i, _leds[i3], _leds[i3 + 1], _leds[i3 + 2]);
+		}
+		Wrap_buffer_led(0);
 
-    __disable_irq();
-    refresh_strip();
-    __enable_irq();
+		__disable_irq();
+		refresh_strip();
+		__enable_irq();
+
+	}
+
+	for (int i = 0; i < 50; i++)
+	{
+		pwmData[i] = 0;
+		i++;
+	}
+	
+	DMA_InitStructure.DMA_BufferSize = (50);
+	DMA_DeInit(DMA1_Channel5);
+	DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+	__disable_irq();
+	refresh_strip();
+	__enable_irq();
+
+	//reupdate
+	DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);
+	DMA_DeInit(DMA1_Channel5);
+	DMA_Init(DMA1_Channel5, &DMA_InitStructure);
+
 
 
 //    uint8_t i = 0;
@@ -281,11 +305,11 @@ void Ws2812::Wrap_buffer_led(uint16_t Pixel)
 		}
 	}
 
-	for (int i = 0; i < 50; i++)
-	{
-		pwmData[indx] = 0;
-		indx++;
-	}
+	// for (int i = 0; i < 50; i++)
+	// {
+	// 	pwmData[indx] = 0;
+	// 	indx++;
+	// }
 }
 
 void Ws2812::setPixel(uint16_t Pixel, uint8_t green, uint8_t red, uint8_t blue) {

@@ -667,6 +667,9 @@ void refresh_strip()
 		/* Wait until DMA1 Channel5 end of Transfer */
 		while (!DMA_GetFlagStatus(DMA1_FLAG_TC5))
 		{
+			// DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)(pwmData ;
+			// DMA_DeInit(DMA1_Channel5);
+			// DMA_Init(DMA1_Channel5, &DMA_InitStructure);
 		}
 
 		// Disable the timer and DMA after the condition is met
