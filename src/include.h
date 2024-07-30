@@ -20,7 +20,7 @@
 #include <math.h>
 #include <stdbool.h>
 //#include <Ethernet/WString.h>
-#define MAX_LED 100
+#define MAX_LED 300
 #define VR_PIN B1
 #define BLANK_OUT_VR B0
 #define min(a,b) ((a)<(b)?(a):(b))

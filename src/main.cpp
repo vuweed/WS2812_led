@@ -78,7 +78,7 @@ union SPIData w, h, numOfFrames, delay2;
 
 File root;
 File myFile;
-Ws2812 ports[20];
+Ws2812 ports[5];
 // const uint16_t pins[20] = {B3, B4, B5, B6, B7, B8, B9, B10, B11, B12, B13, B14, B15, A0, A8, A9, A10, A11, A12, A15};
 
 // const uint16_t pins[20] = {A0, A8, A9, A10, A11, A12, A15, B15, B14, B13, B12, B11, B10, B9, B8, B7, B6, B5, B4, B3};
@@ -119,8 +119,8 @@ uint16_t pwmData[((24 * MAX_LED) + 50)];
 
 // uint8_t LED_Data[MAX_LED][4];
 // uint8_t LED_Mod[MAX_LED][4]; // for brightness
-int pulse_indx = 0;
-int R = 0, G = 0, B = 0;
+// int pulse_indx = 0;
+// int R = 0, G = 0, B = 0;
 /* Private function prototypes -----------------------------------------------*/
 void RCC_Configuration(void);
 void GPIO_Configuration(void);
