@@ -229,7 +229,7 @@ void Ws2812::showStrip()
 	}
     Wrap_buffer_led(0);
 
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 1; i++)
 	{
 		__disable_irq();
 		refresh_strip(ws2812_struct_template + i);
