@@ -293,7 +293,7 @@ void config_TIM_DMA()
 	/* TIM Configuration in PWM Mode */
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
-	TIM_OCInitStructure.TIM_Pulse = 90 - 1;
+	TIM_OCInitStructure.TIM_Pulse = 0;
 }
 
 /**
