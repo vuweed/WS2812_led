@@ -56,7 +56,7 @@ uint16_t PrescalerValue = 0;
 #define HC595_PIN_CLK C14
 #define HC595_PIN_LAT C15
 
-#define RS485_PIN_DIR A1
+#define RS485_PIN_DIR B3
 
 #define ERR_SD_INIT 0x40	// number 0 with dot
 #define ERR_NO_ID 0x79		// number 1 with dot
