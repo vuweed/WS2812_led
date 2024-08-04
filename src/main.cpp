@@ -381,7 +381,7 @@ int main(void)
 	}
 
 	//  init SD card
-	while (!SD.begin(SPI1_PIN_NSS))
+	while (!SD.begin(SPI2_PIN_NSS))
 	{
 		HC595_write(ERR_SD_INIT);
 		delay(100);

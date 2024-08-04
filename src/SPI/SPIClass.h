@@ -64,9 +64,9 @@ public:
 	void SPISettings(uint32_t clockDiv, uint16_t bitOrder, uint16_t SPI_DataMode);
 	void beginTransaction();
 	void endTransaction(void);
-	SPIClass(int SPInum = 1);
+	SPIClass(int SPInum = 2);
 	virtual ~SPIClass();
-	void begin(uint16_t mode = SPI_Mode_Master, uint8_t pin_ss = A4);
+	void begin(uint16_t mode = SPI_Mode_Master, uint8_t pin_ss = B12);
 	//void begin(SPI_TypeDef *SPIx, uint16_t mode);
 	uint8_t read(void);
 	void write(uint8_t val);
