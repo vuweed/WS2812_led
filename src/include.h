@@ -21,7 +21,7 @@
 #include <stdbool.h>
 //#include <Ethernet/WString.h>
 #define MAX_LED 300
-#define VR_PIN A5
+#define SOUND_SENSOR A5
 #define BLANK_OUT_VR A4
 #define min(a,b) ((a)<(b)?(a):(b))
 #define max(a,b) ((a)>(b)?(a):(b))

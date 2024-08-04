@@ -174,7 +174,7 @@ void TIM2_IRQHandler(void)
     {
         for (int i = 0; i < 64; i++) // create a for loop to read
         {
-            sound_value += analogRead(VR_PIN);
+            sound_value += analogRead(SOUND_SENSOR);
         } // read the sound sensor
 
         sound_value >>= 6; // bitshift operation
@@ -182,7 +182,7 @@ void TIM2_IRQHandler(void)
 
         // mode selection using Blank_out Vr
         blackout_val = map2(analogRead(BLANK_OUT_VR), 0, 4095, 0, 10);
-        
+
         if(0 == blackout_val)
         {
             aging_counter_2++;

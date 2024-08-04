@@ -236,7 +236,7 @@ void GPIO_begin(void)
 		// attachInterrupt(B1, FALLING, INT_Minus_FUNC); // button config interrupt
 		// attachInterrupt(B9, FALLING, button_switching_mode_int_func); //button config interrupt for mode switching
 		
-		analogEnable(VR_PIN); // VR config ADC
+		analogEnable(SOUND_SENSOR); // VR config ADC
 	}
 	else
 	{
@@ -373,7 +373,7 @@ int main(void)
 
 	/* TIM2 enable counter */
 	TIM_Cmd(TIM2, ENABLE);
-	// analogEnable(VR_PIN);
+	// analogEnable(SOUND_SENSOR);
 	for (i = 0; i < 10; ++i)
 	{
 		HC595_write(code7seg[i]);
