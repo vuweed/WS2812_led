@@ -341,7 +341,7 @@ int main(void)
 	TIM_TimeBaseStructure.TIM_ClockDivision = 0;
 	TIM_TimeBaseStructure.TIM_CounterMode = TIM_CounterMode_Up;
 
-	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
+//	TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
 
 	/* Prescaler configuration */
 	TIM_PrescalerConfig(TIM2, PrescalerValue, TIM_PSCReloadMode_Immediate);
@@ -353,7 +353,7 @@ int main(void)
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_High;
 
 	/* TIM IT enable */
-	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
+//	TIM_ITConfig(TIM2, TIM_IT_CC1, ENABLE);
 	SysTick_Init();
 ////////////////////////////////////////////////////////
 		/* TIM1 and GPIOA clock enable */
