@@ -432,6 +432,7 @@ int main(void)
 		switch (isMaster)
 		{
 		case ID_MASTER:
+		    // _SelectedEffect = 3;
 			_resetFlag = 0;							// clear reset flag
 			HC595_write(code7seg[_SelectedEffect]); // show selected effect to 7segs
 			_fileName[3] = _SelectedEffect + 48;	// update filename base on selected effect
@@ -468,6 +469,7 @@ int main(void)
                                 if (strstr(myFile.name(), (const char *)_fileName))
                                 {
                                     //                          // read parameters:
+
                                     myFile.readBytes(w.bytes, 4);
                                     myFile.readBytes(h.bytes, 4);
                                     myFile.readBytes(numOfFrames.bytes, 4);
@@ -477,6 +479,8 @@ int main(void)
                                         h.bytes[k] = h.bytes[k] ^ keys[k % 18];
                                         numOfFrames.bytes[k] = numOfFrames.bytes[k] ^ keys[k % 18];
                                     }
+                                    h.u32 = w.u32 * h.u32;
+                                    w.u32 = 1;
                                     // set up W2812 parameter
                                     for (i = 0; i < w.u32; ++i)
                                     {

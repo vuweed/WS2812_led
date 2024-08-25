@@ -67,7 +67,7 @@ void SysTick_Handler(void)
 	ticker++;
 	static uint8_t sys_count = 0;
 	sys_count++;
-	if (sys_count > 20)
+	if (sys_count > 50)
 	{
 	    sys_count = 0;
 	    // if (TIM_GetITStatus(TIM2, TIM_IT_CC1) != RESET)
