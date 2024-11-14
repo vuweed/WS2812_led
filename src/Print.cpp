@@ -66,6 +66,10 @@ size_t Print::print(unsigned int n, int base)
   return print((unsigned long) n, base);
 }
 
+//size_t Print::printHex(unsigned long n) {
+//    return print(n, 16);
+//}
+
 size_t Print::print(long n, int base)
 {
   if (base == 0) {
