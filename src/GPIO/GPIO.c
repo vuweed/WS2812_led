@@ -732,4 +732,7 @@ void refresh_strip(WS2812_config_t* ws2812_struct_template)
     DMA_Cmd(ws2812_struct_template->DMAy_Channelx, DISABLE);
     TIM_Cmd(ws2812_struct_template->TIMx, DISABLE);
     TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, DISABLE);
+	DMA_ClearFlag(ws2812_struct_template->DMAy_FLAG);
+	TIM_DeInit(ws2812_struct_template->TIMx);
+	GPIO_DeInit(ws2812_struct_template->GPIOx);
 }

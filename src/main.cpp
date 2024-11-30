@@ -387,7 +387,7 @@ int main(void)
 		delay(100);
 	}
 
-	Serial.begin(115200);
+	// Serial.begin(115200);
 	// check file exist list
 	for (uint8_t ii = 0; ii < 10; ++ii)
 	{
@@ -449,7 +449,7 @@ int main(void)
 			RS485_data[8] = delay2.bytes[2];
 			RS485_data[9] = delay2.bytes[3];
 
-			Serial.write(RS485_data, 10); // send data to RS485
+			// Serial.write(RS485_data, 10); // send data to RS485
 
 
 			while (1)
@@ -500,17 +500,17 @@ int main(void)
 											}
 											myFile.readBytes(ports[i]._leds, h.u32 * 3);
 //											strcat(ports[i]._leds, "\n");
-											char* buffer;
-//											snprintf(buffer, sizeof(ports[i]._leds) +1, "%s\n", ports[i]._leds);
-											for (int temp = 0; temp < 50; temp++)
-											{
-											    Serial.print(*(ports[i]._leds + temp), 16);
-											    Serial.print(" ");
-											}
+// 											char* buffer;
+// //											snprintf(buffer, sizeof(ports[i]._leds) +1, "%s\n", ports[i]._leds);
+// 											for (int temp = 0; temp < 50; temp++)
+// 											{
+// 											    Serial.print(*(ports[i]._leds + temp), 16);
+// 											    Serial.print(" ");
+// 											}
 //											Serial.print(ports[i]._leds);
 //											Serial.print(sizeof(buffer));
 //											Serial.print(sizeof("ports[i]._leds"));
-											Serial.print(buffer);
+											// Serial.print(buffer);
 											ports[i]._leds = cryption(ports[i]._leds, h.u32 * 3);
 											if (false == button_state) //1st mode - react with sound
 											{
