@@ -432,7 +432,7 @@ int main(void)
 		switch (isMaster)
 		{
 		case ID_MASTER:
-		     _SelectedEffect = 3;
+		     _SelectedEffect = 0;
 			_resetFlag = 0;							// clear reset flag
 			HC595_write(code7seg[_SelectedEffect]); // show selected effect to 7segs
 			_fileName[3] = _SelectedEffect + 48;	// update filename base on selected effect
