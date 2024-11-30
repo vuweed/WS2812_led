@@ -265,12 +265,12 @@ uint8_t *cryption(uint8_t *data, uint32_t len)
 void config_TIM_DMA()
 {
 	//  /* TIM1 DeInit */
-	  TIM_DeInit(TIM1);
-	//
-	//  /* DMA1 Channel5 Config */
-	  DMA_DeInit(DMA1_Channel5);
+	//   TIM_DeInit(TIM1);
+	// //
+	// //  /* DMA1 Channel5 Config */
+	//   DMA_DeInit(DMA1_Channel5);
 
-	DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
+	// DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
 	DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);

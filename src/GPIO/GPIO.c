@@ -636,6 +636,7 @@ void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len)
 	/* Start conversion */
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
+
 WS2812_config_t ws2812_struct_template[] = {
     {TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8,  1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5},  // PA8
     {TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9,  2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5},  // PA9
