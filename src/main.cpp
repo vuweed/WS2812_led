@@ -653,7 +653,7 @@ int main(void)
 void RCC_Configuration(void)
 {
 	/* PCLK1 = HCLK/4 */
-	RCC_PCLK1Config(RCC_HCLK_Div4);
+	// RCC_PCLK1Config(RCC_HCLK_Div4);
 
 	/* TIM2 clock enable */
 	RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
