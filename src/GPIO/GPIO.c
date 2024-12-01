@@ -666,16 +666,13 @@ void refresh_strip(WS2812_config_t* ws2812_struct_template)
     /* TIM3 and GPIOA clock enable */
     if (RCC_APB2Periph_TIM1 == ws2812_struct_template->RCC_APBxPeriph_TIM)
     {
-		RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, DISABLE);
         RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
     }
     else
     {
-		RCC_APB1PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, DISABLE);
         RCC_APB1PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
     }
     //if
-	RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_GPIO, DISABLE);
     RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_GPIO, ENABLE);
 
     /* DMA clock enable */
@@ -735,7 +732,4 @@ void refresh_strip(WS2812_config_t* ws2812_struct_template)
     DMA_Cmd(ws2812_struct_template->DMAy_Channelx, DISABLE);
     TIM_Cmd(ws2812_struct_template->TIMx, DISABLE);
     TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, DISABLE);
-	DMA_ClearFlag(ws2812_struct_template->DMAy_FLAG);
-	TIM_DeInit(ws2812_struct_template->TIMx);
-	GPIO_DeInit(ws2812_struct_template->GPIOx);
 }
