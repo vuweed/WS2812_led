@@ -5,14 +5,8 @@
  *      Author: taivb
  */
 
-
-
 #include "../include.h"
 #include "GPIO.h"
-
-
-
-
 
 GPIO_InitTypeDef GPIO_InitStructure;
 DMA_InitTypeDef DMA_InitStructure;
@@ -25,7 +19,7 @@ TIM_OCInitTypeDef TIM_OCInitStructure;
  */
 GPIO_TypeDef *getDigitalGPIO(uint8_t GPIO_PINx)
 {
-	return (GPIO_TypeDef *)((GPIO_PINx / 16)*0x0400 + 0x40010800);
+	return (GPIO_TypeDef *)((GPIO_PINx / 16) * 0x0400 + 0x40010800);
 }
 
 /*
@@ -63,27 +57,32 @@ uint8_t getDigitalPin(uint8_t GPIO_PINx)
  */
 void pinMode(uint8_t GPIO_PINx, uint8_t mode)
 {
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(GPIO_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(GPIO_PINx);
 	uint8_t PINx = getDigitalPin(GPIO_PINx);
 
-	GPIO_InitTypeDef  GPIO_InitStructure;
+	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* Enable the GPIO_AHPclock Clock */
-	if(GPIOx == GPIOA)	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
-	else if(GPIOx == GPIOB)	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
-	else if(GPIOx == GPIOC)	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
-	else if(GPIOx == GPIOD)	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
-	else if(GPIOx == GPIOE)	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
-	else if(GPIOx == GPIOF)	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
+	if (GPIOx == GPIOA)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	else if (GPIOx == GPIOB)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
+	else if (GPIOx == GPIOC)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOC, ENABLE);
+	else if (GPIOx == GPIOD)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOD, ENABLE);
+	else if (GPIOx == GPIOE)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOE, ENABLE);
+	else if (GPIOx == GPIOF)
+		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOF, ENABLE);
 
 	/* Configure the GPIO PINx */
 	GPIO_InitStructure.GPIO_Mode = (GPIOMode_TypeDef)mode;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_10MHz;
 
-	GPIO_InitStructure.GPIO_Pin = (1<<PINx);
+	GPIO_InitStructure.GPIO_Pin = (1 << PINx);
 	GPIO_Init(GPIOx, &GPIO_InitStructure);
-}// end pinMode function
-
+} // end pinMode function
 
 /*
  * write state on pin function
@@ -92,11 +91,13 @@ void pinMode(uint8_t GPIO_PINx, uint8_t mode)
  */
 void digitalWrite(uint8_t GPIO_PINx, uint8_t val)
 {
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(GPIO_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(GPIO_PINx);
 	uint8_t PINx = getDigitalPin(GPIO_PINx);
 
-	if (val == HIGH)	GPIOx->BSRR = (1<<PINx);
-	else	GPIOx->BRR = (1<<PINx);
+	if (val == HIGH)
+		GPIOx->BSRR = (1 << PINx);
+	else
+		GPIOx->BRR = (1 << PINx);
 }
 
 /*
@@ -106,9 +107,9 @@ void digitalWrite(uint8_t GPIO_PINx, uint8_t val)
  */
 void digitalToggle(uint8_t GPIO_PINx)
 {
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(GPIO_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(GPIO_PINx);
 	uint8_t PINx = getDigitalPin(GPIO_PINx);
-	GPIOx->ODR ^= (1<<PINx);
+	GPIOx->ODR ^= (1 << PINx);
 }
 
 /*
@@ -118,7 +119,7 @@ void digitalToggle(uint8_t GPIO_PINx)
  */
 uint8_t digitalRead(uint8_t GPIO_PINx)
 {
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(GPIO_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(GPIO_PINx);
 	uint8_t PINx = getDigitalPin(GPIO_PINx);
 
 	uint8_t bitstatus = 0x00;
@@ -127,8 +128,10 @@ uint8_t digitalRead(uint8_t GPIO_PINx)
 	assert_param(IS_GPIO_ALL_PERIPH(GPIOx));
 	assert_param(IS_GET_());
 
-	if ((GPIOx->IDR & (1<<PINx)) != (uint32_t)Bit_RESET)  bitstatus = (uint8_t)Bit_SET;
-	else   bitstatus = (uint8_t)Bit_RESET;
+	if ((GPIOx->IDR & (1 << PINx)) != (uint32_t)Bit_RESET)
+		bitstatus = (uint8_t)Bit_SET;
+	else
+		bitstatus = (uint8_t)Bit_RESET;
 	return bitstatus;
 }
 
@@ -148,10 +151,10 @@ uint8_t digitalRead(uint8_t GPIO_PINx)
  */
 void analogEnable(uint8_t ADC_PINx)
 {
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(ADC_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(ADC_PINx);
 	uint8_t PINx = getAnalogPin(ADC_PINx);
 
-	ADC_InitTypeDef ADC_InitStructure;// Reset ADC init structure parameters values
+	ADC_InitTypeDef ADC_InitStructure; // Reset ADC init structure parameters values
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	// Enable clock for ADC1 and maybe GPIOA
@@ -188,11 +191,13 @@ void analogEnable(uint8_t ADC_PINx)
 	ADC_ResetCalibration(ADC1);
 
 	/* Wait for calib status on */
-	while(ADC_GetResetCalibrationStatus(ADC1));
+	while (ADC_GetResetCalibrationStatus(ADC1))
+		;
 
 	ADC_StartCalibration(ADC1);
 
-	while(ADC_GetCalibrationStatus(ADC1));
+	while (ADC_GetCalibrationStatus(ADC1))
+		;
 	/* Start conversion */
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
@@ -225,23 +230,23 @@ uint16_t analogRead(uint8_t GPIO_PINx)
 	/* Set ADC channel number */
 	if (GPIO_PINx == 16)
 	{
-		ADC_RegularChannelConfig(ADC1, 8, 1,ADC_SampleTime_55Cycles5);
-		ADC_RegularChannelConfig(ADC1, 8, 1,ADC_SampleTime_55Cycles5);
+		ADC_RegularChannelConfig(ADC1, 8, 1, ADC_SampleTime_55Cycles5);
+		ADC_RegularChannelConfig(ADC1, 8, 1, ADC_SampleTime_55Cycles5);
 	}
 	else if (GPIO_PINx == 17)
 	{
-		ADC_RegularChannelConfig(ADC1, 9, 1,ADC_SampleTime_55Cycles5);
-		ADC_RegularChannelConfig(ADC1, 9, 1,ADC_SampleTime_55Cycles5);
+		ADC_RegularChannelConfig(ADC1, 9, 1, ADC_SampleTime_55Cycles5);
+		ADC_RegularChannelConfig(ADC1, 9, 1, ADC_SampleTime_55Cycles5);
 	}
 	else
 	{
-		ADC_RegularChannelConfig(ADC1, GPIO_PINx, 1,ADC_SampleTime_55Cycles5);
-		ADC_RegularChannelConfig(ADC1, GPIO_PINx, 1,ADC_SampleTime_55Cycles5);
+		ADC_RegularChannelConfig(ADC1, GPIO_PINx, 1, ADC_SampleTime_55Cycles5);
+		ADC_RegularChannelConfig(ADC1, GPIO_PINx, 1, ADC_SampleTime_55Cycles5);
 	}
 	/* Check the parameters */
 	assert_param(IS_ADC_ALL_PERIPH(ADC1));
 	/* Return the selected ADC conversion value */
-	return (uint16_t) ADC1->DR;
+	return (uint16_t)ADC1->DR;
 }
 
 /*
@@ -258,7 +263,7 @@ uint16_t analogRead(uint8_t GPIO_PINx)
  */
 void analogWrite(uint8_t GPIO_PINx, uint16_t val)
 {
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(GPIO_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(GPIO_PINx);
 	uint8_t PINx = getDigitalPin(GPIO_PINx);
 
 	TIM_TypeDef *TIMx;
@@ -266,79 +271,79 @@ void analogWrite(uint8_t GPIO_PINx, uint16_t val)
 	/* get Timer & channel from PINx */
 	switch ((uint32_t)GPIOx)
 	{
-		case GPIOA_BASE:
-			switch (PINx)
-			{
-				case 0:
-					TIMx = TIM2;
-					channel = 1;
-					break;
-
-				case 1:
-					TIMx = TIM2;
-					channel = 2;
-					break;
-
-				case 2:
-					TIMx = TIM2;
-					channel = 3;
-					break;
-
-				case 3:
-					TIMx = TIM2;
-					channel = 4;
-					break;
-
-				case 6:
-					TIMx = TIM3;
-					channel = 1;
-					break;
-
-				case 7:
-					TIMx = TIM3;
-					channel = 2;
-					break;
-				default:
-					break;
-			}
+	case GPIOA_BASE:
+		switch (PINx)
+		{
+		case 0:
+			TIMx = TIM2;
+			channel = 1;
 			break;
 
-			case GPIOB_BASE:
-				switch (PINx)
-				{
-					case 0:
-						TIMx = TIM3;
-						channel = 3;
-						break;
+		case 1:
+			TIMx = TIM2;
+			channel = 2;
+			break;
 
-					case 1:
-						TIMx = TIM3;
-						channel = 4;
-						break;
+		case 2:
+			TIMx = TIM2;
+			channel = 3;
+			break;
 
-					case 6:
-						TIMx = TIM4;
-						channel = 1;
-						break;
+		case 3:
+			TIMx = TIM2;
+			channel = 4;
+			break;
 
-					case 7:
-						TIMx = TIM4;
-						channel = 2;
-						break;
+		case 6:
+			TIMx = TIM3;
+			channel = 1;
+			break;
 
-					case 8:
-						TIMx = TIM4;
-						channel = 3;
-						break;
-
-					case 9:
-						TIMx = TIM4;
-						channel = 4;
-						break;
-				}
-				break;
+		case 7:
+			TIMx = TIM3;
+			channel = 2;
+			break;
 		default:
 			break;
+		}
+		break;
+
+	case GPIOB_BASE:
+		switch (PINx)
+		{
+		case 0:
+			TIMx = TIM3;
+			channel = 3;
+			break;
+
+		case 1:
+			TIMx = TIM3;
+			channel = 4;
+			break;
+
+		case 6:
+			TIMx = TIM4;
+			channel = 1;
+			break;
+
+		case 7:
+			TIMx = TIM4;
+			channel = 2;
+			break;
+
+		case 8:
+			TIMx = TIM4;
+			channel = 3;
+			break;
+
+		case 9:
+			TIMx = TIM4;
+			channel = 4;
+			break;
+		}
+		break;
+	default:
+		break;
 	}
 
 	/* TIM_SetComparex */
@@ -346,27 +351,27 @@ void analogWrite(uint8_t GPIO_PINx, uint16_t val)
 	assert_param(IS_TIM_LIST6_PERIPH(TIMx));
 	switch (channel)
 	{
-		case 1:
-			/* Set the Capture Compare1 Register value */
-			TIMx->CCR1 = val;
-			break;
+	case 1:
+		/* Set the Capture Compare1 Register value */
+		TIMx->CCR1 = val;
+		break;
 
-		case 2:
-			/* Set the Capture Compare2 Register value */
-			TIMx->CCR2 = val;
-			break;
+	case 2:
+		/* Set the Capture Compare2 Register value */
+		TIMx->CCR2 = val;
+		break;
 
-		case 3:
-			/* Set the Capture Compare3 Register value */
-			TIMx->CCR3 = val;
-			break;
+	case 3:
+		/* Set the Capture Compare3 Register value */
+		TIMx->CCR3 = val;
+		break;
 
-		case 4:
-			/* Set the Capture Compare4 Register value */
-			TIMx->CCR4 = val;
-			break;
-		default:
-			break;
+	case 4:
+		/* Set the Capture Compare4 Register value */
+		TIMx->CCR4 = val;
+		break;
+	default:
+		break;
 	}
 }
 /*
@@ -384,114 +389,113 @@ void analogWrite(uint8_t GPIO_PINx, uint16_t val)
 void analogInit(uint8_t GPIO_PINx)
 {
 
-	GPIO_TypeDef* GPIOx = getDigitalGPIO(GPIO_PINx);
+	GPIO_TypeDef *GPIOx = getDigitalGPIO(GPIO_PINx);
 	uint8_t PINx = getDigitalPin(GPIO_PINx);
 
 	TIM_TimeBaseInitTypeDef TIM_InitStrucuture;
-	TIM_OCInitTypeDef	TIM_OCInitStructure;
+	TIM_OCInitTypeDef TIM_OCInitStructure;
 
 	TIM_TypeDef *TIMx;
 	uint16_t channel = 0;
 	/* get Timer & channel from PINx	*/
 	switch ((uint32_t)GPIOx)
 	{
-		case GPIOA_BASE:
-			switch (PINx)
-			{
-				case 0:
-					TIMx = TIM2;
-					channel = 1;
-					break;
-
-				case 1:
-					TIMx = TIM2;
-					channel = 2;
-					break;
-
-				case 2:
-					TIMx = TIM2;
-					channel = 3;
-					break;
-
-				case 3:
-					TIMx = TIM2;
-					channel = 4;
-					break;
-
-				case 6:
-					TIMx = TIM3;
-					channel = 1;
-					break;
-
-				case 7:
-					TIMx = TIM3;
-					channel = 2;
-					break;
-				default:
-					break;
-			}
+	case GPIOA_BASE:
+		switch (PINx)
+		{
+		case 0:
+			TIMx = TIM2;
+			channel = 1;
 			break;
 
-			case GPIOB_BASE:
-				switch (PINx)
-				{
-					case 0:
-						TIMx = TIM3;
-						channel = 3;
-						break;
+		case 1:
+			TIMx = TIM2;
+			channel = 2;
+			break;
 
-					case 1:
-						TIMx = TIM3;
-						channel = 4;
-						break;
+		case 2:
+			TIMx = TIM2;
+			channel = 3;
+			break;
 
-					case 6:
-						TIMx = TIM4;
-						channel = 1;
-						break;
+		case 3:
+			TIMx = TIM2;
+			channel = 4;
+			break;
 
-					case 7:
-						TIMx = TIM4;
-						channel = 2;
-						break;
+		case 6:
+			TIMx = TIM3;
+			channel = 1;
+			break;
 
-					case 8:
-						TIMx = TIM4;
-						channel = 3;
-						break;
-
-					case 9:
-						TIMx = TIM4;
-						channel = 4;
-						break;
-				}
-				break;
+		case 7:
+			TIMx = TIM3;
+			channel = 2;
+			break;
 		default:
 			break;
+		}
+		break;
+
+	case GPIOB_BASE:
+		switch (PINx)
+		{
+		case 0:
+			TIMx = TIM3;
+			channel = 3;
+			break;
+
+		case 1:
+			TIMx = TIM3;
+			channel = 4;
+			break;
+
+		case 6:
+			TIMx = TIM4;
+			channel = 1;
+			break;
+
+		case 7:
+			TIMx = TIM4;
+			channel = 2;
+			break;
+
+		case 8:
+			TIMx = TIM4;
+			channel = 3;
+			break;
+
+		case 9:
+			TIMx = TIM4;
+			channel = 4;
+			break;
+		}
+		break;
+	default:
+		break;
 	}
 
-	switch ((uint32_t) TIMx)
-		{
-			case TIM1_BASE:
-				//RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM1, ENABLE);
-				break;
+	switch ((uint32_t)TIMx)
+	{
+	case TIM1_BASE:
+		// RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM1, ENABLE);
+		break;
 
-			case TIM2_BASE:
-				RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-				break;
+	case TIM2_BASE:
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
+		break;
 
-			case TIM3_BASE:
-				RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
-				break;
+	case TIM3_BASE:
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM3, ENABLE);
+		break;
 
-			case TIM4_BASE:
-				RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
-				break;
+	case TIM4_BASE:
+		RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM4, ENABLE);
+		break;
 
-			default:
-				break;
-		}
-
+	default:
+		break;
+	}
 
 	/*Cau hinh ch�n*/
 	pinMode(GPIO_PINx, AF_PP);
@@ -499,54 +503,53 @@ void analogInit(uint8_t GPIO_PINx)
 	/* Enable Timer Clock 4 */
 	TIM_InitStrucuture.TIM_ClockDivision = 0;
 	TIM_InitStrucuture.TIM_CounterMode = TIM_CounterMode_Up;
-	TIM_InitStrucuture.TIM_Period = 45;// Number of tick
+	TIM_InitStrucuture.TIM_Period = 45; // Number of tick
 
 	/* f_clock = f_system / prescaler */
 	/* motor driver need maximum f_pwm = (f_system/prescaler) / period */
 	/* eg. period = 4000, prescaler = f_system/(f_pwm*period) = 72MHz/(18KHz*4000) = */
 	// in that case is 72MHz / 3600 = 20KHz
-	TIM_InitStrucuture.TIM_Prescaler = 1;// Frequency divide
+	TIM_InitStrucuture.TIM_Prescaler = 1; // Frequency divide
 	TIM_InitStrucuture.TIM_RepetitionCounter = 0;
 	TIM_TimeBaseInit(TIMx, &TIM_InitStrucuture);
-
 
 	/* cau hinh channel4 o mode PWM */
 	TIM_OCInitStructure.TIM_OCMode = TIM_OCMode_PWM1;
 	TIM_OCInitStructure.TIM_OutputState = TIM_OutputState_Enable;
 	TIM_OCInitStructure.TIM_Pulse = 1000;
 	TIM_OCInitStructure.TIM_OCPolarity = TIM_OCPolarity_Low;
-/*
- * NOTE:
- *
- *  .pulse < period
- *
- *  if TIM_OCPolarity_Low: pulse is the time that pwm = 1
- *  else if TIM_OCPolarity_High:  pulse is the time that pwm = 0
- */
+	/*
+	 * NOTE:
+	 *
+	 *  .pulse < period
+	 *
+	 *  if TIM_OCPolarity_Low: pulse is the time that pwm = 1
+	 *  else if TIM_OCPolarity_High:  pulse is the time that pwm = 0
+	 */
 	switch (channel)
 	{
-		case 1:
-			TIM_OC1Init(TIMx, &TIM_OCInitStructure);
-			TIM_OC1PreloadConfig(TIMx, TIM_OCPreload_Enable);
-			break;
+	case 1:
+		TIM_OC1Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC1PreloadConfig(TIMx, TIM_OCPreload_Enable);
+		break;
 
-		case 2:
-			TIM_OC2Init(TIMx, &TIM_OCInitStructure);
-			TIM_OC2PreloadConfig(TIMx, TIM_OCPreload_Enable);
-			break;
+	case 2:
+		TIM_OC2Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC2PreloadConfig(TIMx, TIM_OCPreload_Enable);
+		break;
 
-		case 3:
-			TIM_OC3Init(TIMx, &TIM_OCInitStructure);
-			TIM_OC3PreloadConfig(TIMx, TIM_OCPreload_Enable);
-			break;
+	case 3:
+		TIM_OC3Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC3PreloadConfig(TIMx, TIM_OCPreload_Enable);
+		break;
 
-		case 4:
-			TIM_OC4Init(TIMx, &TIM_OCInitStructure);
-			TIM_OC4PreloadConfig(TIMx, TIM_OCPreload_Enable);
-			break;
+	case 4:
+		TIM_OC4Init(TIMx, &TIM_OCInitStructure);
+		TIM_OC4PreloadConfig(TIMx, TIM_OCPreload_Enable);
+		break;
 
-		default:
-			break;
+	default:
+		break;
 	}
 	TIM_ARRPreloadConfig(TIMx, ENABLE);
 
@@ -563,10 +566,10 @@ void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len)
 	/* Enable peripheral clocks ------------------------------------------------*/
 	/* Enable DMA1 clock */
 	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-	RCC_ADCCLKConfig(RCC_PCLK2_Div6); //clock for ADC (max 14MHz, 72/6=12MHz)
+	RCC_ADCCLKConfig(RCC_PCLK2_Div6); // clock for ADC (max 14MHz, 72/6=12MHz)
 	/* cau hinh DMA1 channel 1*/
 	DMA_DeInit(DMA1_Channel1);
-	DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address;// ADC address
+	DMA_InitStructure.DMA_PeripheralBaseAddr = ADC1_DR_Address; // ADC address
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)ADC_values;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralSRC;
 	DMA_InitStructure.DMA_BufferSize = len;
@@ -581,15 +584,15 @@ void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len)
 	/* cho phep DMA1 channel 1 hoat dong */
 	DMA_Cmd(DMA1_Channel1, ENABLE);
 
-	ADC_InitTypeDef ADC_InitStructure;/* Reset ADC init structure parameters values */
+	ADC_InitTypeDef ADC_InitStructure; /* Reset ADC init structure parameters values */
 	GPIO_InitTypeDef GPIO_InitStructure;
 
 	/* Enable clock for ADC1 and maybe GPIOA */
 	RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE);
-//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
+	//	RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA, ENABLE);
 
 	/* set parameter for GPIO_ADC */
-	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 |GPIO_Pin_3 |  GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
+	GPIO_InitStructure.GPIO_Pin = GPIO_Pin_0 | GPIO_Pin_1 | GPIO_Pin_2 | GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_5 | GPIO_Pin_6 | GPIO_Pin_7;
 	GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AIN;
 	GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
 	GPIO_Init(GPIOA, &GPIO_InitStructure);
@@ -608,16 +611,16 @@ void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len)
 	ADC_InitStructure.ADC_NbrOfChannel = len;
 	ADC_Init(ADC1, &ADC_InitStructure);
 
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 5,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 9,ADC_SampleTime_55Cycles5);
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 10,ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_0, 1, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_1, 2, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_2, 3, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_3, 4, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_4, 5, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 6, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_6, 7, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_7, 8, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_8, 9, ADC_SampleTime_55Cycles5);
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_9, 10, ADC_SampleTime_55Cycles5);
 
 	/* Enable ADC_DMA */
 	ADC_DMACmd(ADC1, ENABLE);
@@ -628,108 +631,232 @@ void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len)
 	ADC_ResetCalibration(ADC1);
 
 	/* Wait for calibration status on */
-	while(ADC_GetResetCalibrationStatus(ADC1));
+	while (ADC_GetResetCalibrationStatus(ADC1))
+		;
 
 	ADC_StartCalibration(ADC1);
 
-	while(ADC_GetCalibrationStatus(ADC1));
+	while (ADC_GetCalibrationStatus(ADC1))
+		;
 	/* Start conversion */
 	ADC_SoftwareStartConvCmd(ADC1, ENABLE);
 }
 
 WS2812_config_t ws2812_struct_template[] = {
-    {TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8,  1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5},  // PA8
-    {TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9,  2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5},  // PA9
-    {TIM1_CCR3_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_10, 3, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR3, DMA1_FLAG_TC5},  // PA10
-    {TIM1_CCR4_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_11, 4, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR4, DMA1_FLAG_TC5},  // PA11
+	{TIM1_CCR1_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_8, 1, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR1, DMA1_FLAG_TC5},	 // PA8
+	{TIM1_CCR2_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_9, 2, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR2, DMA1_FLAG_TC5},	 // PA9
+	{TIM1_CCR3_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_10, 3, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR3, DMA1_FLAG_TC5}, // PA10
+	{TIM1_CCR4_ADDRESS, RCC_APB2Periph_TIM1, RCC_APB2Periph_GPIOA, GPIO_Pin_11, 4, GPIOA, TIM1, DMA1_Channel5, TIM_DMABase_CCR4, DMA1_FLAG_TC5}, // PA11
 
-    {TIM2_CCR1_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_0, 1, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR1, DMA1_FLAG_TC2},  // PA0
-    {TIM2_CCR2_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_1, 2, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR2, DMA1_FLAG_TC2},  // PA1
-    {TIM2_CCR3_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_2, 3, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR3, DMA1_FLAG_TC2},  // PA2
-    {TIM2_CCR4_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_3, 4, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR4, DMA1_FLAG_TC2},  // PA3
+	{TIM2_CCR1_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_0, 1, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR1, DMA1_FLAG_TC2}, // PA0
+	{TIM2_CCR2_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_1, 2, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR2, DMA1_FLAG_TC2}, // PA1
+	{TIM2_CCR3_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_2, 3, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR3, DMA1_FLAG_TC2}, // PA2
+	{TIM2_CCR4_ADDRESS, RCC_APB1Periph_TIM2, RCC_APB2Periph_GPIOA, GPIO_Pin_3, 4, GPIOA, TIM2, DMA1_Channel2, TIM_DMABase_CCR4, DMA1_FLAG_TC2}, // PA3
 
-    {TIM3_CCR1_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_6, 1, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR1, DMA1_FLAG_TC3},  // PA6
-    {TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, 2, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3},  // PA7
-    {TIM3_CCR3_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_0, 3, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR3, DMA1_FLAG_TC3},  // PB0
-    {TIM3_CCR4_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_1, 4, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR4, DMA1_FLAG_TC3},  // PB1
+	{TIM3_CCR1_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_6, 1, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR1, DMA1_FLAG_TC3}, // PA6
+	{TIM3_CCR2_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOA, GPIO_Pin_7, 2, GPIOA, TIM3, DMA1_Channel3, TIM_DMABase_CCR2, DMA1_FLAG_TC3}, // PA7
+	{TIM3_CCR3_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_0, 3, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR3, DMA1_FLAG_TC3}, // PB0
+	{TIM3_CCR4_ADDRESS, RCC_APB1Periph_TIM3, RCC_APB2Periph_GPIOB, GPIO_Pin_1, 4, GPIOB, TIM3, DMA1_Channel3, TIM_DMABase_CCR4, DMA1_FLAG_TC3}, // PB1
 
-    {TIM4_CCR1_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_6, 1, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR1, DMA1_FLAG_TC7},  // PB6
-    {TIM4_CCR2_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_7, 2, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR2, DMA1_FLAG_TC7},  // PB7
-    {TIM4_CCR3_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_8, 3, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR3, DMA1_FLAG_TC7},  // PB8
-    {TIM4_CCR4_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_9, 4, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR4, DMA1_FLAG_TC7}   // PB9
+	{TIM4_CCR1_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_6, 1, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR1, DMA1_FLAG_TC7}, // PB6
+	{TIM4_CCR2_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_7, 2, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR2, DMA1_FLAG_TC7}, // PB7
+	{TIM4_CCR3_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_8, 3, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR3, DMA1_FLAG_TC7}, // PB8
+	{TIM4_CCR4_ADDRESS, RCC_APB1Periph_TIM4, RCC_APB2Periph_GPIOB, GPIO_Pin_9, 4, GPIOB, TIM4, DMA1_Channel7, TIM_DMABase_CCR4, DMA1_FLAG_TC7}	// PB9
 };
 
+#define WS2812_DMA_HALF_SIZE (WS2812_DMA_BUFFER_SIZE / 2)
+#define WS2812_RESET_SLOTS 50
+#define WS2812_QUEUE_SIZE 16
 
-void refresh_strip(WS2812_config_t* ws2812_struct_template)
+typedef struct
 {
+	WS2812_config_t *config;
+	const uint8_t *leds;
+	uint16_t count;
+} ws2812_job_t;
+static ws2812_job_t jobs[WS2812_QUEUE_SIZE];
+static volatile uint8_t job_head, job_tail, job_count;
+static WS2812_config_t *active_config;
+static const uint8_t *active_leds;
+static uint32_t sample_index, samples_sent, sample_total;
 
-    /* TIM3 and GPIOA clock enable */
-    if (RCC_APB2Periph_TIM1 == ws2812_struct_template->RCC_APBxPeriph_TIM)
-    {
-        RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
-    }
-    else
-    {
-        RCC_APB1PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_TIM, ENABLE);
-    }
-    //if
-    RCC_APB2PeriphClockCmd(ws2812_struct_template->RCC_APBxPeriph_GPIO, ENABLE);
-
-    /* DMA clock enable */
-    RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
-
-    /* GPIOA Configuration: Channel 2 as alternate function push-pull */
-    GPIO_InitStructure.GPIO_Pin = ws2812_struct_template->GPIO_Pin;
-    GPIO_Init(ws2812_struct_template->GPIOx, &GPIO_InitStructure);
-    /* TIM3 DeInit */
-    TIM_DeInit(ws2812_struct_template->TIMx);
-
-    /* DMA1 Channel2 Config */
-    DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)ws2812_struct_template->TIMx_CCR_x_ADDRESS;
-    DMA_DeInit(ws2812_struct_template->DMAy_Channelx);
-    DMA_Init(ws2812_struct_template->DMAy_Channelx, &DMA_InitStructure);
-
-    TIM_TimeBaseInit(ws2812_struct_template->TIMx, &TIM_TimeBaseStructure);
-    if (1 == ws2812_struct_template->TIM_Ch)
-    {
-            TIM_OC1Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
-    }
-    else if (2 == ws2812_struct_template->TIM_Ch)
-    {
-        TIM_OC2Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
-    }
-     else if (3 == ws2812_struct_template->TIM_Ch)
-    {
-        TIM_OC3Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
-    }
-    else
-    {
-        TIM_OC4Init(ws2812_struct_template->TIMx, &TIM_OCInitStructure);
-    }
-    TIM_DMAConfig(ws2812_struct_template->TIMx, ws2812_struct_template->TIM_DMABase, TIM_DMABurstLength_1Transfer);
-
-    
-
-    /* ws2812_struct_template->TIMx DMA Update enable */
-    TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, ENABLE);
-
-    /* ws2812_struct_template->TIMx enable */
-    TIM_Cmd(ws2812_struct_template->TIMx, ENABLE);
-
-    /* ws2812_struct_template->TIMx PWM Outputs Enable */
-    TIM_CtrlPWMOutputs(ws2812_struct_template->TIMx, ENABLE);
-
-    /* DMA1 Channel2 enable */
-    DMA_Cmd(ws2812_struct_template->DMAy_Channelx, ENABLE);
-
-    /* Wait until DMA1 Channel2 end of Transfer */
-    while (!DMA_GetFlagStatus(ws2812_struct_template->DMAy_FLAG))
-    {
-    }
-
-    // Disable the timer and DMA after the condition is met
-    TIM_CtrlPWMOutputs(ws2812_struct_template->TIMx, DISABLE);
-    DMA_Cmd(ws2812_struct_template->DMAy_Channelx, DISABLE);
-    TIM_Cmd(ws2812_struct_template->TIMx, DISABLE);
-    TIM_DMACmd(ws2812_struct_template->TIMx, TIM_DMA_Update, DISABLE);
+static uint16_t next_pulse(void)
+{
+	uint32_t n, bit;
+	if (sample_index >= sample_total)
+		return 0;
+	if (sample_index >= sample_total - WS2812_RESET_SLOTS)
+	{
+		++sample_index;
+		return 0;
+	}
+	n = sample_index++;
+	bit = n % 24;
+	return (active_leds[(n / 24) * 3 + bit / 8] & (1U << (7 - (bit % 8)))) ? 60 : 30;
+}
+static void fill_half(uint16_t offset)
+{
+	uint16_t i;
+	for (i = 0; i < WS2812_DMA_HALF_SIZE; i++)
+		pwmData[offset + i] = next_pulse();
+}
+static uint32_t ht(DMA_Channel_TypeDef *c)
+{
+	if (c == DMA1_Channel2)
+		return DMA1_IT_HT2;
+	if (c == DMA1_Channel3)
+		return DMA1_IT_HT3;
+	if (c == DMA1_Channel5)
+		return DMA1_IT_HT5;
+	return DMA1_IT_HT7;
+}
+static uint32_t tc(DMA_Channel_TypeDef *c)
+{
+	if (c == DMA1_Channel2)
+		return DMA1_IT_TC2;
+	if (c == DMA1_Channel3)
+		return DMA1_IT_TC3;
+	if (c == DMA1_Channel5)
+		return DMA1_IT_TC5;
+	return DMA1_IT_TC7;
+}
+static IRQn_Type irqn(DMA_Channel_TypeDef *c)
+{
+	if (c == DMA1_Channel2)
+		return DMA1_Channel2_IRQn;
+	if (c == DMA1_Channel3)
+		return DMA1_Channel3_IRQn;
+	if (c == DMA1_Channel5)
+		return DMA1_Channel5_IRQn;
+	return DMA1_Channel7_IRQn;
+}
+static void clear_dma(DMA_Channel_TypeDef *c)
+{
+	if (c == DMA1_Channel2)
+		DMA_ClearFlag(DMA1_FLAG_GL2);
+	else if (c == DMA1_Channel3)
+		DMA_ClearFlag(DMA1_FLAG_GL3);
+	else if (c == DMA1_Channel5)
+		DMA_ClearFlag(DMA1_FLAG_GL5);
+	else
+		DMA_ClearFlag(DMA1_FLAG_GL7);
+}
+static void start_job(ws2812_job_t j)
+{
+	NVIC_InitTypeDef nvic;
+	WS2812_config_t *c = j.config;
+	active_config = c;
+	active_leds = j.leds;
+	sample_index = samples_sent = 0;
+	sample_total = (uint32_t)j.count * 24 + WS2812_RESET_SLOTS;
+	fill_half(0);
+	fill_half(WS2812_DMA_HALF_SIZE);
+	if (c->RCC_APBxPeriph_TIM == RCC_APB2Periph_TIM1)
+		RCC_APB2PeriphClockCmd(c->RCC_APBxPeriph_TIM, ENABLE);
+	else
+		RCC_APB1PeriphClockCmd(c->RCC_APBxPeriph_TIM, ENABLE);
+	RCC_APB2PeriphClockCmd(c->RCC_APBxPeriph_GPIO, ENABLE);
+	RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+	GPIO_InitStructure.GPIO_Pin = c->GPIO_Pin;
+	GPIO_Init(c->GPIOx, &GPIO_InitStructure);
+	TIM_DeInit(c->TIMx);
+	DMA_InitStructure.DMA_PeripheralBaseAddr = c->TIMx_CCR_x_ADDRESS;
+	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
+	DMA_InitStructure.DMA_BufferSize = WS2812_DMA_BUFFER_SIZE;
+	DMA_InitStructure.DMA_Mode = DMA_Mode_Circular;
+	DMA_DeInit(c->DMAy_Channelx);
+	DMA_Init(c->DMAy_Channelx, &DMA_InitStructure);
+	clear_dma(c->DMAy_Channelx);
+	DMA_ITConfig(c->DMAy_Channelx, DMA_IT_HT | DMA_IT_TC, ENABLE);
+	nvic.NVIC_IRQChannel = irqn(c->DMAy_Channelx);
+	nvic.NVIC_IRQChannelPreemptionPriority = 0;
+	nvic.NVIC_IRQChannelSubPriority = 0;
+	nvic.NVIC_IRQChannelCmd = ENABLE;
+	NVIC_Init(&nvic);
+	TIM_TimeBaseInit(c->TIMx, &TIM_TimeBaseStructure);
+	if (c->TIM_Ch == 1)
+		TIM_OC1Init(c->TIMx, &TIM_OCInitStructure);
+	else if (c->TIM_Ch == 2)
+		TIM_OC2Init(c->TIMx, &TIM_OCInitStructure);
+	else if (c->TIM_Ch == 3)
+		TIM_OC3Init(c->TIMx, &TIM_OCInitStructure);
+	else
+		TIM_OC4Init(c->TIMx, &TIM_OCInitStructure);
+	TIM_DMAConfig(c->TIMx, c->TIM_DMABase, TIM_DMABurstLength_1Transfer);
+	TIM_DMACmd(c->TIMx, TIM_DMA_Update, ENABLE);
+	DMA_Cmd(c->DMAy_Channelx, ENABLE);
+	TIM_Cmd(c->TIMx, ENABLE);
+	TIM_CtrlPWMOutputs(c->TIMx, ENABLE);
+}
+static void start_next(void)
+{
+	ws2812_job_t j;
+	if (!job_count)
+		return;
+	j = jobs[job_head];
+	job_head = (job_head + 1) % WS2812_QUEUE_SIZE;
+	--job_count;
+	start_job(j);
+}
+static void finish_job(void)
+{
+	WS2812_config_t *c = active_config;
+	TIM_CtrlPWMOutputs(c->TIMx, DISABLE);
+	DMA_Cmd(c->DMAy_Channelx, DISABLE);
+	TIM_Cmd(c->TIMx, DISABLE);
+	TIM_DMACmd(c->TIMx, TIM_DMA_Update, DISABLE);
+	active_config = 0;
+	start_next();
+}
+void refresh_strip(WS2812_config_t *c, const uint8_t *leds, uint16_t count)
+{
+	ws2812_job_t j;
+	uint32_t p = __get_PRIMASK();
+	__disable_irq();
+	j.config = c;
+	j.leds = leds;
+	j.count = (count > MAX_LED) ? MAX_LED : count;
+	if (!active_config)
+		start_job(j);
+	else if (job_count < WS2812_QUEUE_SIZE)
+	{
+		jobs[job_tail] = j;
+		job_tail = (job_tail + 1) % WS2812_QUEUE_SIZE;
+		++job_count;
+	}
+	if (!p)
+		__enable_irq();
+}
+void ws2812_dma_irq(DMA_Channel_TypeDef *c)
+{
+	uint32_t f;
+	if (!active_config || active_config->DMAy_Channelx != c)
+	{
+		clear_dma(c);
+		return;
+	}
+	f = ht(c);
+	if (DMA_GetITStatus(f) != RESET)
+	{
+		DMA_ClearITPendingBit(f);
+		samples_sent += WS2812_DMA_HALF_SIZE;
+		if (samples_sent >= sample_total)
+		{
+			finish_job();
+			return;
+		}
+		fill_half(0);
+	}
+	f = tc(c);
+	if (DMA_GetITStatus(f) != RESET)
+	{
+		DMA_ClearITPendingBit(f);
+		samples_sent += WS2812_DMA_HALF_SIZE;
+		if (samples_sent >= sample_total)
+		{
+			finish_job();
+			return;
+		}
+		fill_half(WS2812_DMA_HALF_SIZE);
+	}
 }

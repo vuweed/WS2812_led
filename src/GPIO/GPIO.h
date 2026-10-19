@@ -137,7 +137,8 @@ uint16_t analogRead(uint8_t GPIO_PINx);
 // ADC_DMA
 void ADC_DMA_Init(uint16_t ADC_values[], uint8_t len);
 
-void refresh_strip(WS2812_config_t* ws2812_struct_template);
+void refresh_strip(WS2812_config_t* config, const uint8_t* leds, uint16_t led_count);
+void ws2812_dma_irq(DMA_Channel_TypeDef* channel);
 // PWM output functions
 void analogWrite(uint8_t GPIO_PINx, uint16_t val);
 void analogInit(uint8_t GPIO_PINx);

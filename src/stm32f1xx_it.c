@@ -154,8 +154,12 @@ void PendSV_Handler(void)
 
 void TIM2_IRQHandler(void)
 {
-
 }
+
+void DMA1_Channel2_IRQHandler(void){ws2812_dma_irq(DMA1_Channel2);}
+void DMA1_Channel3_IRQHandler(void){ws2812_dma_irq(DMA1_Channel3);}
+void DMA1_Channel5_IRQHandler(void){ws2812_dma_irq(DMA1_Channel5);}
+void DMA1_Channel7_IRQHandler(void){ws2812_dma_irq(DMA1_Channel7);}
 
 /******************************************************************************/
 /*                 STM32F10x Peripherals Interrupt Handlers                   */

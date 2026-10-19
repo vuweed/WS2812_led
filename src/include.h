@@ -20,7 +20,8 @@
 #include <math.h>
 #include <stdbool.h>
 //#include <Ethernet/WString.h>
-#define MAX_LED 100
+#define MAX_LED 1000
+#define WS2812_DMA_BUFFER_SIZE 96
 #define SOUND_SENSOR A5
 #define BLANK_OUT_VR A4
 #define min(a,b) ((a)<(b)?(a):(b))
@@ -47,7 +48,7 @@ extern "C"{
 #endif
 extern bool toggle_all_led_flag;
 extern int state_flag;
-extern uint16_t pwmData[((24 * MAX_LED) + 50)];
+extern uint16_t pwmData[WS2812_DMA_BUFFER_SIZE];
 typedef void (*voidFuncPtr)(void);
 typedef uint8_t byte;
 typedef bool boolean;

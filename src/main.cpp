@@ -114,7 +114,7 @@ extern int user_brightness;
 
 #define USE_BRIGHTNESS 0
 // #define DMA_BUF_SIZE (3 * ((24 * MAX_LED) + 50))
-uint16_t pwmData[((24 * MAX_LED) + 50)];
+uint16_t pwmData[WS2812_DMA_BUFFER_SIZE];
 // #define MAX_LED 1
 
 // uint8_t LED_Data[MAX_LED][4];
@@ -273,7 +273,7 @@ void config_TIM_DMA()
 	// DMA_InitStructure.DMA_PeripheralBaseAddr = (uint32_t)TIM1_DMAR_ADDRESS;
 	DMA_InitStructure.DMA_MemoryBaseAddr = (uint32_t)pwmData;
 	DMA_InitStructure.DMA_DIR = DMA_DIR_PeripheralDST;
-	DMA_InitStructure.DMA_BufferSize = ((24 * MAX_LED) + 50);
+	DMA_InitStructure.DMA_BufferSize = WS2812_DMA_BUFFER_SIZE;
 	DMA_InitStructure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;
 	DMA_InitStructure.DMA_MemoryInc = DMA_MemoryInc_Enable;
 	DMA_InitStructure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;
